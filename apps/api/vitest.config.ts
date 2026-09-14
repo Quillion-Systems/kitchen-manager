@@ -1,9 +1,9 @@
 import { defineConfig } from "vitest/config"
 
 // Integration tests: run the tRPC router against a real Postgres
-// (app_starter_kit_test).
+// (kitchen_manager_test).
 //   - global-setup.ts creates + migrates that DB once.
-//   - setup.ts points the db at app_starter_kit_test and guards against the dev DB.
+//   - setup.ts points the db at kitchen_manager_test and guards against the dev DB.
 // Serial (fileParallelism: false) because the tests share one database.
 export default defineConfig({
   test: {

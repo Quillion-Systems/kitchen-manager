@@ -1,4 +1,4 @@
-name: app-starter-kit-dev
+name: kitchen-manager-dev
 
 # Local development services. One command to a real Postgres + PowerSync:
 #   docker compose up -d
@@ -14,13 +14,13 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-app_starter_kit}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-app_starter_kit}
-      POSTGRES_DB: ${POSTGRES_DB:-app_starter_kit}
+      POSTGRES_USER: ${POSTGRES_USER:-kitchen_manager}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-kitchen_manager}
+      POSTGRES_DB: ${POSTGRES_DB:-kitchen_manager}
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-app_starter_kit} -d ${POSTGRES_DB:-app_starter_kit}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-kitchen_manager} -d ${POSTGRES_DB:-kitchen_manager}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -33,13 +33,13 @@ services:
     image: postgres:17-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-app_starter_kit}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-app_starter_kit}
+      POSTGRES_USER: ${POSTGRES_USER:-kitchen_manager}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-kitchen_manager}
       POSTGRES_DB: powersync
     volumes:
       - powersync_storage_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-app_starter_kit} -d powersync"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-kitchen_manager} -d powersync"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -62,8 +62,8 @@ services:
       - ./powersync:/config
     environment:
       POWERSYNC_CONFIG_PATH: /config/service.yaml
-      PS_DATA_SOURCE_URI: postgresql://${POSTGRES_USER:-app_starter_kit}:${POSTGRES_PASSWORD:-app_starter_kit}@postgres:5432/${POSTGRES_DB:-app_starter_kit}
-      PS_STORAGE_SOURCE_URI: postgresql://${POSTGRES_USER:-app_starter_kit}:${POSTGRES_PASSWORD:-app_starter_kit}@powersync-storage:5432/powersync
+      PS_DATA_SOURCE_URI: postgresql://${POSTGRES_USER:-kitchen_manager}:${POSTGRES_PASSWORD:-kitchen_manager}@postgres:5432/${POSTGRES_DB:-kitchen_manager}
+      PS_STORAGE_SOURCE_URI: postgresql://${POSTGRES_USER:-kitchen_manager}:${POSTGRES_PASSWORD:-kitchen_manager}@powersync-storage:5432/powersync
       # The API runs on the host (`pnpm dev`, :3001), not in this compose file, so
       # the container reaches its JWKS endpoint via the host gateway (Better Auth's
       # jwt() plugin). Clients can't auth until the API is running.

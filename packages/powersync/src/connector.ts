@@ -1,4 +1,4 @@
-import type { useTRPCClient } from "@app-starter-kit/api-client"
+import type { useTRPCClient } from "@kitchen-manager/api-client"
 import type {
   AbstractPowerSyncDatabase,
   PowerSyncBackendConnector,

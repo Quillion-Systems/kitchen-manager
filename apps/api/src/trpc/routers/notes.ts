@@ -5,7 +5,7 @@ import { type Note, newNoteSchema, noteIdSchema, updateNoteSchema } from "../../
 import { protectedProcedure, router } from "../init"
 
 // Map a DB row to the wire/domain Note: drop the DB-only `userId`, and convert
-// the timestamptz Dates to ISO strings so the shape matches @app-starter-kit/validation's
+// the timestamptz Dates to ISO strings so the shape matches @kitchen-manager/validation's
 // noteSchema. This mapper is also where any DB↔domain drift surfaces — as a
 // type error on the returned object.
 function toNote(row: typeof notes.$inferSelect): Note {

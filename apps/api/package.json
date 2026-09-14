@@ -1,5 +1,5 @@
 {
-  "name": "@app-starter-kit/api",
+  "name": "@kitchen-manager/api",
   "private": true,
   "type": "module",
   "exports": {
@@ -19,7 +19,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@app-starter-kit/validation": "workspace:*",
+    "@kitchen-manager/validation": "workspace:*",
     "@better-auth/expo": "1.4.22",
     "@trpc/server": "^11.18.0",
     "better-auth": "1.4.22",
@@ -29,7 +29,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@app-starter-kit/tsconfig": "workspace:*",
+    "@kitchen-manager/tsconfig": "workspace:*",
     "@better-auth/cli": "1.4.22",
     "@types/node": "^22.10.2",
     "dotenv": "^17.0.0",

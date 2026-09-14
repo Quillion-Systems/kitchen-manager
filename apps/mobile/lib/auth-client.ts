@@ -14,8 +14,8 @@ export const authClient = createAuthClient({
   baseURL: process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:3001",
   plugins: [
     expoClient({
-      scheme: "appstarterkit",
-      storagePrefix: "appstarterkit",
+      scheme: "kitchenmanager",
+      storagePrefix: "kitchenmanager",
       // SDK 57 SecureStore exposes the sync getItem/setItem the client expects.
       storage: SecureStore,
     }),

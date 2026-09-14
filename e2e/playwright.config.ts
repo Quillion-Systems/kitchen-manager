@@ -10,11 +10,11 @@ loadEnv({ path: resolve(here, "../.env") })
 
 const BASE_DB_URL =
   process.env.DATABASE_URL ??
-  "postgresql://app_starter_kit:app_starter_kit_dev_password@localhost:5432/app_starter_kit"
+  "postgresql://kitchen_manager:kitchen_manager_dev_password@localhost:5432/kitchen_manager"
 
 // Tests run against a dedicated database, never the dev one.
 const testDbUrl = new URL(BASE_DB_URL)
-testDbUrl.pathname = "/app_starter_kit_test"
+testDbUrl.pathname = "/kitchen_manager_test"
 const TEST_DB_URL = testDbUrl.toString()
 // Hand the derived URL to global-setup (same process, evaluated first).
 process.env.TEST_DATABASE_URL = TEST_DB_URL
@@ -50,7 +50,7 @@ export default defineConfig({
   ],
 
   // Both servers are built and served as their production output (not the dev
-  // servers) against the app_starter_kit_test DB. Reasons: (1) the web dev server's
+  // servers) against the kitchen_manager_test DB. Reasons: (1) the web dev server's
   // on-demand dep optimization races the first navigation and leaves the page
   // un-hydrated; (2) a built server has no file-watcher, which is unpredictable
   // in a long-lived `--ui` watch session. Test the artifact.
@@ -60,7 +60,7 @@ export default defineConfig({
   webServer: [
     {
       command:
-        "pnpm --filter @app-starter-kit/api build && pnpm --filter @app-starter-kit/api start",
+        "pnpm --filter @kitchen-manager/api build && pnpm --filter @kitchen-manager/api start",
       port: 3101,
       reuseExistingServer: !process.env.CI,
       timeout: 120_000,
@@ -73,7 +73,7 @@ export default defineConfig({
     },
     {
       command:
-        "pnpm --filter @app-starter-kit/web build && pnpm --filter @app-starter-kit/web start",
+        "pnpm --filter @kitchen-manager/web build && pnpm --filter @kitchen-manager/web start",
       url: WEB,
       reuseExistingServer: !process.env.CI,
       timeout: 180_000,

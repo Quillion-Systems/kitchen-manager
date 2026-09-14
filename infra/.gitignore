@@ -16,3 +16,6 @@ crash.*.log
 
 # Your filled-in vars (copy from terraform.tfvars.example)
 terraform.tfvars
+
+# SSH private keys - only .pub files should be committed
+public_keys/deploy_key

@@ -1,4 +1,4 @@
-import { createClient, TRPCProvider } from "@app-starter-kit/api-client"
+import { createClient, TRPCProvider } from "@kitchen-manager/api-client"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { type ReactNode, useState } from "react"
 import { getStoredToken } from "./auth-client"

@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "App Starter Kit",
+  "productName": "Kitchen Manager",
   "version": "0.1.0",
-  "identifier": "com.example.appstarterkit.desktop",
+  "identifier": "com.example.kitchenmanager.desktop",
   "build": {
     "frontendDist": "../.output/public",
     "devUrl": "http://localhost:3000",
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "App Starter Kit",
+        "title": "Kitchen Manager",
         "width": 800,
         "height": 600,
         "resizable": true,

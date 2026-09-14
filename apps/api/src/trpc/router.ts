@@ -7,6 +7,6 @@ export const appRouter = router({
   notes: notesRouter,
 })
 
-// The single type the clients import (@app-starter-kit/api/router) to get
+// The single type the clients import (@kitchen-manager/api/router) to get
 // end-to-end type safety against this server — no codegen, no duplication.
 export type AppRouter = typeof appRouter

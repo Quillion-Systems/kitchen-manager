@@ -21,18 +21,18 @@ jobs:
       postgres:
         image: postgres:17-alpine
         env:
-          POSTGRES_USER: app_starter_kit
-          POSTGRES_PASSWORD: app_starter_kit
-          POSTGRES_DB: app_starter_kit
+          POSTGRES_USER: kitchen_manager
+          POSTGRES_PASSWORD: kitchen_manager
+          POSTGRES_DB: kitchen_manager
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U app_starter_kit"
+          --health-cmd "pg_isready -U kitchen_manager"
           --health-interval 5s
           --health-timeout 5s
           --health-retries 5
     env:
-      DATABASE_URL: postgresql://app_starter_kit:app_starter_kit@localhost:5432/app_starter_kit
+      DATABASE_URL: postgresql://kitchen_manager:kitchen_manager@localhost:5432/kitchen_manager
       BETTER_AUTH_SECRET: ci-desktop-secret-not-used-in-prod
       # The apt `webkit2gtk-driver` package installs the native WebDriver here;
       # wdio.conf hands it to tauri-driver via --native-driver.
@@ -73,12 +73,12 @@ jobs:
       # Build via the npm Tauri CLI (@tauri-apps/cli) — its prebuilt binary runs
       # on ubuntu (local uses nix cargo-tauri). Bakes VITE_API_URL at :3101.
       - name: Build desktop app
-        run: pnpm --filter @app-starter-kit/desktop-e2e build:app:ci
+        run: pnpm --filter @kitchen-manager/desktop-e2e build:app:ci
 
-      # wdio.conf resets app_starter_kit_test, starts the API on :3101, spawns tauri-driver,
+      # wdio.conf resets kitchen_manager_test, starts the API on :3101, spawns tauri-driver,
       # and drives the app. xvfb gives the GTK window a display.
       - name: Run desktop e2e
-        run: xvfb-run -a pnpm --filter @app-starter-kit/desktop-e2e test
+        run: xvfb-run -a pnpm --filter @kitchen-manager/desktop-e2e test
 
       - name: Upload wdio logs on failure
         if: failure()

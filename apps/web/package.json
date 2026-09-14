@@ -1,5 +1,5 @@
 {
-  "name": "@app-starter-kit/web",
+  "name": "@kitchen-manager/web",
   "private": true,
   "type": "module",
   "imports": {
@@ -15,8 +15,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@app-starter-kit/api-client": "workspace:*",
-    "@app-starter-kit/powersync": "workspace:*",
+    "@kitchen-manager/api-client": "workspace:*",
+    "@kitchen-manager/powersync": "workspace:*",
     "@powersync/common": "^2.0.0",
     "@powersync/react": "^2.0.0",
     "@powersync/web": "^2.1.1",
@@ -43,6 +43,6 @@
     "typescript": "^6.0.2",
     "vite": "^8.0.0",
     "vite-plugin-wasm": "^3.6.0",
-    "@app-starter-kit/tsconfig": "workspace:*"
+    "@kitchen-manager/tsconfig": "workspace:*"
   }
 }

@@ -14,7 +14,7 @@ const useTokens =
   typeof window !== "undefined" &&
   (window.location.protocol === "tauri:" || window.location.hostname === "tauri.localhost")
 
-const TOKEN_KEY = "appstarterkit.token"
+const TOKEN_KEY = "kitchenmanager.token"
 
 export const authClient = createAuthClient({
   baseURL: getConfig().apiUrl,

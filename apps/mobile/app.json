@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "App Starter Kit",
-    "slug": "app-starter-kit-mobile",
+    "name": "Kitchen Manager",
+    "slug": "kitchen-manager-mobile",
     "version": "1.0.0",
-    "scheme": "appstarterkit",
+    "scheme": "kitchenmanager",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -11,7 +11,7 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.example.appstarterkit.mobile",
+      "package": "com.example.kitchenmanager.mobile",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",

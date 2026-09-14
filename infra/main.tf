@@ -22,7 +22,7 @@ locals {
 }
 
 resource "hcloud_firewall" "web" {
-  name = "app-starter-kit-web"
+  name = "kitchen-manager-web"
   # SSH — left open (key-only auth). CI deploys from GitHub runners' dynamic IPs,
   # so this can't be pinned to a single address.
   rule {
@@ -44,13 +44,13 @@ resource "hcloud_firewall" "web" {
 }
 
 resource "hcloud_server" "web" {
-  name         = "app-starter-kit-web"
+  name         = "kitchen-manager-web"
   server_type  = var.server_type
   image        = var.image
   location     = var.location
   ssh_keys     = [data.hcloud_ssh_key.main.name]
   firewall_ids = [hcloud_firewall.web.id]
-  labels       = { project = "app-starter-kit" }
+  labels       = { project = "kitchen-manager" }
   user_data = templatefile("${path.module}/cloud-init.yaml.tftpl", {
     ssh_public_keys = [
       data.hcloud_ssh_key.main.public_key,

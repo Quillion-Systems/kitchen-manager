@@ -1,5 +1,5 @@
 {
-  "name": "@app-starter-kit/api-client",
+  "name": "@kitchen-manager/api-client",
   "private": true,
   "type": "module",
   "exports": {
@@ -18,8 +18,8 @@
     "react": "^19"
   },
   "devDependencies": {
-    "@app-starter-kit/api": "workspace:*",
-    "@app-starter-kit/tsconfig": "workspace:*",
+    "@kitchen-manager/api": "workspace:*",
+    "@kitchen-manager/tsconfig": "workspace:*",
     "@tanstack/react-query": "^5.90.0",
     "@types/react": "^19.2.0",
     "react": "^19.2.0",

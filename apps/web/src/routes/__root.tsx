@@ -32,7 +32,7 @@ export const Route = createRootRoute({
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "App Starter Kit",
+        title: "Kitchen Manager",
       },
     ],
     links: [

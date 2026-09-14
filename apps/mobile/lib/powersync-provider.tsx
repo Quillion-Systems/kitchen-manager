@@ -1,5 +1,5 @@
-import { useTRPCClient } from "@app-starter-kit/api-client"
-import { createConnector } from "@app-starter-kit/powersync"
+import { useTRPCClient } from "@kitchen-manager/api-client"
+import { createConnector } from "@kitchen-manager/powersync"
 import { PowerSyncContext } from "@powersync/react"
 import { type ReactNode, useEffect } from "react"
 import { authClient } from "./auth-client"

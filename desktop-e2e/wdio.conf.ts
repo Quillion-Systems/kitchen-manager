@@ -13,15 +13,15 @@ const repoRoot = resolve(here, "..")
 loadEnv({ path: resolve(repoRoot, ".env") })
 
 // Dedicated port/DB so the desktop suite coexists with the dev servers. Reuses
-// the Playwright suite's API port (3101) + app_starter_kit_test DB — they never run at once.
+// the Playwright suite's API port (3101) + kitchen_manager_test DB — they never run at once.
 const API = "http://localhost:3101"
 const API_PORT = "3101"
 
 const BASE_DB_URL =
   process.env.DATABASE_URL ??
-  "postgresql://app_starter_kit:app_starter_kit_dev_password@localhost:5432/app_starter_kit"
+  "postgresql://kitchen_manager:kitchen_manager_dev_password@localhost:5432/kitchen_manager"
 const testDbUrl = new URL(BASE_DB_URL)
-testDbUrl.pathname = "/app_starter_kit_test"
+testDbUrl.pathname = "/kitchen_manager_test"
 const TEST_DB_URL = testDbUrl.toString()
 
 // The packaged app is served from tauri://localhost; the API must trust that
@@ -41,11 +41,11 @@ let tauriDriver: ChildProcess | undefined
 
 async function resetDb(): Promise<void> {
   const admin = postgres(BASE_DB_URL, { max: 1 })
-  const existing = await admin`SELECT 1 FROM pg_database WHERE datname = 'app_starter_kit_test'`
-  if (existing.length === 0) await admin.unsafe("CREATE DATABASE app_starter_kit_test")
+  const existing = await admin`SELECT 1 FROM pg_database WHERE datname = 'kitchen_manager_test'`
+  if (existing.length === 0) await admin.unsafe("CREATE DATABASE kitchen_manager_test")
   await admin.end()
 
-  execSync("pnpm --filter @app-starter-kit/api db:migrate", {
+  execSync("pnpm --filter @kitchen-manager/api db:migrate", {
     cwd: repoRoot,
     stdio: "inherit",
     env: { ...process.env, DATABASE_URL: TEST_DB_URL },
@@ -69,10 +69,10 @@ async function waitForHealth(url: string, tries = 60): Promise<void> {
 }
 
 async function startApi(): Promise<void> {
-  // Build + run the API's production output against app_starter_kit_test (mirrors the
+  // Build + run the API's production output against kitchen_manager_test (mirrors the
   // Playwright harness — test the built artifact, not the dev server).
-  execSync("pnpm --filter @app-starter-kit/api build", { cwd: repoRoot, stdio: "inherit" })
-  apiProc = spawn("pnpm", ["--filter", "@app-starter-kit/api", "start"], {
+  execSync("pnpm --filter @kitchen-manager/api build", { cwd: repoRoot, stdio: "inherit" })
+  apiProc = spawn("pnpm", ["--filter", "@kitchen-manager/api", "start"], {
     cwd: repoRoot,
     stdio: "inherit",
     env: {

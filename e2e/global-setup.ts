@@ -1,25 +1,25 @@
 import { execSync } from "node:child_process"
 import postgres from "postgres"
 
-// Prepare an isolated `app_starter_kit_test` database: create it, migrate it, and start
+// Prepare an isolated `kitchen_manager_test` database: create it, migrate it, and start
 // each run from a clean slate. Derived URLs come from playwright.config.ts.
 export default async function globalSetup() {
   const baseUrl =
     process.env.DATABASE_URL ??
-    "postgresql://app_starter_kit:app_starter_kit_dev_password@localhost:5432/app_starter_kit"
+    "postgresql://kitchen_manager:kitchen_manager_dev_password@localhost:5432/kitchen_manager"
   const testUrl = process.env.TEST_DATABASE_URL as string
 
   // 1. Create the test database if it doesn't exist (CREATE DATABASE can't run
   //    in a transaction, hence a plain connection to the base db).
   const admin = postgres(baseUrl, { max: 1 })
-  const existing = await admin`SELECT 1 FROM pg_database WHERE datname = 'app_starter_kit_test'`
+  const existing = await admin`SELECT 1 FROM pg_database WHERE datname = 'kitchen_manager_test'`
   if (existing.length === 0) {
-    await admin.unsafe("CREATE DATABASE app_starter_kit_test")
+    await admin.unsafe("CREATE DATABASE kitchen_manager_test")
   }
   await admin.end()
 
   // 2. Apply Drizzle migrations to the test database.
-  execSync("pnpm --filter @app-starter-kit/api db:migrate", {
+  execSync("pnpm --filter @kitchen-manager/api db:migrate", {
     stdio: "inherit",
     env: { ...process.env, DATABASE_URL: testUrl },
   })

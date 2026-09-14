@@ -1,4 +1,4 @@
-import { useTRPC } from "@app-starter-kit/api-client"
+import { useTRPC } from "@kitchen-manager/api-client"
 import { usePowerSync, useQuery as usePowerSyncQuery } from "@powersync/react"
 import { useQuery } from "@tanstack/react-query"
 import { createFileRoute, Link } from "@tanstack/react-router"
@@ -231,7 +231,7 @@ function Home() {
         <AuthBar />
         <header className="mb-10">
           <h1 className="bg-gradient-to-r from-sky-400 to-indigo-400 bg-clip-text text-5xl font-bold tracking-tight text-transparent">
-            App Starter Kit
+            Kitchen Manager
           </h1>
           <p className="mt-2 italic text-neutral-400">web · desktop · mobile — one stack</p>
           <p className="mt-4 text-xs uppercase tracking-widest text-neutral-500">
@@ -245,7 +245,7 @@ function Home() {
 
         <footer className="mt-12 text-xs leading-relaxed text-neutral-600">
           Wired to a real tRPC backend via{" "}
-          <span className="font-mono">@app-starter-kit/api-client</span>. Swap the{" "}
+          <span className="font-mono">@kitchen-manager/api-client</span>. Swap the{" "}
           <span className="font-mono">example</span> router for your own to start building.
         </footer>
       </div>
