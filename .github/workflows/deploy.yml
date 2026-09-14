@@ -7,6 +7,8 @@ on:
   # …and on PRs into main.
   pull_request:
     branches: [main]
+  # Manual trigger for the gated deploy job (see the `deploy` job's `if:`).
+  workflow_dispatch:
 
 # Don't let two deploys race; a newer push supersedes an in-flight one.
 concurrency:
