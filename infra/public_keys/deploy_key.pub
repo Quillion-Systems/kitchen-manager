@@ -1,1 +1,1 @@
-ssh-ed25519 REPLACE_WITH_YOUR_DEPLOY_PUBLIC_KEY app-starter-kit-deploy
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDULta1ouSfpKpahmJG5f/k880+sGpdI2FRaxJcJ/k9U kitchen-manager-deploy

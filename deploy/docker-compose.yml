@@ -1,4 +1,4 @@
-name: app-starter-kit
+name: kitchen-manager
 
 services:
   # Edge reverse proxy: terminates TLS (Cloudflare Origin cert) and routes to
@@ -18,10 +18,10 @@ services:
     networks:
       - web
 
-  # The App Starter Kit web app (SSR). Not published to the host — only Traefik reaches it,
+  # The Kitchen Manager web app (SSR). Not published to the host — only Traefik reaches it,
   # over the internal network, on port 3000.
   app:
-    image: ${IMAGE:-ghcr.io/your-org/app-starter-kit/web:latest}
+    image: ${IMAGE:-ghcr.io/Quillion-Systems/kitchen-manager/web:latest}
     restart: unless-stopped
     environment:
       - PORT=3000
@@ -29,7 +29,7 @@ services:
       - web
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.app.rule=Host(`example.com`)"
+      - "traefik.http.routers.app.rule=Host(`justinthymeapp.com`)"
       - "traefik.http.routers.app.entrypoints=websecure"
       - "traefik.http.routers.app.tls=true"
       - "traefik.http.services.app.loadbalancer.server.port=3000"

@@ -1,5 +1,5 @@
 {
-  "name": "@app-starter-kit/powersync",
+  "name": "@kitchen-manager/powersync",
   "private": true,
   "type": "module",
   "exports": {
@@ -13,11 +13,11 @@
     "@powersync/common": "^2.0.0"
   },
   "peerDependencies": {
-    "@app-starter-kit/api-client": "workspace:*"
+    "@kitchen-manager/api-client": "workspace:*"
   },
   "devDependencies": {
-    "@app-starter-kit/api-client": "workspace:*",
-    "@app-starter-kit/tsconfig": "workspace:*",
+    "@kitchen-manager/api-client": "workspace:*",
+    "@kitchen-manager/tsconfig": "workspace:*",
     "typescript": "^6.0.2"
   }
 }

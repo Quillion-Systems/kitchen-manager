@@ -5,18 +5,18 @@ import { config } from "dotenv"
 // overriding anything CI already set in the environment.
 config({ path: fileURLToPath(new URL("../../../.env", import.meta.url)) })
 
-// Force every test onto the dedicated app_starter_kit_test database — never the
+// Force every test onto the dedicated kitchen_manager_test database — never the
 // dev one.
 const base =
   process.env.DATABASE_URL ??
-  "postgresql://app_starter_kit:app_starter_kit@localhost:5432/app_starter_kit"
+  "postgresql://kitchen_manager:kitchen_manager@localhost:5432/kitchen_manager"
 const url = new URL(base)
-url.pathname = "/app_starter_kit_test"
+url.pathname = "/kitchen_manager_test"
 process.env.DATABASE_URL = url.toString()
 
 // Safety net: these tests may TRUNCATE tables, so refuse to run anywhere else.
-if (!process.env.DATABASE_URL.endsWith("/app_starter_kit_test")) {
+if (!process.env.DATABASE_URL.endsWith("/kitchen_manager_test")) {
   throw new Error(
-    `Refusing to run: DATABASE_URL is ${process.env.DATABASE_URL}, expected the app_starter_kit_test database.`,
+    `Refusing to run: DATABASE_URL is ${process.env.DATABASE_URL}, expected the kitchen_manager_test database.`,
   )
 }

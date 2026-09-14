@@ -8,7 +8,7 @@ import { env } from "./env"
 
 // The mobile app (apps/mobile) authenticates via its deep-link scheme rather
 // than a browser origin; the expo() plugin handles its token-in-header flow.
-const MOBILE_SCHEME = "appstarterkit://"
+const MOBILE_SCHEME = "kitchenmanager://"
 
 export const auth = betterAuth({
   baseURL: env.BETTER_AUTH_URL,

@@ -7,6 +7,8 @@ on:
   # …and on PRs into main.
   pull_request:
     branches: [main]
+  # Manual trigger for the gated deploy job (see the `deploy` job's `if:`).
+  workflow_dispatch:
 
 # Don't let two deploys race; a newer push supersedes an in-flight one.
 concurrency:
@@ -37,20 +39,20 @@ jobs:
       postgres:
         image: postgres:17-alpine
         env:
-          POSTGRES_USER: app_starter_kit
-          POSTGRES_PASSWORD: app_starter_kit
-          POSTGRES_DB: app_starter_kit
+          POSTGRES_USER: kitchen_manager
+          POSTGRES_PASSWORD: kitchen_manager
+          POSTGRES_DB: kitchen_manager
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U app_starter_kit"
+          --health-cmd "pg_isready -U kitchen_manager"
           --health-interval 5s
           --health-timeout 5s
           --health-retries 5
     env:
       # The E2E stack reads these from the environment (there's no .env in CI).
       # Ports / origins are set per-server in playwright.config.ts.
-      DATABASE_URL: postgresql://app_starter_kit:app_starter_kit@localhost:5432/app_starter_kit
+      DATABASE_URL: postgresql://kitchen_manager:kitchen_manager@localhost:5432/kitchen_manager
       BETTER_AUTH_SECRET: ci-e2e-secret-not-used-in-prod
     steps:
       - uses: actions/checkout@v7
@@ -61,9 +63,9 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: Install Playwright browser
-        run: pnpm --filter @app-starter-kit/e2e exec playwright install --with-deps chromium
+        run: pnpm --filter @kitchen-manager/e2e exec playwright install --with-deps chromium
       - name: Run E2E tests
-        run: pnpm --filter @app-starter-kit/e2e test
+        run: pnpm --filter @kitchen-manager/e2e test
       - name: Upload report on failure
         if: failure()
         uses: actions/upload-artifact@v4
@@ -129,17 +131,17 @@ jobs:
           printf '%s\n' "$ORIGIN_KEY"  > origin-key.pem
 
           # Ship the compose stack + Traefik config + certs to the box
-          $SSH "mkdir -p app-starter-kit/traefik/dynamic app-starter-kit/certs"
-          $SCP deploy/docker-compose.yml      "deploy@$DEPLOY_HOST:app-starter-kit/docker-compose.yml"
-          $SCP deploy/traefik/traefik.yml     "deploy@$DEPLOY_HOST:app-starter-kit/traefik/traefik.yml"
-          $SCP deploy/traefik/dynamic/tls.yml "deploy@$DEPLOY_HOST:app-starter-kit/traefik/dynamic/tls.yml"
-          $SCP origin.pem origin-key.pem      "deploy@$DEPLOY_HOST:app-starter-kit/certs/"
-          $SSH "chmod 600 app-starter-kit/certs/origin-key.pem"
+          $SSH "mkdir -p kitchen-manager/traefik/dynamic kitchen-manager/certs"
+          $SCP deploy/docker-compose.yml      "deploy@$DEPLOY_HOST:kitchen-manager/docker-compose.yml"
+          $SCP deploy/traefik/traefik.yml     "deploy@$DEPLOY_HOST:kitchen-manager/traefik/traefik.yml"
+          $SCP deploy/traefik/dynamic/tls.yml "deploy@$DEPLOY_HOST:kitchen-manager/traefik/dynamic/tls.yml"
+          $SCP origin.pem origin-key.pem      "deploy@$DEPLOY_HOST:kitchen-manager/certs/"
+          $SSH "chmod 600 kitchen-manager/certs/origin-key.pem"
 
           # Deploy: login to GHCR, retire the old single container, bring up the stack
-          $SSH "cd app-starter-kit \
+          $SSH "cd kitchen-manager \
             && echo '$REGISTRY_TOKEN' | docker login ghcr.io -u '$ACTOR' --password-stdin \
-            && (docker rm -f app-starter-kit-web 2>/dev/null || true) \
+            && (docker rm -f kitchen-manager-web 2>/dev/null || true) \
             && IMAGE='$IMAGE_REF' docker compose pull \
             && IMAGE='$IMAGE_REF' docker compose up -d --remove-orphans \
             && docker image prune -f"

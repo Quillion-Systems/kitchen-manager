@@ -1,4 +1,4 @@
-import { AppSchema } from "@app-starter-kit/powersync"
+import { AppSchema } from "@kitchen-manager/powersync"
 import { PowerSyncDatabase } from "@powersync/react-native"
 
 // A single PowerSync database for the app's lifetime, kept as a module singleton
@@ -13,7 +13,7 @@ export function getDb(): PowerSyncDatabase {
   if (!instance) {
     instance = new PowerSyncDatabase({
       schema: AppSchema,
-      database: { dbFilename: "app-starter-kit.db" },
+      database: { dbFilename: "kitchen-manager.db" },
     })
   }
   return instance

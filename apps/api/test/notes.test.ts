@@ -19,7 +19,7 @@ beforeAll(async () => {
   await db.insert(user).values({
     id: userId,
     name: "Notes Test User",
-    email: `${userId}@example.com`,
+    email: `${userId}@justinthymeapp.com`,
   })
 })
 

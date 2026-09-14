@@ -1,5 +1,5 @@
 {
-  description = "App Starter Kit — NixOS dev shell (Tauri toolchain + Playwright browsers)";
+  description = "Kitchen Manager — NixOS dev shell (Tauri toolchain + Playwright browsers)";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
 
@@ -12,7 +12,7 @@
       # Native toolchain the project needs on NixOS. Rust (rustc/cargo) and
       # Node/pnpm come from the ambient profile.
       # Enter with `nix develop`, then e.g. `pnpm tauri dev` or
-      # `pnpm --filter @app-starter-kit/e2e test`.
+      # `pnpm --filter @kitchen-manager/e2e test`.
       devShells.${system}.default = pkgs.mkShell {
         nativeBuildInputs = with pkgs; [
           cargo-tauri # the Tauri CLI, nix-built (the npm one's prebuilt binary won't run on NixOS)
@@ -56,7 +56,7 @@
         WEBKIT_WEB_DRIVER = "${pkgs.webkitgtk_4_1}/bin/WebKitWebDriver";
 
         shellHook = ''
-          echo "🦀 App Starter Kit dev shell — rustc $(rustc --version 2>/dev/null | awk '{print $2}'); Playwright browsers wired"
+          echo "🦀 Kitchen Manager dev shell — rustc $(rustc --version 2>/dev/null | awk '{print $2}'); Playwright browsers wired"
         '';
       };
     };

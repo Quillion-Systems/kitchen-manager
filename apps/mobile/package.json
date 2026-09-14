@@ -1,10 +1,10 @@
 {
-  "name": "@app-starter-kit/mobile",
+  "name": "@kitchen-manager/mobile",
   "version": "1.0.0",
   "main": "index.ts",
   "dependencies": {
-    "@app-starter-kit/api-client": "workspace:*",
-    "@app-starter-kit/powersync": "workspace:*",
+    "@kitchen-manager/api-client": "workspace:*",
+    "@kitchen-manager/powersync": "workspace:*",
     "@better-auth/expo": "1.4.22",
     "@powersync/react": "^2.0.0",
     "@powersync/react-native": "^2.0.2",

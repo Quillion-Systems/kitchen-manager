@@ -1,5 +1,5 @@
 {
-  "extends": "@app-starter-kit/tsconfig/base.json",
+  "extends": "@kitchen-manager/tsconfig/base.json",
   "compilerOptions": {
     "noEmit": true
   },

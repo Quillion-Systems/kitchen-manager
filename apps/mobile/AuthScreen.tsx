@@ -29,7 +29,7 @@ export function AuthScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.brand}>App Starter Kit</Text>
+      <Text style={styles.brand}>Kitchen Manager</Text>
       <Text style={styles.tag}>{isSignUp ? "Create your account" : "Welcome back"}</Text>
 
       {isSignUp && (

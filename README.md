@@ -1,4 +1,4 @@
-# App Starter Kit
+# Kitchen Manager
 
 A monorepo starter for shipping the **same app to web, desktop, and mobile** off
 one self-hosted backend — with **end-to-end tests wired up for all three
@@ -9,14 +9,14 @@ surfaces**, and **offline-first sync via PowerSync**. Generated from a working r
 
 | Package | Path | What |
 |---|---|---|
-| `@app-starter-kit/web` | `apps/web` | TanStack Start web app (SSR); also the frontend the Tauri desktop shell wraps (`src-tauri/`) |
-| `@app-starter-kit/api` | `apps/api` | Standalone Nitro API + Better Auth, Postgres via Drizzle |
-| `@app-starter-kit/mobile` | `apps/mobile` | Expo / React Native app |
-| `@app-starter-kit/powersync` | `packages/powersync` | Shared PowerSync schema and connector (web + mobile) |
-| `@app-starter-kit/validation` | `packages/validation` | Shared Zod schemas (API input validation, type inference) |
-| `@app-starter-kit/tsconfig` | `packages/tsconfig` | Shared TypeScript base config |
-| `@app-starter-kit/e2e` | `e2e` | Playwright end-to-end tests (web) |
-| `@app-starter-kit/desktop-e2e` | `desktop-e2e` | WebdriverIO + tauri-driver end-to-end tests (desktop) |
+| `@kitchen-manager/web` | `apps/web` | TanStack Start web app (SSR); also the frontend the Tauri desktop shell wraps (`src-tauri/`) |
+| `@kitchen-manager/api` | `apps/api` | Standalone Nitro API + Better Auth, Postgres via Drizzle |
+| `@kitchen-manager/mobile` | `apps/mobile` | Expo / React Native app |
+| `@kitchen-manager/powersync` | `packages/powersync` | Shared PowerSync schema and connector (web + mobile) |
+| `@kitchen-manager/validation` | `packages/validation` | Shared Zod schemas (API input validation, type inference) |
+| `@kitchen-manager/tsconfig` | `packages/tsconfig` | Shared TypeScript base config |
+| `@kitchen-manager/e2e` | `e2e` | Playwright end-to-end tests (web) |
+| `@kitchen-manager/desktop-e2e` | `desktop-e2e` | WebdriverIO + tauri-driver end-to-end tests (desktop) |
 
 **Auth:** one API, three clients — web uses cookies; desktop and mobile use
 bearer tokens (native shells can't rely on cross-site cookies).
@@ -38,12 +38,12 @@ NixOS/Nix, `nix develop` provides the native toolchain.
 cp .env.example .env                                   # then edit
 docker compose up -d                                   # Postgres + PowerSync
 pnpm install
-pnpm --filter @app-starter-kit/api db:migrate
-pnpm turbo dev --filter=@app-starter-kit/api --filter=@app-starter-kit/web
+pnpm --filter @kitchen-manager/api db:migrate
+pnpm turbo dev --filter=@kitchen-manager/api --filter=@kitchen-manager/web
 ```
 
-- **Desktop:** `pnpm --filter @app-starter-kit/web tauri dev`
-- **Mobile:** `pnpm --filter @app-starter-kit/mobile start` — the native auth
+- **Desktop:** `pnpm --filter @kitchen-manager/web tauri dev`
+- **Mobile:** `pnpm --filter @kitchen-manager/mobile start` — the native auth
   modules need an EAS dev build, so run `eas init` in `apps/mobile` first.
 
 ## Offline-first sync
@@ -54,7 +54,7 @@ This starter kit includes **PowerSync** for offline-first synchronization:
 - **Synced resource:** Notes table — a placeholder you'll replace with your own domain
 - **Bi-directional:** Local writes queue offline, sync upstream when connected
 - **Tombstones:** Soft-delete (deletedAt) propagates deletions across all devices
-- **Type-safe:** Shared schema via `@app-starter-kit/powersync`, one connector for web/mobile
+- **Type-safe:** Shared schema via `@kitchen-manager/powersync`, one connector for web/mobile
 
 ### How offline-first works
 
@@ -84,9 +84,9 @@ Everything else (auth, offline durability, sync plumbing) stays unchanged.
 
 | Surface | Tool | Command |
 |---|---|---|
-| Web | Playwright | `pnpm --filter @app-starter-kit/e2e test` |
-| Mobile | Maestro | `pnpm --filter @app-starter-kit/mobile test:e2e` (device/emulator) |
-| Desktop | WebdriverIO + tauri-driver | `pnpm --filter @app-starter-kit/desktop-e2e test:build` |
+| Web | Playwright | `pnpm --filter @kitchen-manager/e2e test` |
+| Mobile | Maestro | `pnpm --filter @kitchen-manager/mobile test:e2e` (device/emulator) |
+| Desktop | WebdriverIO + tauri-driver | `pnpm --filter @kitchen-manager/desktop-e2e test:build` |
 
 Each drives its own real runtime; see `desktop-e2e/README.md` for the desktop
 harness. CI runs web + desktop per-push and mobile nightly (`.github/workflows/`).
@@ -140,17 +140,17 @@ Or change them by hand — the placeholders, per new project:
 
 - **App identity** — `apps/mobile/app.json` (`name`, `slug`, `scheme`, android
   `package`) and `apps/web/src-tauri/tauri.conf.json` (`productName`,
-  `identifier`, window `title`). Bundle IDs are `com.example.appstarterkit.*` —
+  `identifier`, window `title`). Bundle IDs are `com.example.kitchenmanager.*` —
   use your own reverse-domain.
 - **EAS** — run `eas init` in `apps/mobile` (the `extra.eas.projectId` was
   removed on purpose).
-- **Deploy / infra** — `deploy/docker-compose.yml` (image `ghcr.io/your-org/…`,
-  Traefik `Host(…)` = `example.com`), `infra/terraform.tfvars.example` →
+- **Deploy / infra** — `deploy/docker-compose.yml` (image `ghcr.io/Quillion-Systems/…`,
+  Traefik `Host(…)` = `justinthymeapp.com`), `infra/terraform.tfvars.example` →
   `terraform.tfvars`, and `infra/public_keys/deploy_key.pub` (your CI deploy
   key). CI secrets referenced in `.github/workflows/deploy.yml`: `DEPLOY_SSH_KEY`,
   `ORIGIN_CERT`, `ORIGIN_KEY`, plus `RENOVATE_TOKEN`. See [Deployment](#deployment) for step-by-step re-enablement.
-- **Database / scheme** — the dev DB is `app_starter_kit`; the deep-link scheme
-  is `appstarterkit://`. Rename to taste.
+- **Database / scheme** — the dev DB is `kitchen_manager`; the deep-link scheme
+  is `kitchenmanager://`. Rename to taste.
 
 ## License
 

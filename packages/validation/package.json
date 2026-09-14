@@ -1,5 +1,5 @@
 {
-  "name": "@app-starter-kit/validation",
+  "name": "@kitchen-manager/validation",
   "private": true,
   "type": "module",
   "exports": {
@@ -9,7 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@app-starter-kit/tsconfig": "workspace:*",
+    "@kitchen-manager/tsconfig": "workspace:*",
     "typescript": "^6.0.2"
   },
   "dependencies": {

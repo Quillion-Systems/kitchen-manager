@@ -1,4 +1,4 @@
-import type { AppRouter } from "@app-starter-kit/api/router"
+import type { AppRouter } from "@kitchen-manager/api/router"
 import { createTRPCClient, httpBatchLink } from "@trpc/client"
 
 export type CreateClientOptions = {

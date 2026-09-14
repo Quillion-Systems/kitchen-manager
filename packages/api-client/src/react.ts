@@ -1,4 +1,4 @@
-import type { AppRouter } from "@app-starter-kit/api/router"
+import type { AppRouter } from "@kitchen-manager/api/router"
 import { createTRPCContext } from "@trpc/tanstack-react-query"
 
 // The tRPC + TanStack Query integration, created once and shared. A consumer

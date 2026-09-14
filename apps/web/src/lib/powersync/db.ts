@@ -13,7 +13,7 @@ export function getDb(): Promise<AbstractPowerSyncDatabase> {
   if (!dbPromise) {
     dbPromise = (async () => {
       const { PowerSyncDatabase, WASQLiteVFS } = await import("@powersync/web")
-      const { AppSchema } = await import("@app-starter-kit/powersync")
+      const { AppSchema } = await import("@kitchen-manager/powersync")
       // The desktop app (Tauri, served from tauri://) runs in a WebKitGTK webview
       // that doesn't support the OPFS VFS wa-sqlite defaults to — so on desktop use
       // the IndexedDB VFS, which every engine supports. Real browsers keep the
@@ -23,7 +23,7 @@ export function getDb(): Promise<AbstractPowerSyncDatabase> {
       return new PowerSyncDatabase({
         schema: AppSchema,
         database: {
-          dbFilename: "app-starter-kit.db",
+          dbFilename: "kitchen-manager.db",
           // Tauri's WebKitGTK webview: use the IndexedDB VFS (no OPFS) and run
           // SQLite on the main thread. Packaged tauri:// web/shared workers don't
           // load reliably, which hangs the default worker-based setup. A single-

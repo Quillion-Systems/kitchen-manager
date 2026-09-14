@@ -15,8 +15,8 @@ adb install -r "$GITHUB_WORKSPACE/pace-app.apk"
 fail=0
 for flow in apps/mobile/.maestro/*.yaml; do
   echo "::group::maestro $flow"
-  adb shell pm clear com.example.appstarterkit.mobile
-  adb shell monkey -p com.example.appstarterkit.mobile -c android.intent.category.LAUNCHER 1
+  adb shell pm clear com.example.kitchenmanager.mobile
+  adb shell monkey -p com.example.kitchenmanager.mobile -c android.intent.category.LAUNCHER 1
   sleep 5
   maestro test "$flow" || fail=1
   echo "::endgroup::"

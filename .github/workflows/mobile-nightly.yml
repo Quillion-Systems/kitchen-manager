@@ -20,18 +20,18 @@ jobs:
       postgres:
         image: postgres:17-alpine
         env:
-          POSTGRES_USER: app_starter_kit
-          POSTGRES_PASSWORD: app_starter_kit
-          POSTGRES_DB: app_starter_kit
+          POSTGRES_USER: kitchen_manager
+          POSTGRES_PASSWORD: kitchen_manager
+          POSTGRES_DB: kitchen_manager
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U app_starter_kit"
+          --health-cmd "pg_isready -U kitchen_manager"
           --health-interval 5s
           --health-timeout 5s
           --health-retries 5
     env:
-      DATABASE_URL: postgresql://app_starter_kit:app_starter_kit@localhost:5432/app_starter_kit
+      DATABASE_URL: postgresql://kitchen_manager:kitchen_manager@localhost:5432/kitchen_manager
       BETTER_AUTH_SECRET: ci-mobile-secret-not-used-in-prod
       BETTER_AUTH_URL: http://localhost:3001
       # The emulator reaches the runner's API via 10.0.2.2; this is baked into
@@ -55,11 +55,11 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       - name: Migrate database
-        run: pnpm --filter @app-starter-kit/api db:migrate
+        run: pnpm --filter @kitchen-manager/api db:migrate
 
       - name: Start API (background, all interfaces)
         run: |
-          pnpm --filter @app-starter-kit/api dev > /tmp/api.log 2>&1 &
+          pnpm --filter @kitchen-manager/api dev > /tmp/api.log 2>&1 &
           for i in $(seq 1 30); do
             curl -sf http://localhost:3001/health && break
             sleep 2

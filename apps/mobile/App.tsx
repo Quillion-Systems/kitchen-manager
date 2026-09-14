@@ -7,7 +7,7 @@ const sampleTasks = [
   { id: 1, title: "Set up the monorepo", done: true },
   { id: 2, title: "Stand up the web + desktop shells", done: true },
   { id: 3, title: "Get the mobile shell on a real device", done: true },
-  { id: 4, title: 'Figure out what a "task" actually is in App Starter Kit', done: false },
+  { id: 4, title: 'Figure out what a "task" actually is in Kitchen Manager', done: false },
 ]
 
 export default function App() {
@@ -41,7 +41,7 @@ function SignedIn({ email }: { email: string }) {
         </Pressable>
       </View>
 
-      <Text style={styles.brand}>App Starter Kit</Text>
+      <Text style={styles.brand}>Kitchen Manager</Text>
       <Text style={styles.tag}>web · desktop · mobile — one stack</Text>
       <Text style={styles.eyebrow}>Native shell · signed in</Text>
 

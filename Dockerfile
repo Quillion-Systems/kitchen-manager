@@ -14,12 +14,12 @@ COPY apps/web/package.json ./apps/web/
 COPY apps/mobile/package.json ./apps/mobile/
 COPY packages/tsconfig/package.json ./packages/tsconfig/
 # Only the web subtree is needed to build web — skips Expo/RN from apps/mobile.
-RUN pnpm install --frozen-lockfile --filter @app-starter-kit/web...
+RUN pnpm install --frozen-lockfile --filter @kitchen-manager/web...
 
 # ---- build: produces the Nitro node-server output ----
 FROM deps AS build
 COPY . .
-RUN pnpm --filter @app-starter-kit/web build
+RUN pnpm --filter @kitchen-manager/web build
 
 # ---- runtime: slim image with only the built server ----
 FROM node:24-slim AS runtime

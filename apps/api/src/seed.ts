@@ -3,7 +3,7 @@
 // account to log in with locally without signing up each time. Idempotent:
 // re-running against a database that already has the user is a no-op.
 //
-//   pnpm --filter @app-starter-kit/api db:seed
+//   pnpm --filter @kitchen-manager/api db:seed
 //
 // Credentials are placeholders — change them, or delete this file, once you have
 // your own accounts. This is also the natural home for fixture data later: add
@@ -12,7 +12,7 @@
 import { auth } from "./auth"
 
 const TEST_USER = {
-  email: "test@example.com",
+  email: "test@justinthymeapp.com",
   password: "test-password-123",
   name: "Test User",
 }

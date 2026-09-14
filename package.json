@@ -1,5 +1,5 @@
 {
-  "name": "app-starter-kit",
+  "name": "kitchen-manager",
   "version": "0.0.0",
   "private": true,
   "packageManager": "pnpm@11.9.0",
@@ -9,7 +9,7 @@
   "scripts": {
     "personalize": "node scripts/personalize.mjs",
     "typecheck": "turbo typecheck",
-    "test": "turbo test --filter=@app-starter-kit/api",
+    "test": "turbo test --filter=@kitchen-manager/api",
     "check": "biome check . && turbo typecheck",
     "format": "biome check --write .",
     "lint:actions": "actionlint",

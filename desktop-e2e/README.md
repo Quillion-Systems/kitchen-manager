@@ -1,4 +1,4 @@
-# @app-starter-kit/desktop-e2e
+# @kitchen-manager/desktop-e2e
 
 End-to-end tests for the **desktop** app (Tauri) — the web UI wrapped in a
 native window, served from `tauri://localhost` and authenticating with a bearer
@@ -10,12 +10,12 @@ reach Tauri's WebKitWebView, so the desktop gets its own driver:
 
 ```
 wdio  ──►  tauri-driver  ──►  WebKitWebDriver  ──►  the packaged app (target/debug/app)
-                                                        └─ web UI ─► API :3101 ─► app_starter_kit_test
+                                                        └─ web UI ─► API :3101 ─► kitchen_manager_test
 ```
 
 `wdio.conf.ts` is the whole harness. Before any session it:
 
-1. resets an isolated `app_starter_kit_test` database (create → migrate → truncate),
+1. resets an isolated `kitchen_manager_test` database (create → migrate → truncate),
 2. builds + starts the API on **:3101** with `TRUSTED_ORIGINS=tauri://localhost`
    (so Better Auth accepts the packaged app's origin),
 
@@ -38,19 +38,19 @@ pointing at `:3101` — that's what `build:app` does.
 
 ```sh
 # from repo root, inside `nix develop`:
-pnpm --filter @app-starter-kit/desktop-e2e test:build     # build the :3101 binary, then run
+pnpm --filter @kitchen-manager/desktop-e2e test:build     # build the :3101 binary, then run
 ```
 
 Iterating on a spec (skip the slow Rust rebuild once the binary exists):
 
 ```sh
-pnpm --filter @app-starter-kit/desktop-e2e test
+pnpm --filter @kitchen-manager/desktop-e2e test
 ```
 
 Rebuild the binary after changing app code:
 
 ```sh
-pnpm --filter @app-starter-kit/desktop-e2e build:app
+pnpm --filter @kitchen-manager/desktop-e2e build:app
 ```
 
 ### Two build scripts: local vs CI
@@ -72,12 +72,12 @@ bundled build.)
 The app opens a real GTK window, so a display is required. With none, wrap it:
 
 ```sh
-xvfb-run -a pnpm --filter @app-starter-kit/desktop-e2e test:build
+xvfb-run -a pnpm --filter @kitchen-manager/desktop-e2e test:build
 ```
 
 ## Notes
 
 - Selectors key off stable attributes (`input[autocomplete="…"]`, link/button
   text) because the web UI labels inputs with a wrapping `<span>`, not `for`/`id`.
-- The suite reuses the Playwright suite's `:3101` / `app_starter_kit_test` — run them one at
+- The suite reuses the Playwright suite's `:3101` / `kitchen_manager_test` — run them one at
   a time, not concurrently.

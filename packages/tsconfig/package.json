@@ -1,5 +1,5 @@
 {
-  "name": "@app-starter-kit/tsconfig",
+  "name": "@kitchen-manager/tsconfig",
   "version": "0.0.0",
   "private": true,
   "files": [
