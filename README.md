@@ -93,41 +93,32 @@ harness. CI runs web + desktop per-push and mobile nightly (`.github/workflows/`
 
 ## Deployment
 
-The CI workflow (`deploy.yml`) is **currently disabled** — there's no production environment configured yet.
-Check and e2e jobs remain enabled.
+Two workflows, split for safety:
 
-### To enable production deployment
+- **`deploy.yml`** — CI on every push (typecheck, Biome, e2e). On a merge to `main`
+  it runs only a trivial `ready` handoff (checks already passed on the PR).
+- **`deploy-prod.yml`** — production deploy, triggered by `workflow_run` when
+  `deploy.yml` completes on `main`. Decoupled so branch-delete on merge can't
+  cancel the in-flight deploy.
 
-When you have infrastructure ready:
+Production runs on the per-environment stack in `deploy/` — see
+[`deploy/README.md`](deploy/README.md) for the model and file layout.
 
-1. **Set required GitHub secrets:**
-   - `DEPLOY_SSH_KEY` — SSH private key for the deploy user on your host
-   - `DEPLOY_HOST` — Hostname/IP of your production server (GitHub variable)
-   - `ORIGIN_CERT` — Cloudflare origin certificate (if using Cloudflare)
-   - `ORIGIN_KEY` — Cloudflare origin key (if using Cloudflare)
+### To enable production deployment on a fresh fork
 
-2. **Update the deploy job condition** in `.github/workflows/deploy.yml`:
-   
-   Change line ~78 from:
-   ```yaml
-   if: github.event_name == 'workflow_dispatch' && vars.PROD_DEPLOYMENT_ENABLED == 'true'
-   ```
-   
-   To:
-   ```yaml
-   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-   ```
-
-3. **Configure infrastructure** (optional):
-   - Update `deploy/docker-compose.yml` with your image registry and domain
-   - Set up Traefik labels (host routing, TLS)
-   - See `infra/` for OpenTofu templates (Hetzner example)
-
-The deploy job:
-- Builds Docker images for web (and optional API)
-- Pushes to GHCR
-- SSHes into your host and pulls/runs via docker-compose
-- Ships Traefik config + TLS certs
+1. Provision a host with `infra/` (OpenTofu, Hetzner example).
+2. Set the GitHub **secrets** (Settings → Secrets and variables → Actions):
+   - `DEPLOY_SSH_KEY` — private half of `infra/public_keys/deploy_key.pub`
+   - `ORIGIN_CERT` / `ORIGIN_KEY` — Cloudflare origin cert PEMs (wildcard preferred if you'll add preview envs)
+   - `PROD_POSTGRES_PASSWORD`, `PROD_BETTER_AUTH_SECRET`
+   - `PROD_RESEND_API_KEY` (only if you set `PROD_EMAIL_ENABLED=true`)
+3. Set the GitHub **variables**:
+   - `DEPLOY_HOST` — box IP or DNS name
+   - `BASE_DOMAIN` — your apex domain (e.g. `example.com`)
+   - `PROD_EMAIL_ENABLED` — `true` to enable Resend + email verification; default off
+4. Merge to `main`. Deploy Prod builds `web` + `api` + `api-migrate` images,
+   SSHes to the box, brings up the stateless platform stack (Traefik + shared
+   network), and runs `deploy/bin/up.sh prod`.
 
 ## Make it yours
 
@@ -144,11 +135,11 @@ Or change them by hand — the placeholders, per new project:
   use your own reverse-domain.
 - **EAS** — run `eas init` in `apps/mobile` (the `extra.eas.projectId` was
   removed on purpose).
-- **Deploy / infra** — `deploy/docker-compose.yml` (image `ghcr.io/Quillion-Systems/…`,
-  Traefik `Host(…)` = `justinthymeapp.com`), `infra/terraform.tfvars.example` →
-  `terraform.tfvars`, and `infra/public_keys/deploy_key.pub` (your CI deploy
-  key). CI secrets referenced in `.github/workflows/deploy.yml`: `DEPLOY_SSH_KEY`,
-  `ORIGIN_CERT`, `ORIGIN_KEY`, plus `RENOVATE_TOKEN`. See [Deployment](#deployment) for step-by-step re-enablement.
+- **Deploy / infra** — `deploy/stack/docker-compose.yml` (per-env stack template),
+  `deploy/platform/docker-compose.yml` (shared Traefik), `infra/terraform.tfvars.example`
+  → `terraform.tfvars`, and `infra/public_keys/deploy_key.pub` (your CI deploy
+  key). CI secrets / vars referenced in `.github/workflows/deploy-prod.yml` — see
+  [Deployment](#deployment) for the full list.
 - **Database / scheme** — the dev DB is `kitchen_manager`; the deep-link scheme
   is `kitchenmanager://`. Rename to taste.
 

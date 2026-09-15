@@ -20,11 +20,8 @@ deploy/
     render-env.sh        # env name → derives values → writes envs/<env>.env
     up.sh                # render → DBs up → migrate → compose up
     down.sh              # compose down -v  (deletes the env's Postgres volumes)
+  certs/             # origin.pem + origin-key.pem (gitignored — written by CI)
   envs/              # generated per-env .env files (gitignored — secrets)
-
-  # legacy (retired in the CI cutover PR):
-  docker-compose.yml   # old single-stack: only web + Traefik
-  traefik/             # old Traefik configs (contents identical to platform/)
 ```
 
 Images (built once, used by every env): `Dockerfile` → web, `Dockerfile.api` →
@@ -47,8 +44,8 @@ built as one-off images, used by `up.sh`.
   network, so plain service names never collide across envs.
 - **One web image** serves every env: it reads its API/PowerSync URLs at runtime
   from container env (`API_URL` / `POWERSYNC_URL` → injected into the SSR HTML
-  as `window.__KITCHEN_MANAGER_CONFIG__`), instead of baking them in at build
-  time. **(SSR injection is wired in a separate PR — see PR B.)**
+  as `window.__APP_CONFIG__` by `apps/web/src/routes/__root.tsx`), instead of
+  baking them in at build time.
 - Every per-env value is **derived from the env name** by `render-env.sh`;
   secrets (`POSTGRES_PASSWORD`, `BETTER_AUTH_SECRET`, `RESEND_API_KEY`) come
   from the environment.
@@ -80,15 +77,31 @@ no shared database server.
 
 ## Prerequisites (one-time, Cloudflare side)
 
-- A **wildcard DNS** record `*.justinthymeapp.com` → the server IP (only needed
-  once previews are added; prod uses the apex).
-- A **wildcard Cloudflare Origin cert** (`*.justinthymeapp.com` + apex),
-  written to `deploy/certs/origin.pem` + `origin-key.pem` by CI. Regenerate the
-  current apex-only cert to include the wildcard when previews are enabled.
+- **DNS**: apex `justinthymeapp.com` → the server IP (already set). If/when
+  previews are added, also a wildcard `*.justinthymeapp.com` → the same IP.
+- **Cloudflare Origin cert** covering the domain(s) in use, stored as GitHub
+  secrets `ORIGIN_CERT` + `ORIGIN_KEY` and written to
+  `deploy/certs/{origin,origin-key}.pem` by CI on each deploy. An apex-only cert
+  works for prod-today; regenerate as a wildcard when previews are enabled.
+
+## Required GitHub secrets / vars
+
+The Deploy Prod workflow reads these on every deploy:
+
+| kind    | name                     | notes                                                     |
+|---------|--------------------------|-----------------------------------------------------------|
+| secret  | `ORIGIN_CERT`            | Cloudflare origin cert PEM                                |
+| secret  | `ORIGIN_KEY`             | Cloudflare origin key PEM                                 |
+| secret  | `DEPLOY_SSH_KEY`         | private half of `infra/public_keys/deploy_key.pub`        |
+| secret  | `PROD_POSTGRES_PASSWORD` | rotated per-env; used for both app + PowerSync-storage DB |
+| secret  | `PROD_BETTER_AUTH_SECRET`| ≥32 bytes of entropy; signs sessions + PowerSync JWTs     |
+| secret  | `PROD_RESEND_API_KEY`    | only required when `PROD_EMAIL_ENABLED=true`              |
+| var     | `DEPLOY_HOST`            | Hetzner box IP or DNS name                                |
+| var     | `BASE_DOMAIN`            | e.g. `justinthymeapp.com` (apex — env host derives from it)|
+| var     | `PROD_EMAIL_ENABLED`     | `true` to switch on Resend + email verification; default off |
 
 ## Status
 
-The template + images + scripts are in place. **The CI is still running the
-legacy single-stack compose** (`deploy/docker-compose.yml`) — the cutover to
-`up.sh prod` happens in a follow-up PR. Once the workflow drives `up.sh`, the
-legacy `deploy/docker-compose.yml` and `deploy/traefik/` will be removed.
+Prod (justinthymeapp.com apex) runs on this stack: Deploy Prod builds the three
+images on each merge to `main`, brings up the stateless platform (idempotent),
+and runs `up.sh prod` on the box. Preview envs are not yet wired.
