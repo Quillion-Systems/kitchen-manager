@@ -1,0 +1,22 @@
+# Traefik static config for the shared platform edge. `network: kitchen-manager-net`
+# pins the network Traefik uses to reach env containers (they're on this network
+# only, but pinning it is explicit and future-proofs multi-network containers).
+
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+  websecure:
+    address: ":443"
+
+providers:
+  docker:
+    exposedByDefault: false
+    network: kitchen-manager-net
+  file:
+    directory: /etc/traefik/dynamic
+    watch: true
