@@ -44,17 +44,17 @@ POSTGRES_IMAGE="${POSTGRES_IMAGE:-postgres:17-alpine}"
 DB_URL="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/kitchen_manager"
 STORAGE_URL="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@powersync-storage:5432/powersync"
 
-# Email verification. Prod is the ONLY env that gates + actually sends: the flag is
-# on and SMTP points at Resend (the key comes from the environment — the
-# PROD_RESEND_API_KEY secret in CI). Every other env keeps the gate OFF, so sign-up
-# sends no mail and needs no SMTP server (matches CI). WEB_URL is the public origin
-# every verification link points at, so one link works from web/desktop/mobile.
-if [ "$ENV_NAME" = "prod" ]; then
+# Email verification. Off by default in every env — sign-up sends no mail and needs
+# no SMTP server (matches CI). To enable in prod, set PROD_EMAIL_ENABLED=true in the
+# environment (a GH Actions var); RESEND_API_KEY (the PROD_RESEND_API_KEY secret) is
+# then hard-required. WEB_URL is the public origin every verification link points at,
+# so one link works from web/desktop/mobile.
+if [ "$ENV_NAME" = "prod" ] && [ "${PROD_EMAIL_ENABLED:-false}" = "true" ]; then
   REQUIRE_EMAIL_VERIFICATION=true
   SMTP_HOST=smtp.resend.com
   SMTP_PORT=587
   SMTP_USER=resend
-  SMTP_PASS="${RESEND_API_KEY:?RESEND_API_KEY is required for prod (set the PROD_RESEND_API_KEY secret)}"
+  SMTP_PASS="${RESEND_API_KEY:?RESEND_API_KEY is required when PROD_EMAIL_ENABLED=true (set the PROD_RESEND_API_KEY secret)}"
 else
   REQUIRE_EMAIL_VERIFICATION=false
   SMTP_HOST=""

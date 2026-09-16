@@ -2,7 +2,7 @@ name: kitchen-manager-dev
 
 # Local development services. One command to a real Postgres + PowerSync:
 #   docker compose up -d
-# (Production runtime lives in deploy/docker-compose.yml.)
+# (Production runtime lives in deploy/stack/docker-compose.yml — one per env.)
 
 services:
   postgres:

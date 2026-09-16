@@ -1,23 +1,44 @@
 name: Deploy
 
+# CI (typecheck + Biome + tests + e2e). The PROD deploy is NOT here — it lives in
+# deploy-prod.yml, triggered via workflow_run after this workflow succeeds on main,
+# so deleting a merged branch can't cancel it. Keep this workflow's name ("Deploy")
+# in sync with that file's workflow_run reference.
 on:
-  # Run the checks on every branch push (fast feedback before a PR exists)…
+  # Run the checks on every branch push for fast feedback before a PR exists — EXCEPT
+  # main. A merge is a push to main, and its code already passed (and was required to
+  # pass) full CI on the PR, so re-running the checks just to deploy is wasted work.
+  # On main this workflow only runs the `ready` handoff below, which lets Deploy Prod
+  # fire via workflow_run. (Keep the trigger on main so that handoff still happens.)
   push:
     branches: ["**"]
   # …and on PRs into main.
   pull_request:
     branches: [main]
-  # Manual trigger for the gated deploy job (see the `deploy` job's `if:`).
+  # Manual re-run (rare; useful for flaky-test debugging). No deploy fires here.
   workflow_dispatch:
 
-# Don't let two deploys race; a newer push supersedes an in-flight one.
+# Don't let two CI runs race; a newer push supersedes an in-flight one.
 concurrency:
   group: deploy-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  # Gate: bad code never reaches the build/deploy jobs.
+  # The merge → prod handoff. A push to main runs ONLY this (the checks below are
+  # skipped on main — they ran on the PR): a trivial success so the "Deploy" run
+  # completes green and Deploy Prod fires via workflow_run. Kept separate from the
+  # checks so main never re-runs them. See deploy-prod.yml.
+  ready:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Merged to main — CI already green on the PR. Handing off to Deploy Prod."
+
+  # Gate: bad code never reaches Deploy Prod. Skipped on the post-merge main push
+  # — the PR already ran (and was required to pass) these, so re-running them just
+  # to deploy is wasted work.
   check:
+    if: github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -32,8 +53,9 @@ jobs:
       - name: Biome check
         run: pnpm exec biome check .
 
-  # End-to-end auth flow (web → API → Postgres) in a real browser.
+  # End-to-end auth flow (web → API → Postgres) in a real browser. Same skip rule.
   e2e:
+    if: github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -50,8 +72,6 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     env:
-      # The E2E stack reads these from the environment (there's no .env in CI).
-      # Ports / origins are set per-server in playwright.config.ts.
       DATABASE_URL: postgresql://kitchen_manager:kitchen_manager@localhost:5432/kitchen_manager
       BETTER_AUTH_SECRET: ci-e2e-secret-not-used-in-prod
     steps:
@@ -73,78 +93,3 @@ jobs:
           name: playwright-report
           path: e2e/playwright-report/
           retention-days: 7
-
-  # Production deployment is disabled until environments are configured.
-  deploy:
-    needs: [check, e2e]
-    # DISABLED: Deploy to production requires DEPLOY_SSH_KEY, DEPLOY_HOST (vars) and
-    # ORIGIN_CERT, ORIGIN_KEY (secrets). To re-enable, change condition below to:
-    #   github.event_name == 'push' && github.ref == 'refs/heads/main'
-    if: github.event_name == 'workflow_dispatch' && vars.PROD_DEPLOYMENT_ENABLED == 'true'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write # push to GHCR with the built-in GITHUB_TOKEN
-    steps:
-      - uses: actions/checkout@v7
-
-      # OCI/Docker tags must be lowercase; ${{ github.repository }} preserves
-      # the org's original casing, so we downcase it before it hits any tag.
-      - name: Compute lowercase image name
-        run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}/web" >> "$GITHUB_ENV"
-
-      - name: Log in to GHCR
-        uses: docker/login-action@v4
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and push image
-        uses: docker/build-push-action@v7
-        with:
-          context: .
-          push: true
-          tags: |
-            ${{ env.IMAGE }}:latest
-            ${{ env.IMAGE }}:${{ github.sha }}
-
-      - name: Deploy over SSH
-        env:
-          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
-          DEPLOY_HOST: ${{ vars.DEPLOY_HOST }}
-          REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ACTOR: ${{ github.actor }}
-          ORIGIN_CERT: ${{ secrets.ORIGIN_CERT }}
-          ORIGIN_KEY: ${{ secrets.ORIGIN_KEY }}
-          IMAGE_REF: ${{ env.IMAGE }}:${{ github.sha }}
-        run: |
-          set -e
-
-          # SSH key + pin the host key
-          mkdir -p ~/.ssh
-          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/dev/null
-          SSH="ssh -i $HOME/.ssh/deploy_key deploy@$DEPLOY_HOST"
-          SCP="scp -i $HOME/.ssh/deploy_key"
-
-          # Cloudflare origin cert/key from secrets (local to the runner, gitignored)
-          printf '%s\n' "$ORIGIN_CERT" > origin.pem
-          printf '%s\n' "$ORIGIN_KEY"  > origin-key.pem
-
-          # Ship the compose stack + Traefik config + certs to the box
-          $SSH "mkdir -p kitchen-manager/traefik/dynamic kitchen-manager/certs"
-          $SCP deploy/docker-compose.yml      "deploy@$DEPLOY_HOST:kitchen-manager/docker-compose.yml"
-          $SCP deploy/traefik/traefik.yml     "deploy@$DEPLOY_HOST:kitchen-manager/traefik/traefik.yml"
-          $SCP deploy/traefik/dynamic/tls.yml "deploy@$DEPLOY_HOST:kitchen-manager/traefik/dynamic/tls.yml"
-          $SCP origin.pem origin-key.pem      "deploy@$DEPLOY_HOST:kitchen-manager/certs/"
-          $SSH "chmod 600 kitchen-manager/certs/origin-key.pem"
-
-          # Deploy: login to GHCR, retire the old single container, bring up the stack
-          $SSH "cd kitchen-manager \
-            && echo '$REGISTRY_TOKEN' | docker login ghcr.io -u '$ACTOR' --password-stdin \
-            && (docker rm -f kitchen-manager-web 2>/dev/null || true) \
-            && IMAGE='$IMAGE_REF' docker compose pull \
-            && IMAGE='$IMAGE_REF' docker compose up -d --remove-orphans \
-            && docker image prune -f"
