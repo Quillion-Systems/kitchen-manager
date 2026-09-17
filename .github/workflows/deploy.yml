@@ -1,9 +1,9 @@
 name: Deploy
 
-# CI (typecheck + Biome + tests + e2e). The PROD deploy is NOT here — it lives in
-# deploy-prod.yml, triggered via workflow_run after this workflow succeeds on main,
-# so deleting a merged branch can't cancel it. Keep this workflow's name ("Deploy")
-# in sync with that file's workflow_run reference.
+# CI (typecheck + Biome + tests + e2e) and per-PR preview envs. The PROD deploy is
+# NOT here — it lives in deploy-prod.yml, triggered via workflow_run after this
+# workflow succeeds on main, so deleting a merged branch can't cancel it. Keep this
+# workflow's name ("Deploy") in sync with that file's workflow_run reference.
 on:
   # Run the checks on every branch push for fast feedback before a PR exists — EXCEPT
   # main. A merge is a push to main, and its code already passed (and was required to
@@ -12,13 +12,16 @@ on:
   # fire via workflow_run. (Keep the trigger on main so that handoff still happens.)
   push:
     branches: ["**"]
-  # …and on PRs into main.
+  # …and on PRs into main — open/update build the PR's preview env, close tears
+  # it down (see deploy-preview / teardown-preview).
   pull_request:
     branches: [main]
+    types: [opened, synchronize, reopened, closed]
   # Manual re-run (rare; useful for flaky-test debugging). No deploy fires here.
   workflow_dispatch:
 
-# Don't let two CI runs race; a newer push supersedes an in-flight one.
+# Don't let two runs race; a newer push supersedes an in-flight one. On PRs
+# github.ref is refs/pull/<n>/merge, so this also isolates previews per PR.
 concurrency:
   group: deploy-${{ github.ref }}
   cancel-in-progress: true
@@ -34,11 +37,11 @@ jobs:
     steps:
       - run: echo "Merged to main — CI already green on the PR. Handing off to Deploy Prod."
 
-  # Gate: bad code never reaches Deploy Prod. Skipped on the post-merge main push
-  # — the PR already ran (and was required to pass) these, so re-running them just
-  # to deploy is wasted work.
+  # Gate: bad code never reaches the build/deploy jobs. Skipped on a PR-close (which
+  # only tears a preview down) and on the post-merge main push — the PR already ran
+  # (and was required to pass) these, so re-running them just to deploy is wasted work.
   check:
-    if: github.ref != 'refs/heads/main'
+    if: github.event.action != 'closed' && github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -53,9 +56,46 @@ jobs:
       - name: Biome check
         run: pnpm exec biome check .
 
+  # Unit + integration tests (Vitest): the tRPC API against a real Postgres.
+  # Fast — no browsers.
+  test:
+    if: github.event.action != 'closed' && github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: kitchen_manager
+          POSTGRES_PASSWORD: kitchen_manager
+          POSTGRES_DB: kitchen_manager
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U kitchen_manager"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      # No .env in CI. env.ts requires these.
+      DATABASE_URL: postgresql://kitchen_manager:kitchen_manager@localhost:5432/kitchen_manager
+      BETTER_AUTH_SECRET: ci-test-secret-not-used-in-prod
+      BETTER_AUTH_URL: http://localhost:3001
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Run tests
+        # Fast unit + integration tests (Vitest). @kitchen-manager/api is the only
+        # workspace with a test script today; add more filters as new tests land.
+        run: pnpm turbo test --filter=@kitchen-manager/api
+
   # End-to-end auth flow (web → API → Postgres) in a real browser. Same skip rule.
   e2e:
-    if: github.ref != 'refs/heads/main'
+    if: github.event.action != 'closed' && github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -93,3 +133,165 @@ jobs:
           name: playwright-report
           path: e2e/playwright-report/
           retention-days: 7
+
+  # Ephemeral per-PR preview: the SAME stack prod runs, keyed by env name
+  # "pr-<n>" → pr-<n>.justinthymeapp.com. Comes up on PR open/update; gated on
+  # check + test only (not e2e) so it appears fast. Fork PRs get no preview —
+  # GitHub withholds secrets from pull_request runs on forks, by design.
+  deploy-preview:
+    needs: [check, test]
+    if: github.event_name == 'pull_request' && github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write # push images to GHCR
+      pull-requests: write # comment the preview URL
+    env:
+      PR: ${{ github.event.pull_request.number }}
+      SHA: ${{ github.event.pull_request.head.sha }}
+    steps:
+      # Build the PR branch's actual tip so the image matches the SHA we tag.
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      # OCI/Docker tags must be lowercase; ${{ github.repository }} preserves
+      # the org's original casing (Quillion-Systems/...), so downcase for tags.
+      - name: Compute lowercase registry path
+        run: echo "REG=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push web
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: ${{ env.REG }}/web:${{ env.SHA }}
+
+      - name: Build and push api
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: Dockerfile.api
+          target: runtime
+          push: true
+          tags: ${{ env.REG }}/api:${{ env.SHA }}
+
+      - name: Build and push api-migrate
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: Dockerfile.api
+          target: migrate
+          push: true
+          tags: ${{ env.REG }}/api-migrate:${{ env.SHA }}
+
+      - name: Build and push api-seed
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: Dockerfile.api
+          target: seed
+          push: true
+          tags: ${{ env.REG }}/api-seed:${{ env.SHA }}
+
+      - name: Deploy preview over SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_HOST: ${{ vars.DEPLOY_HOST }}
+          REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ACTOR: ${{ github.actor }}
+          BASE_DOMAIN: ${{ vars.BASE_DOMAIN }}
+          # Optional hardening: if set, previews use these; unset → render-env.sh
+          # falls back to throwaway defaults (fine — Postgres isn't edge-exposed).
+          POSTGRES_PASSWORD: ${{ secrets.PREVIEW_POSTGRES_PASSWORD }}
+          BETTER_AUTH_SECRET: ${{ secrets.PREVIEW_BETTER_AUTH_SECRET }}
+          # Shared htpasswd credential gating the preview's web UI (soft gate so
+          # stray users can't browse it). Unset → preview comes up ungated (with
+          # a warning from up.sh).
+          BASIC_AUTH_USERS: ${{ secrets.PREVIEW_BASIC_AUTH }}
+        run: |
+          set -e
+          mkdir -p ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          SSH="ssh -i $HOME/.ssh/deploy_key deploy@$DEPLOY_HOST"
+
+          # Ship this PR's deploy machinery + PowerSync config (a PR may change the
+          # per-env stack or scripts). gitignored deploy/certs isn't in the tree,
+          # so the box's cert is untouched. The shared platform (Traefik + cert +
+          # kitchen-manager-net) is owned by prod deploys and already up (restart:
+          # unless-stopped survives reboots) — previews never touch it, so a PR
+          # can't disturb prod or other previews' edge routing.
+          tar czf - deploy powersync | $SSH "mkdir -p kitchen-manager && tar xzf - -C kitchen-manager"
+
+          # Bring up ONLY this PR's stack, attaching to the existing platform net.
+          $SSH "cd kitchen-manager \
+            && echo '$REGISTRY_TOKEN' | docker login ghcr.io -u '$ACTOR' --password-stdin \
+            && BASE_DOMAIN='$BASE_DOMAIN' \
+               IMAGE_WEB='$REG/web:$SHA' \
+               IMAGE_API='$REG/api:$SHA' \
+               IMAGE_API_MIGRATE='$REG/api-migrate:$SHA' \
+               IMAGE_API_SEED='$REG/api-seed:$SHA' \
+               POSTGRES_PASSWORD='$POSTGRES_PASSWORD' \
+               BETTER_AUTH_SECRET='$BETTER_AUTH_SECRET' \
+               BASIC_AUTH_USERS='$BASIC_AUTH_USERS' \
+               bash deploy/bin/up.sh pr-$PR \
+            && docker image prune -af"
+          # -af (all unused), not just dangling: each push pulls fresh SHA-tagged
+          # images, and the prior push's now-unreferenced-but-still-tagged images
+          # aren't dangling, so plain `prune -f` never reclaimed them and the box
+          # filled up over a PR's pushes. -af keeps images used by running containers
+          # (prod + live previews are restart:unless-stopped), so it's safe here.
+
+      - name: Comment preview URL on the PR
+        if: github.event.action == 'opened' || github.event.action == 'reopened'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BASE_DOMAIN: ${{ vars.BASE_DOMAIN }}
+        run: |
+          gh pr comment "$PR" --repo "${{ github.repository }}" \
+            --body "🚀 Preview environment: https://pr-${PR}.${BASE_DOMAIN} (updates on every push; torn down when this PR closes)."
+
+  # Tear the PR's preview env down on close/merge: stop its containers and delete
+  # its volumes (down -v). Runs only on close; the build jobs are skipped there.
+  # Note: for the merge path this is best-effort — a branch-delete on merge can
+  # void refs/pull/<n>/merge and cancel this run before it fires. The reap step
+  # in deploy-prod.yml is the safety net.
+  teardown-preview:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    env:
+      PR: ${{ github.event.pull_request.number }}
+    steps:
+      - name: Tear down preview over SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_HOST: ${{ vars.DEPLOY_HOST }}
+        run: |
+          set -e
+          mkdir -p ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          SSH="ssh -i $HOME/.ssh/deploy_key deploy@$DEPLOY_HOST"
+          # down.sh is on the box from the preview deploy; removes the pr-<n> stack
+          # + volumes. Idempotent — a no-op if the env never came up.
+          $SSH "cd kitchen-manager && bash deploy/bin/down.sh pr-$PR"
+
+      - name: Comment teardown on the PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr comment "$PR" --repo "${{ github.repository }}" \
+            --body "🧹 Preview environment \`pr-${PR}\` torn down."
