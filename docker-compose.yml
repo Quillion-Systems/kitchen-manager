@@ -83,6 +83,17 @@ services:
       timeout: 1s
       retries: 15
 
+  # Local email sink. nodemailer (apps/api) sends here over SMTP on :1025; open
+  # http://localhost:8025 to read verification emails. Nothing is delivered to
+  # the real world — same catch-all we use in CI and preview envs. Prod points
+  # SMTP_* at Resend instead (same code path — only env vars differ).
+  mailpit:
+    image: axllent/mailpit:v1.21
+    restart: unless-stopped
+    ports:
+      - "1025:1025" # SMTP
+      - "8025:8025" # web UI + REST API
+
 volumes:
   pgdata:
   powersync_storage_data:
