@@ -8,6 +8,12 @@
   },
   "scripts": {
     "personalize": "node scripts/personalize.mjs",
+    "dev": "turbo dev",
+    "dev:api": "pnpm --filter @kitchen-manager/api dev",
+    "dev:web": "pnpm --filter @kitchen-manager/web dev",
+    "dev:desktop": "pnpm --filter @kitchen-manager/web exec cargo tauri dev",
+    "dev:mobile": "pnpm --filter @kitchen-manager/mobile start",
+    "build": "turbo build",
     "typecheck": "turbo typecheck",
     "test": "turbo test --filter=@kitchen-manager/api",
     "check": "biome check . && turbo typecheck",
