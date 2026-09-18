@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router"
 import { type FormEvent, useState } from "react"
-import { signUp } from "#/lib/auth-client"
+import { resendVerificationEmail, signUp } from "#/lib/auth-client"
 
 export const Route = createFileRoute("/sign-up")({ component: SignUp })
 
@@ -11,6 +11,9 @@ function SignUp() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
+  // Set once sign-up succeeds but no session was created — i.e. the account
+  // needs email verification before it can be used. Swaps the form for a prompt.
+  const [awaitingVerification, setAwaitingVerification] = useState(false)
 
   async function onSubmit(event: FormEvent) {
     event.preventDefault()
@@ -22,7 +25,18 @@ function SignUp() {
       setError(result.error.message ?? "Could not create account")
       return
     }
-    navigate({ to: "/" })
+    // With the verification gate on, sign-up returns no session token — the user
+    // must verify before signing in. Without the gate, a token means they're in.
+    const signedIn = Boolean((result.data as { token?: string | null } | null)?.token)
+    if (signedIn) {
+      navigate({ to: "/" })
+      return
+    }
+    setAwaitingVerification(true)
+  }
+
+  if (awaitingVerification) {
+    return <CheckYourEmail email={email} />
   }
 
   return (
@@ -106,6 +120,62 @@ export function Field({
         className="w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-neutral-100 outline-none focus:border-sky-500"
       />
     </label>
+  )
+}
+
+// Shown after sign-up (and reused when an unverified user tries to sign in): the
+// account exists but is gated until the emailed link is clicked. Offers a resend
+// so the user has a path forward if the mail didn't arrive.
+export function CheckYourEmail({
+  email,
+  title = "Check your email",
+}: {
+  email: string
+  title?: string
+}) {
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle")
+
+  async function onResend() {
+    setStatus("sending")
+    const result = await resendVerificationEmail(email)
+    setStatus(result.error ? "error" : "sent")
+  }
+
+  return (
+    <AuthShell
+      title={title}
+      footer={
+        <Link to="/sign-in" className="text-sky-400 hover:underline">
+          Back to sign in
+        </Link>
+      }
+    >
+      <div className="space-y-4 text-sm text-neutral-400">
+        <p>
+          We sent a verification link to{" "}
+          <span className="font-medium text-neutral-100">{email}</span>. Click it to activate your
+          account.
+        </p>
+        <p>Didn't get it? Check spam, or resend below.</p>
+        <button
+          type="button"
+          onClick={onResend}
+          disabled={status === "sending" || status === "sent"}
+          className="w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 font-medium text-neutral-100 transition hover:bg-neutral-900 disabled:opacity-50"
+        >
+          {status === "sending"
+            ? "…"
+            : status === "sent"
+              ? "Sent — check your inbox"
+              : "Resend email"}
+        </button>
+        {status === "error" && (
+          <p role="alert" className="text-sm text-red-400">
+            Couldn't resend right now. Try again in a moment.
+          </p>
+        )}
+      </div>
+    </AuthShell>
   )
 }
 

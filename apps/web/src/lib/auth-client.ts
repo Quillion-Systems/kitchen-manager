@@ -37,6 +37,13 @@ export const authClient = createAuthClient({
 
 export const { signIn, signUp, useSession } = authClient
 
+// (Re)send the verification email. The API rewrites the link's callbackURL to
+// the public web /verified page regardless of what we pass, so one link works
+// from web, desktop, and mobile — we just name the destination here for clarity.
+export function resendVerificationEmail(email: string) {
+  return authClient.sendVerificationEmail({ email, callbackURL: "/verified" })
+}
+
 // The tRPC client (lib/api.tsx) attaches this as an Authorization: Bearer token.
 // On desktop it returns the stored token; on web it returns null so the session
 // cookie is used instead (and it's null during SSR, where there's no localStorage).
