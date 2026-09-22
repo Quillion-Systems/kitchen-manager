@@ -15,7 +15,7 @@ test("wrong password is rejected and leaves you signed out", async ({ page, requ
 
   await page.goto("/sign-in")
   await page.getByLabel("Email").fill(email)
-  await page.getByLabel("Password").fill("not-the-password")
+  await page.getByLabel("Password", { exact: true }).fill("not-the-password")
   await page.getByRole("button", { name: "Sign in" }).click()
 
   await expect(page.getByRole("alert")).toBeVisible()
@@ -29,7 +29,7 @@ test("signing up with an existing email is rejected", async ({ page, request }) 
   await page.goto("/sign-up")
   await page.getByLabel("Name").fill("Duplicate")
   await page.getByLabel("Email").fill(email)
-  await page.getByLabel("Password").fill(PASSWORD)
+  await page.getByLabel("Password", { exact: true }).fill(PASSWORD)
   await page.getByRole("button", { name: "Sign up" }).click()
 
   await expect(page.getByRole("alert")).toBeVisible()

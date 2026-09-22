@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router"
 import { type FormEvent, useState } from "react"
 import { changePassword, deleteUser, useSession } from "#/lib/auth-client"
-import { AuthShell, Field } from "./sign-up"
+import { AuthShell, PasswordField } from "./sign-up"
 
 export const Route = createFileRoute("/settings")({ component: Settings })
 
@@ -127,25 +127,22 @@ function ChangePasswordSection() {
         Change password
       </h2>
       <form onSubmit={onSubmit} className="space-y-4">
-        <Field
+        <PasswordField
           label="Current password"
           value={current}
           onChange={setCurrent}
-          type="password"
           autoComplete="current-password"
         />
-        <Field
+        <PasswordField
           label="New password"
           value={next}
           onChange={setNext}
-          type="password"
           autoComplete="new-password"
         />
-        <Field
+        <PasswordField
           label="Confirm new password"
           value={confirm}
           onChange={setConfirm}
-          type="password"
           autoComplete="new-password"
         />
         {confirm && next !== confirm && (
@@ -212,13 +209,7 @@ function DangerZoneSection({ onDeleted }: { onDeleted: () => void }) {
           <p className="text-sm text-neutral-300">
             Enter your password to confirm. This can't be undone.
           </p>
-          <Field
-            label="Password"
-            value={password}
-            onChange={setPassword}
-            type="password"
-            autoComplete="current-password"
-          />
+          <PasswordField value={password} onChange={setPassword} autoComplete="current-password" />
           {error && (
             <p role="alert" className="text-sm text-red-400">
               {error}
