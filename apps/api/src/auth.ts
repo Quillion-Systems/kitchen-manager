@@ -17,6 +17,12 @@ export const auth = betterAuth({
   secret: env.BETTER_AUTH_SECRET,
   trustedOrigins: [...env.TRUSTED_ORIGINS.split(","), MOBILE_SCHEME],
   database: drizzleAdapter(db, { provider: "pg", schema }),
+  // Enable /api/auth/delete-user. Hard-deletes the user + cascades to session /
+  // account / verification rows. No grace period — user is required to re-enter
+  // their password on the client to confirm.
+  user: {
+    deleteUser: { enabled: true },
+  },
   emailAndPassword: {
     enabled: true,
     // Behind a flag: when on, sign-up creates no session and sends a verification
