@@ -37,6 +37,11 @@ function SignIn() {
       <form onSubmit={onSubmit} className="space-y-4">
         <Field label="Email" value={email} onChange={setEmail} type="email" autoComplete="email" />
         <PasswordField value={password} onChange={setPassword} autoComplete="current-password" />
+        <div className="text-right text-sm">
+          <Link to="/forgot-password" className="text-neutral-400 hover:text-sky-400">
+            Forgot password?
+          </Link>
+        </div>
         {error && (
           <p role="alert" className="text-sm text-red-400">
             {error}

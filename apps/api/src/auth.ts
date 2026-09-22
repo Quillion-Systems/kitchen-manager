@@ -5,7 +5,7 @@ import { bearer, jwt } from "better-auth/plugins"
 import { db } from "./db"
 import * as schema from "./db/schema"
 import { sendEmail } from "./email/mailer"
-import { verificationEmail } from "./email/templates"
+import { resetPasswordEmail, verificationEmail } from "./email/templates"
 import { env } from "./env"
 
 // The mobile app (apps/mobile) authenticates via its deep-link scheme rather
@@ -30,6 +30,13 @@ export const auth = betterAuth({
     // (dev/CI/preview) so those flows stay email-free; prod turns it on via
     // PROD_EMAIL_ENABLED → REQUIRE_EMAIL_VERIFICATION in render-env.sh.
     requireEmailVerification: env.REQUIRE_EMAIL_VERIFICATION,
+    // Password reset. Better Auth passes us the token; we build the public link
+    // so the recipient lands on our /reset-password page (same host as the SPA)
+    // regardless of what URL Better Auth would default to.
+    sendResetPassword: async ({ user, token }) => {
+      const url = `${env.WEB_URL}/reset-password?token=${token}`
+      await sendEmail(resetPasswordEmail(user.email, url))
+    },
   },
   // Email verification. sendOnSignUp mails the link the moment an account is
   // created; autoSignInAfterVerification signs the user in when they click it (in

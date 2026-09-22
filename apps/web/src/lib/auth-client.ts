@@ -35,7 +35,15 @@ export const authClient = createAuthClient({
     : undefined,
 })
 
-export const { signIn, signUp, useSession, changePassword, deleteUser } = authClient
+export const {
+  signIn,
+  signUp,
+  useSession,
+  changePassword,
+  deleteUser,
+  requestPasswordReset,
+  resetPassword,
+} = authClient
 
 // (Re)send the verification email. The API rewrites the link's callbackURL to
 // the public web /verified page regardless of what we pass, so one link works
