@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router"
-import { type FormEvent, useState } from "react"
+import { type FormEvent, useId, useState } from "react"
 import { resendVerificationEmail, signUp } from "#/lib/auth-client"
 
 export const Route = createFileRoute("/sign-up")({ component: SignUp })
@@ -119,6 +119,11 @@ export function Field({
 
 // Password input with a show/hide "peek" toggle. Uses inline SVG (Heroicons v2
 // mini paths, currentColor) so we don't pull in an icon library for one glyph.
+//
+// The <label> is explicit (htmlFor + useId) rather than wrapping the whole
+// group, so the toggle button's aria-label doesn't get concatenated into the
+// input's accessible name — otherwise screen readers announce "Password Show
+// password", and Playwright's `getByLabel("Password")` matches both elements.
 export function PasswordField({
   label = "Password",
   value,
@@ -130,12 +135,16 @@ export function PasswordField({
   onChange: (value: string) => void
   autoComplete: string
 }) {
+  const id = useId()
   const [show, setShow] = useState(false)
   return (
-    <label className="block">
-      <span className="mb-1 block text-sm text-neutral-400">{label}</span>
+    <div>
+      <label htmlFor={id} className="mb-1 block text-sm text-neutral-400">
+        {label}
+      </label>
       <div className="relative">
         <input
+          id={id}
           value={value}
           onChange={(event) => onChange(event.target.value)}
           type={show ? "text" : "password"}
@@ -152,7 +161,7 @@ export function PasswordField({
           {show ? <EyeSlashIcon /> : <EyeIcon />}
         </button>
       </div>
-    </label>
+    </div>
   )
 }
 
