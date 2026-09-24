@@ -1,8 +1,9 @@
-import { StatusBar } from "expo-status-bar"
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native"
-import { AuthScreen } from "./AuthScreen"
-import { signOut, useSession } from "./lib/auth-client"
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native"
+import { signOut, useSession } from "../../lib/auth-client"
 
+// Home for signed-in users. Ported from the pre-router App.tsx `SignedIn`
+// component. Still hard-coded sample tasks; real task list arrives once the
+// Notes/notes-adjacent flows are wired to PowerSync on mobile.
 const sampleTasks = [
   { id: 1, title: "Set up the monorepo", done: true },
   { id: 2, title: "Stand up the web + desktop shells", done: true },
@@ -10,31 +11,17 @@ const sampleTasks = [
   { id: 4, title: 'Figure out what a "task" actually is in Kitchen Manager', done: false },
 ]
 
-export default function App() {
-  const { data: session, isPending } = useSession()
+export default function Home() {
+  const { data: session } = useSession()
+  // Should always exist here — the root layout's guard prevents mounting this
+  // subtree when there's no session — but guard against a transient null.
+  if (!session) return null
 
-  return (
-    <View style={styles.screen}>
-      <StatusBar style="light" />
-      {isPending ? (
-        <View style={styles.center}>
-          <ActivityIndicator color="#e5e5e5" />
-        </View>
-      ) : session ? (
-        <SignedIn email={session.user.email} />
-      ) : (
-        <AuthScreen />
-      )}
-    </View>
-  )
-}
-
-function SignedIn({ email }: { email: string }) {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.authBar}>
         <Text testID="signed-in" style={styles.authBarText} numberOfLines={1}>
-          Signed in as <Text style={styles.authBarEmail}>{email}</Text>
+          Signed in as <Text style={styles.authBarEmail}>{session.user.email}</Text>
         </Text>
         <Pressable testID="sign-out" onPress={() => signOut()}>
           <Text style={styles.signOut}>Sign out</Text>
@@ -64,66 +51,64 @@ function SignedIn({ email }: { email: string }) {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: "#0a0a0a" },
-  center: { flex: 1, alignItems: "center", justifyContent: "center" },
-  container: { padding: 24, paddingTop: 72, gap: 8 },
+  container: { gap: 8, padding: 24, paddingTop: 72 },
   authBar: {
-    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    borderWidth: 1,
-    borderColor: "#262626",
     backgroundColor: "#171717",
+    borderColor: "#262626",
     borderRadius: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
+    borderWidth: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 20,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
   },
   authBarText: { color: "#a3a3a3", fontSize: 13, flexShrink: 1 },
   authBarEmail: { color: "#e5e5e5" },
   signOut: { color: "#a3a3a3", fontSize: 13, marginLeft: 12 },
-  brand: { fontSize: 44, fontWeight: "700", color: "#e5e5e5" },
-  tag: { fontSize: 16, fontStyle: "italic", color: "#a3a3a3", marginTop: 4 },
+  brand: { color: "#e5e5e5", fontSize: 44, fontWeight: "700" },
+  tag: { color: "#a3a3a3", fontSize: 16, fontStyle: "italic", marginTop: 4 },
   eyebrow: {
+    color: "#737373",
     fontSize: 12,
     letterSpacing: 2,
-    textTransform: "uppercase",
-    color: "#737373",
     marginTop: 12,
+    textTransform: "uppercase",
   },
   section: {
+    color: "#a3a3a3",
     fontSize: 13,
     fontWeight: "600",
-    textTransform: "uppercase",
     letterSpacing: 1,
-    color: "#a3a3a3",
-    marginTop: 28,
     marginBottom: 8,
+    marginTop: 28,
+    textTransform: "uppercase",
   },
   task: {
-    flexDirection: "row",
     alignItems: "center",
-    gap: 12,
-    borderWidth: 1,
-    borderColor: "#262626",
     backgroundColor: "#171717",
+    borderColor: "#262626",
     borderRadius: 10,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    borderWidth: 1,
+    flexDirection: "row",
+    gap: 12,
     marginBottom: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
   checkbox: {
-    width: 20,
-    height: 20,
+    alignItems: "center",
+    borderColor: "#525252",
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: "#525252",
-    alignItems: "center",
+    height: 20,
     justifyContent: "center",
+    width: 20,
   },
-  checkboxDone: { borderColor: "#10b981", backgroundColor: "rgba(16,185,129,0.2)" },
+  checkboxDone: { backgroundColor: "rgba(16,185,129,0.2)", borderColor: "#10b981" },
   check: { color: "#34d399", fontSize: 12 },
-  taskText: { color: "#e5e5e5", fontSize: 15, flexShrink: 1 },
+  taskText: { color: "#e5e5e5", flexShrink: 1, fontSize: 15 },
   taskTextDone: { color: "#737373", textDecorationLine: "line-through" },
-  footer: { color: "#525252", fontSize: 12, marginTop: 32, lineHeight: 18 },
+  footer: { color: "#525252", fontSize: 12, lineHeight: 18, marginTop: 32 },
 })

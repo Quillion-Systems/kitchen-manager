@@ -23,6 +23,9 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": ["expo-secure-store", "expo-web-browser"]
+    "plugins": ["expo-secure-store", "expo-web-browser", "expo-router"],
+    "experiments": {
+      "typedRoutes": true
+    }
   }
 }

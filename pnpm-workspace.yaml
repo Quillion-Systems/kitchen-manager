@@ -27,6 +27,9 @@ allowBuilds:
 minimumReleaseAgeExclude:
   - expo-constants@57.0.9
   - expo-linking@57.0.5
+  - '@expo/ui@57.0.20'
+  - expo-glass-effect@57.0.4
+  - expo-router@57.0.23
 
 # Force a single React across the workspace. Without this, the release-age
 # policy handed @kitchen-manager/api-client an older react than apps/web, so
