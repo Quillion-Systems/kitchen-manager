@@ -29,3 +29,10 @@ brew "actionlint"
 # Most contributors already have it, but declaring it means `brew bundle` fixes
 # a fresh Mac in one shot.
 brew "gh"
+
+# Required for Android native builds. Bundles the Android SDK, platform-tools
+# (adb), an emulator, system images, and a JBR JDK. `expo run:android` needs
+# ANDROID_HOME + PATH pointing at $HOME/Library/Android/sdk (see README). Not
+# needed if you only work on web/desktop/api or exclusively use EAS Build.
+# First launch runs a setup wizard to install SDK components + create an AVD.
+cask "android-studio"
