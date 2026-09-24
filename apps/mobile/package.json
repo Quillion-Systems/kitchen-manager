@@ -31,8 +31,10 @@
   },
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "sim:iphone": "open -a Simulator && (xcrun simctl boot 'iPhone 17 Pro' 2>/dev/null || true) && xcrun simctl launch booted com.example.kitchenmanager.mobile",
+    "sim:ipad": "open -a Simulator && (xcrun simctl boot 'iPad Pro 13-inch (M5)' 2>/dev/null || true) && xcrun simctl launch booted com.example.kitchenmanager.mobile",
     "web": "expo start --web",
     "typecheck": "tsc --noEmit",
     "test:e2e": "maestro test .maestro"

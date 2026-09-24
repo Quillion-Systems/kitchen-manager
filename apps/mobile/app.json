@@ -8,6 +8,7 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
+      "bundleIdentifier": "com.example.kitchenmanager.mobile",
       "supportsTablet": true
     },
     "android": {
