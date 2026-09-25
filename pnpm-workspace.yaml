@@ -27,6 +27,11 @@ allowBuilds:
 minimumReleaseAgeExclude:
   - expo-constants@57.0.9
   - expo-linking@57.0.5
+  - '@expo/ui@57.0.20'
+  - expo-glass-effect@57.0.4
+  - expo-router@57.0.23
+  - expo-modules-core@57.0.19
+  - expo-modules-jsi@57.1.1
 
 # Force a single React across the workspace. Without this, the release-age
 # policy handed @kitchen-manager/api-client an older react than apps/web, so
@@ -36,3 +41,14 @@ minimumReleaseAgeExclude:
 overrides:
   react: 19.2.8
   react-dom: 19.2.8
+  # @expo/ui@57.0.19/20 ship a half-finished "ContentOrigin" feature — the code
+  # references types (ContentOriginRegistry, ShadowNodeProxy.setContentOrigin,
+  # .clearContentOrigin) that don't exist in the published tarball, breaking
+  # `expo run:ios`. Pinning back until Expo ships a fix. Nothing in this app
+  # imports from @expo/ui — it only exists as a transitive peer of expo-router.
+  "@expo/ui": 57.0.5
+  # @expo/ui@57.0.5 pulls react-native-worklets@0.13, which renamed
+  # WorkletRuntime::executeSync → runSync. expo-modules-core resolved to 57.0.8,
+  # whose WorkletsAdapter still calls the old name and fails to compile.
+  # 57.0.19 (still in the same 57.x line) uses the new API.
+  expo-modules-core: ^57.0.19

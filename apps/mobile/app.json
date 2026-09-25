@@ -8,6 +8,7 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
+      "bundleIdentifier": "com.example.kitchenmanager.mobile",
       "supportsTablet": true
     },
     "android": {
@@ -23,6 +24,9 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": ["expo-secure-store", "expo-web-browser"]
+    "plugins": ["expo-secure-store", "expo-web-browser", "expo-router"],
+    "experiments": {
+      "typedRoutes": true
+    }
   }
 }

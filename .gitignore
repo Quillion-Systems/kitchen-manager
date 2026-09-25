@@ -24,6 +24,13 @@ e2e/blob-report/
 # Tauri (Rust) build artifacts
 target/
 
+# Expo prebuild output — regenerated from app.json / app.config.ts by
+# `expo prebuild` / `expo run:ios` / `expo run:android`. Committing these
+# means locking in native config that should live in the config plugin chain.
+apps/mobile/ios/
+apps/mobile/android/
+apps/mobile/.expo/
+
 # Env / secrets
 .env
 .env.*

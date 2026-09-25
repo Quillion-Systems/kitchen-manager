@@ -1,11 +1,11 @@
 {
   "name": "@kitchen-manager/mobile",
   "version": "1.0.0",
-  "main": "index.ts",
+  "main": "expo-router/entry",
   "dependencies": {
+    "@better-auth/expo": "1.4.22",
     "@kitchen-manager/api-client": "workspace:*",
     "@kitchen-manager/powersync": "workspace:*",
-    "@better-auth/expo": "1.4.22",
     "@powersync/react": "^2.0.0",
     "@powersync/react-native": "^2.0.2",
     "better-auth": "1.4.22",
@@ -15,11 +15,15 @@
     "expo-dev-client": "~57.0.10",
     "expo-linking": "~57.0.5",
     "expo-network": "~57.0.1",
+    "expo-router": "~57.0.23",
     "expo-secure-store": "~57.0.1",
+    "expo-splash-screen": "~57.0.9",
     "expo-status-bar": "~57.0.1",
     "expo-web-browser": "~57.0.2",
     "react": "19.2.3",
-    "react-native": "0.86.2"
+    "react-native": "0.86.2",
+    "react-native-safe-area-context": "~5.7.0",
+    "react-native-screens": "~4.26.2"
   },
   "devDependencies": {
     "@types/react": "~19.2.17",
@@ -27,8 +31,10 @@
   },
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "sim:iphone": "open -a Simulator && (xcrun simctl boot 'iPhone 17 Pro' 2>/dev/null || true) && xcrun simctl launch booted com.example.kitchenmanager.mobile",
+    "sim:ipad": "open -a Simulator && (xcrun simctl boot 'iPad Pro 13-inch (M5)' 2>/dev/null || true) && xcrun simctl launch booted com.example.kitchenmanager.mobile",
     "web": "expo start --web",
     "typecheck": "tsc --noEmit",
     "test:e2e": "maestro test .maestro"
