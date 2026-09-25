@@ -32,7 +32,16 @@ Traefik deploy and OpenTofu/Hetzner infra templates, Renovate.
 ## Quickstart
 
 Prereqs: Node 24+, pnpm 11+, Docker, and Rust (for the desktop build). On
-NixOS/Nix, `nix develop` provides the native toolchain.
+NixOS/Nix, `nix develop` provides the native toolchain. On macOS, a `Brewfile`
+covers the rest of the native dev tools (Bash 4+ for the pre-commit hook,
+CocoaPods for iOS builds, watchman, actionlint, gh):
+
+```sh
+brew bundle                                            # macOS only
+```
+
+For iOS specifically, also install Xcode (Mac App Store — Apple doesn't
+distribute it via brew) and run `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer`.
 
 ```sh
 cp .env.example .env                                   # then edit
@@ -43,8 +52,8 @@ pnpm turbo dev --filter=@kitchen-manager/api --filter=@kitchen-manager/web
 ```
 
 - **Desktop:** `pnpm --filter @kitchen-manager/web tauri dev`
-- **Mobile:** `pnpm --filter @kitchen-manager/mobile start` — the native auth
-  modules need an EAS dev build, so run `eas init` in `apps/mobile` first.
+- **Mobile:** `pnpm --filter @kitchen-manager/mobile exec expo run:ios` — first
+  build takes 2–5 min; subsequent runs use `pnpm --filter @kitchen-manager/mobile start`.
 
 ## Offline-first sync
 
