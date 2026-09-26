@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
+import { MobileHandoff } from "#/lib/mobile-handoff"
 import { AuthShell } from "./sign-up"
 
 // Where the verification link lands after Better Auth processes the token. On
@@ -36,13 +37,16 @@ function Verified() {
       title="Email verified"
       footer={
         <Link to="/sign-in" className="text-sky-400 hover:underline">
-          Continue to sign in
+          Continue to sign in on the web
         </Link>
       }
     >
       <p className="text-sm text-neutral-400">
         Your email is confirmed. You can now sign in to Kitchen Manager.
       </p>
+      <div className="mt-4">
+        <MobileHandoff schemeUrl="kitchenmanager://verified" />
+      </div>
     </AuthShell>
   )
 }
