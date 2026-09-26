@@ -22,6 +22,10 @@ export default function RootLayout() {
     <>
       <StatusBar style="light" />
       <Stack screenOptions={{ headerShown: false, contentStyle: styles.stackBg }}>
+        {/* Public route for the `kitchenmanager://verified` deep-link handoff
+            from the web verify flow (Option 3, ClickUp 86bc73vqr). Sits outside
+            both guards so it renders regardless of session state. */}
+        <Stack.Screen name="verified" />
         <Stack.Protected guard={!!session}>
           <Stack.Screen name="(app)" />
         </Stack.Protected>

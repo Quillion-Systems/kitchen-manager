@@ -1,6 +1,7 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router"
+import { createFileRoute, Link } from "@tanstack/react-router"
 import { type FormEvent, useState } from "react"
 import { resetPassword } from "#/lib/auth-client"
+import { MobileHandoff } from "#/lib/mobile-handoff"
 import { AuthShell, PasswordField } from "./sign-up"
 
 // The link in the reset-password email points at /reset-password?token=... —
@@ -15,7 +16,6 @@ export const Route = createFileRoute("/reset-password")({
 
 function ResetPassword() {
   const { token } = Route.useSearch()
-  const navigate = useNavigate()
   const [next, setNext] = useState("")
   const [confirm, setConfirm] = useState("")
   const [pending, setPending] = useState(false)
@@ -54,8 +54,6 @@ function ResetPassword() {
       return
     }
     setDone(true)
-    // Small delay so the success state is visible before bouncing.
-    setTimeout(() => navigate({ to: "/sign-in" }), 1500)
   }
 
   if (done) {
@@ -64,11 +62,16 @@ function ResetPassword() {
         title="Password updated"
         footer={
           <Link to="/sign-in" className="text-sky-400 hover:underline">
-            Continue to sign in
+            Continue to sign in on the web
           </Link>
         }
       >
-        <p className="text-sm text-neutral-400">Your password is set. Sending you to sign in…</p>
+        <p className="text-sm text-neutral-400">
+          Your password is set. Sign in with your new password.
+        </p>
+        <div className="mt-4">
+          <MobileHandoff schemeUrl="kitchenmanager://sign-in?reset=ok" />
+        </div>
       </AuthShell>
     )
   }
