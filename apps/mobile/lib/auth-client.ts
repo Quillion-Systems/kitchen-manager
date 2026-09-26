@@ -25,7 +25,7 @@ export const authClient = createAuthClient({
   ],
 })
 
-export const { useSession, signIn, signUp } = authClient
+export const { useSession, signIn, signUp, changePassword, deleteUser } = authClient
 
 // Wrap sign-out to also wipe the local PowerSync DB. This is the ONLY place we
 // clear it, so an incidental unmount (e.g. a transient session blip on reconnect)

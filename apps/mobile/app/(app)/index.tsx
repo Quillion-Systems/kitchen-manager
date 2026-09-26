@@ -1,3 +1,4 @@
+import { Link } from "expo-router"
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native"
 import { signOut, useSession } from "../../lib/auth-client"
 
@@ -23,9 +24,14 @@ export default function Home() {
         <Text testID="signed-in" style={styles.authBarText} numberOfLines={1}>
           Signed in as <Text style={styles.authBarEmail}>{session.user.email}</Text>
         </Text>
-        <Pressable testID="sign-out" onPress={() => signOut()}>
-          <Text style={styles.signOut}>Sign out</Text>
-        </Pressable>
+        <View style={styles.authBarActions}>
+          <Link href="/settings" testID="settings-link" style={styles.authBarLink}>
+            Settings
+          </Link>
+          <Pressable testID="sign-out" onPress={() => signOut()}>
+            <Text style={styles.authBarLink}>Sign out</Text>
+          </Pressable>
+        </View>
       </View>
 
       <Text style={styles.brand}>Kitchen Manager</Text>
@@ -66,7 +72,8 @@ const styles = StyleSheet.create({
   },
   authBarText: { color: "#a3a3a3", fontSize: 13, flexShrink: 1 },
   authBarEmail: { color: "#e5e5e5" },
-  signOut: { color: "#a3a3a3", fontSize: 13, marginLeft: 12 },
+  authBarActions: { alignItems: "center", flexDirection: "row", gap: 14, marginLeft: 12 },
+  authBarLink: { color: "#a3a3a3", fontSize: 13 },
   brand: { color: "#e5e5e5", fontSize: 44, fontWeight: "700" },
   tag: { color: "#a3a3a3", fontSize: 16, fontStyle: "italic", marginTop: 4 },
   eyebrow: {
