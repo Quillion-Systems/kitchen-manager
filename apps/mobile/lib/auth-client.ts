@@ -25,7 +25,8 @@ export const authClient = createAuthClient({
   ],
 })
 
-export const { useSession, signIn, signUp, changePassword, deleteUser } = authClient
+export const { useSession, signIn, signUp, changePassword, deleteUser, requestPasswordReset } =
+  authClient
 
 // (Re)send the verification email. `callbackURL` is a path relative to the API's
 // BETTER_AUTH_URL; the API rewrites it onto WEB_URL, so the emailed link lands
