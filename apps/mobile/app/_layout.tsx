@@ -1,15 +1,26 @@
 import { Stack } from "expo-router"
 import { StatusBar } from "expo-status-bar"
+import { useRef } from "react"
 import { ActivityIndicator, StyleSheet, View } from "react-native"
 import { useSession } from "../lib/auth-client"
 
 // Root layout for Expo Router. Uses Stack.Protected (SDK 53+) to gate on the
 // Better Auth session — guard evaluates on each render, so signing in flips the
 // user from the `sign-in` screen to the `(app)` group automatically.
+//
+// The initialLoad ref is load-bearing: useSession refetches after mutations
+// (sign-up, sign-out, etc.) and briefly reports isPending=true again. If we
+// returned the spinner on every isPending, that mid-flow refetch would unmount
+// the whole Stack and destroy screen-local state — e.g. sign-up's
+// awaitingVerification would reset, bouncing the user back to /sign-in instead
+// of the CheckYourEmail screen. Only gate on isPending until we've seen data
+// resolve once; after that, trust the last-known session value.
 export default function RootLayout() {
   const { data: session, isPending } = useSession()
+  const initialLoad = useRef(true)
+  if (!isPending) initialLoad.current = false
 
-  if (isPending) {
+  if (isPending && initialLoad.current) {
     return (
       <View style={styles.center}>
         <StatusBar style="light" />
@@ -22,10 +33,6 @@ export default function RootLayout() {
     <>
       <StatusBar style="light" />
       <Stack screenOptions={{ headerShown: false, contentStyle: styles.stackBg }}>
-        {/* Public route for the `kitchenmanager://verified` deep-link handoff
-            from the web verify flow (Option 3, ClickUp 86bc73vqr). Sits outside
-            both guards so it renders regardless of session state. */}
-        <Stack.Screen name="verified" />
         <Stack.Protected guard={!!session}>
           <Stack.Screen name="(app)" />
         </Stack.Protected>

@@ -2,6 +2,7 @@ import { Link } from "expo-router"
 import { useState } from "react"
 import { StyleSheet, Text } from "react-native"
 import { AuthShell } from "../../components/AuthShell"
+import { CheckYourEmail } from "../../components/CheckYourEmail"
 import { Field } from "../../components/Field"
 import { PasswordField } from "../../components/PasswordField"
 import { SubmitButton } from "../../components/SubmitButton"
@@ -14,8 +15,8 @@ export default function SignUp() {
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
   // Set once sign-up succeeds but no session was returned — the account exists
-  // and now needs email verification. Full CheckYourEmail screen lands in
-  // ClickUp 86bc73vr1; until then, show a minimal inline confirmation.
+  // and now needs email verification. Renders <CheckYourEmail> which handles
+  // the resend flow.
   const [awaitingVerification, setAwaitingVerification] = useState(false)
 
   async function onSubmit() {
@@ -36,21 +37,7 @@ export default function SignUp() {
   }
 
   if (awaitingVerification) {
-    return (
-      <AuthShell
-        title="Check your email"
-        footer={
-          <Link href="/sign-in" style={styles.link}>
-            Back to sign in
-          </Link>
-        }
-      >
-        <Text style={styles.body}>
-          We sent a verification link to <Text style={styles.email}>{email}</Text>. Open it on this
-          device to finish creating your account.
-        </Text>
-      </AuthShell>
-    )
+    return <CheckYourEmail email={email} />
   }
 
   return (
@@ -104,6 +91,4 @@ export default function SignUp() {
 const styles = StyleSheet.create({
   link: { color: "#38bdf8" },
   error: { color: "#f87171", fontSize: 14 },
-  body: { color: "#d4d4d4", fontSize: 15, lineHeight: 22 },
-  email: { color: "#e5e5e5", fontWeight: "600" },
 })
