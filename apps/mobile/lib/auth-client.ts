@@ -27,6 +27,14 @@ export const authClient = createAuthClient({
 
 export const { useSession, signIn, signUp, changePassword, deleteUser } = authClient
 
+// (Re)send the verification email. `callbackURL` is a path relative to the API's
+// BETTER_AUTH_URL; the API rewrites it onto WEB_URL, so the emailed link lands
+// on the web /verified page (which then hands off to `kitchenmanager://verified`
+// via the mobile handoff — Option 3, see ClickUp 86bc73vqr).
+export function resendVerificationEmail(email: string) {
+  return authClient.sendVerificationEmail({ email, callbackURL: "/verified" })
+}
+
 // Wrap sign-out to also wipe the local PowerSync DB. This is the ONLY place we
 // clear it, so an incidental unmount (e.g. a transient session blip on reconnect)
 // can never drop local data — including offline writes still waiting to upload.

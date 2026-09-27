@@ -2,6 +2,7 @@ import { Link } from "expo-router"
 import { useState } from "react"
 import { StyleSheet, Text } from "react-native"
 import { AuthShell } from "../../components/AuthShell"
+import { CheckYourEmail } from "../../components/CheckYourEmail"
 import { Field } from "../../components/Field"
 import { PasswordField } from "../../components/PasswordField"
 import { SubmitButton } from "../../components/SubmitButton"
@@ -12,6 +13,10 @@ export default function SignIn() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
+  // Set when Better Auth rejects sign-in because the account exists but hasn't
+  // been verified. Swaps to CheckYourEmail (with a Resend button) instead of a
+  // dead-end error message.
+  const [needsVerification, setNeedsVerification] = useState(false)
 
   async function onSubmit() {
     setPending(true)
@@ -19,10 +24,18 @@ export default function SignIn() {
     const result = await signIn.email({ email, password })
     setPending(false)
     if (result.error) {
+      if (result.error.code === "EMAIL_NOT_VERIFIED") {
+        setNeedsVerification(true)
+        return
+      }
       setError(result.error.message ?? "Could not sign in")
       return
     }
     // On success, the root layout's guard re-renders into the (app) group.
+  }
+
+  if (needsVerification) {
+    return <CheckYourEmail email={email} title="Verify your email" />
   }
 
   return (
