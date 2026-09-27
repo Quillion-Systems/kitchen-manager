@@ -112,7 +112,16 @@ function ChangePasswordSection() {
     })
     setPending(false)
     if (result.error) {
-      setError(result.error.message ?? "Could not change password")
+      // Better Auth returns code=INVALID_PASSWORD with message "Invalid
+      // password" for a wrong CURRENT password — ambiguous in this UI where
+      // there are three password fields. Remap to something unambiguous;
+      // other codes (PASSWORD_TOO_SHORT/LONG) have descriptive messages
+      // already so we pass those through.
+      setError(
+        result.error.code === "INVALID_PASSWORD"
+          ? "Your current password is incorrect."
+          : (result.error.message ?? "Could not change password"),
+      )
       return
     }
     setCurrent("")

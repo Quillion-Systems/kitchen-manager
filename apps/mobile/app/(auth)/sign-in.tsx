@@ -65,6 +65,9 @@ export default function SignIn() {
         onChangeText={setPassword}
         textContentType="password"
       />
+      <Link href="/forgot-password" testID="forgot-link" style={styles.forgot}>
+        Forgot password?
+      </Link>
       {error ? (
         <Text testID="auth-error" style={styles.error}>
           {error}
@@ -79,5 +82,6 @@ export default function SignIn() {
 
 const styles = StyleSheet.create({
   link: { color: "#38bdf8" },
+  forgot: { color: "#a3a3a3", fontSize: 13, textAlign: "right" },
   error: { color: "#f87171", fontSize: 14 },
 })
