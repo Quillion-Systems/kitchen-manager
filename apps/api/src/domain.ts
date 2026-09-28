@@ -4,10 +4,17 @@
 // validate their inputs against these.
 export {
   type NewNote,
+  type NewProduct,
   type Note,
   newNoteSchema,
+  newProductSchema,
   noteIdSchema,
   noteSchema,
+  type Product,
+  productIdSchema,
+  productSchema,
   type UpdateNote,
+  type UpdateProduct,
   updateNoteSchema,
+  updateProductSchema,
 } from "@kitchen-manager/validation"

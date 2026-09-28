@@ -22,6 +22,12 @@ function AuthBar() {
           </span>
           <span className="flex gap-2">
             <Link
+              to="/products"
+              className="rounded-md border border-neutral-700 px-3 py-1 text-neutral-300 transition hover:border-neutral-500 hover:text-neutral-100"
+            >
+              Products
+            </Link>
+            <Link
               to="/settings"
               className="rounded-md border border-neutral-700 px-3 py-1 text-neutral-300 transition hover:border-neutral-500 hover:text-neutral-100"
             >
