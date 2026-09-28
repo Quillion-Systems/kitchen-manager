@@ -2,6 +2,7 @@ import { Stack } from "expo-router"
 import { StatusBar } from "expo-status-bar"
 import { useRef } from "react"
 import { ActivityIndicator, StyleSheet, View } from "react-native"
+import { ApiProvider } from "../lib/api"
 import { useSession } from "../lib/auth-client"
 
 // Root layout for Expo Router. Uses Stack.Protected (SDK 53+) to gate on the
@@ -30,7 +31,7 @@ export default function RootLayout() {
   }
 
   return (
-    <>
+    <ApiProvider>
       <StatusBar style="light" />
       <Stack screenOptions={{ headerShown: false, contentStyle: styles.stackBg }}>
         <Stack.Protected guard={!!session}>
@@ -40,7 +41,7 @@ export default function RootLayout() {
           <Stack.Screen name="(auth)" />
         </Stack.Protected>
       </Stack>
-    </>
+    </ApiProvider>
   )
 }
 

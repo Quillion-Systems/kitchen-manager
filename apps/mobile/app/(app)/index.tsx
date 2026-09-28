@@ -25,6 +25,9 @@ export default function Home() {
           Signed in as <Text style={styles.authBarEmail}>{session.user.email}</Text>
         </Text>
         <View style={styles.authBarActions}>
+          <Link href="/products" testID="products-link" style={styles.authBarLink}>
+            Products
+          </Link>
           <Link href="/settings" testID="settings-link" style={styles.authBarLink}>
             Settings
           </Link>
