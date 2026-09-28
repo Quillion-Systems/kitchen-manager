@@ -1,10 +1,10 @@
 import { index, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core"
-import { user } from "./schema"
+import { household } from "./household"
 
 // The notes table — the placeholder synced resource for the offline-first
 // (PowerSync) stack. It's the DB mirror of the on-device SQLite `notes` table
-// (packages/powersync), plus the DB-only `userId` owner (a row belongs to
-// exactly one user).
+// (packages/powersync), plus the DB-only `householdId` owner (a row belongs to
+// exactly one household).
 //
 // Kept in its own file, NOT in schema.ts, because `pnpm auth:generate`
 // regenerates schema.ts from the Better Auth config and would clobber anything
@@ -18,9 +18,9 @@ export const notes = pgTable(
   "notes",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    userId: text("user_id")
+    householdId: uuid("household_id")
       .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
+      .references(() => household.id, { onDelete: "cascade" }),
     title: text("title").notNull().default(""),
     body: text("body").notNull().default(""),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
@@ -30,5 +30,5 @@ export const notes = pgTable(
       .notNull(),
     deletedAt: timestamp("deleted_at", { withTimezone: true }),
   },
-  (table) => [index("notes_user_id_idx").on(table.userId)],
+  (table) => [index("notes_household_id_idx").on(table.householdId)],
 )

@@ -8,12 +8,18 @@ config:
   edition: 3
 
 streams:
-  # Each signed-in user syncs their own, non-deleted notes. auth.user_id() is the
-  # JWT `sub` (the Better Auth user id) — this WHERE clause is the boundary that
-  # keeps one user's rows off another's device, so it must never be dropped.
+  # Rows sync down scoped to the signed-in user's household. `household_id`
+  # is a custom JWT claim minted by the API (see apps/api/src/auth.ts's
+  # jwt.definePayload) so the sync rule doesn't need to join household_member
+  # — the auth server has already resolved it.
   #
-  # Soft-deleted rows fall out of the query, so a delete propagates to clients as
-  # a removal from local SQLite (the deletedAt tombstone earns its keep here).
+  # This is THE boundary that keeps one household's data off another's device,
+  # so the WHERE must never be dropped. Soft-deleted rows fall out of the
+  # query, propagating a delete as removal from local SQLite (the deletedAt
+  # tombstone earns its keep here).
   notes:
     auto_subscribe: true
-    query: SELECT * FROM notes WHERE user_id = auth.user_id() AND deleted_at IS NULL
+    query: SELECT * FROM notes WHERE household_id = auth.parameter('household_id') AND deleted_at IS NULL
+  product:
+    auto_subscribe: true
+    query: SELECT * FROM product WHERE household_id = auth.parameter('household_id') AND deleted_at IS NULL

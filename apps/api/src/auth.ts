@@ -2,7 +2,9 @@ import { expo } from "@better-auth/expo"
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { bearer, jwt } from "better-auth/plugins"
+import { eq } from "drizzle-orm"
 import { db } from "./db"
+import { household, householdMember } from "./db/household"
 import * as schema from "./db/schema"
 import { sendEmail } from "./email/mailer"
 import { resetPasswordEmail, verificationEmail } from "./email/templates"
@@ -22,6 +24,23 @@ export const auth = betterAuth({
   // their password on the client to confirm.
   user: {
     deleteUser: { enabled: true },
+  },
+  databaseHooks: {
+    user: {
+      create: {
+        // Every new user gets a default household + membership so downstream
+        // code can assume `ctx.householdId` exists. Not wrapped in a
+        // transaction with the user insert (Better Auth doesn't hand us the
+        // outer tx), so a failure here would leave a user without a
+        // household — trpc/init.ts throws INTERNAL_SERVER_ERROR in that case
+        // to fail loudly rather than silently work with orphaned data.
+        after: async (createdUser) => {
+          const [h] = await db.insert(household).values({ name: "My Kitchen" }).returning()
+          if (!h) throw new Error("Failed to create default household")
+          await db.insert(householdMember).values({ householdId: h.id, userId: createdUser.id })
+        },
+      },
+    },
   },
   emailAndPassword: {
     enabled: true,
@@ -71,9 +90,22 @@ export const auth = betterAuth({
       jwt: {
         audience: "powersync",
         getSubject: (session) => session.user.id,
-        // PowerSync only needs the subject (user id); don't ship the user's
-        // name/email in the token. Add claims here if sync rules ever need them.
-        definePayload: () => ({}),
+        // Household id in the token so PowerSync sync rules can scope by
+        // household (see powersync/sync-config.yaml). Membership is created at
+        // sign-up and never removed, so this lookup always resolves for a
+        // valid session. If someday users can belong to multiple households,
+        // switch to an array claim + parametrized streams.
+        definePayload: async (session) => {
+          const [membership] = await db
+            .select({ householdId: householdMember.householdId })
+            .from(householdMember)
+            .where(eq(householdMember.userId, session.user.id))
+            .limit(1)
+          if (!membership) {
+            throw new Error(`User ${session.user.id} has no household — cannot mint PowerSync JWT`)
+          }
+          return { household_id: membership.householdId }
+        },
       },
     }),
   ],
