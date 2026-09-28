@@ -49,32 +49,59 @@ export function createConnector(
 
       try {
         for (const op of tx.crud) {
-          if (op.table !== "notes") continue
           const data = op.opData ?? {}
 
-          switch (op.op) {
-            case UpdateType.PUT:
-              // A locally-created note. create upserts on the client-minted id,
-              // so a retried upload is idempotent.
-              await trpc.notes.create.mutate({
-                id: op.id,
-                title: String(data.title ?? ""),
-                body: String(data.body ?? ""),
-              })
-              break
-            case UpdateType.PATCH:
-              // A field change — send only what changed.
-              await trpc.notes.update.mutate({
-                id: op.id,
-                ...(data.title !== undefined ? { title: String(data.title) } : {}),
-                ...(data.body !== undefined ? { body: String(data.body) } : {}),
-              })
-              break
-            case UpdateType.DELETE:
-              // A local delete becomes a soft delete server-side; the tombstone
-              // then removes the row from every device via the sync rules.
-              await trpc.notes.softDelete.mutate({ id: op.id })
-              break
+          if (op.table === "notes") {
+            switch (op.op) {
+              case UpdateType.PUT:
+                // A locally-created note. create upserts on the client-minted id,
+                // so a retried upload is idempotent.
+                await trpc.notes.create.mutate({
+                  id: op.id,
+                  title: String(data.title ?? ""),
+                  body: String(data.body ?? ""),
+                })
+                break
+              case UpdateType.PATCH:
+                // A field change — send only what changed.
+                await trpc.notes.update.mutate({
+                  id: op.id,
+                  ...(data.title !== undefined ? { title: String(data.title) } : {}),
+                  ...(data.body !== undefined ? { body: String(data.body) } : {}),
+                })
+                break
+              case UpdateType.DELETE:
+                // A local delete becomes a soft delete server-side; the tombstone
+                // then removes the row from every device via the sync rules.
+                await trpc.notes.softDelete.mutate({ id: op.id })
+                break
+            }
+            continue
+          }
+
+          if (op.table === "product") {
+            switch (op.op) {
+              case UpdateType.PUT:
+                // Server enforces the (household_id, lower(name)) unique
+                // constraint; a CONFLICT here means another device wrote the
+                // same name first — isFatal() drops the local row (the winning
+                // row will sync back down). UI does a pre-check to avoid this
+                // in the happy path.
+                await trpc.products.create.mutate({
+                  id: op.id,
+                  name: String(data.name ?? ""),
+                })
+                break
+              case UpdateType.PATCH:
+                await trpc.products.update.mutate({
+                  id: op.id,
+                  ...(data.name !== undefined ? { name: String(data.name) } : {}),
+                })
+                break
+              case UpdateType.DELETE:
+                await trpc.products.softDelete.mutate({ id: op.id })
+                break
+            }
           }
         }
         await tx.complete()
