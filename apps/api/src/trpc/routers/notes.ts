@@ -1,8 +1,8 @@
 import { TRPCError } from "@trpc/server"
 import { and, desc, eq, isNull } from "drizzle-orm"
-import { notes } from "../../db/schema"
+import { notes } from "../../db/notes"
 import { type Note, newNoteSchema, noteIdSchema, updateNoteSchema } from "../../domain"
-import { protectedProcedure, router } from "../init"
+import { householdProcedure, router } from "../init"
 
 // Map a DB row to the wire/domain Note: drop the DB-only `userId`, and convert
 // the timestamptz Dates to ISO strings so the shape matches @kitchen-manager/validation's
@@ -19,16 +19,17 @@ function toNote(row: typeof notes.$inferSelect): Note {
   }
 }
 
-// Every query is scoped to ctx.userId, so a user only ever touches their own
-// notes — ownership is enforced in the WHERE clause, not trusted from input.
+// Every query is scoped to ctx.householdId, so a user only ever touches notes
+// in their own household — ownership is enforced in the WHERE clause, not
+// trusted from input.
 export const notesRouter = router({
   // Reads exclude tombstones: soft-deleted rows stay in the table (sync needs
   // them) but never surface. This habit starts with the very first query.
-  list: protectedProcedure.query(async ({ ctx }) => {
+  list: householdProcedure.query(async ({ ctx }) => {
     const rows = await ctx.db
       .select()
       .from(notes)
-      .where(and(eq(notes.userId, ctx.userId), isNull(notes.deletedAt)))
+      .where(and(eq(notes.householdId, ctx.householdId), isNull(notes.deletedAt)))
       .orderBy(desc(notes.createdAt))
     return rows.map(toNote)
   }),
@@ -39,10 +40,10 @@ export const notesRouter = router({
   // When an id is supplied we upsert: PowerSync retries an upload whose ack was
   // lost, so a plain insert would hit a duplicate-key error on the retry. The
   // setWhere scopes the conflict update to the owner, so a guessed id can never
-  // overwrite another user's row.
-  create: protectedProcedure.input(newNoteSchema).mutation(async ({ ctx, input }) => {
+  // overwrite another household's row.
+  create: householdProcedure.input(newNoteSchema).mutation(async ({ ctx, input }) => {
     const values = {
-      userId: ctx.userId,
+      householdId: ctx.householdId,
       title: input.title,
       body: input.body,
     }
@@ -53,7 +54,7 @@ export const notesRouter = router({
           .onConflictDoUpdate({
             target: notes.id,
             set: { title: input.title, body: input.body },
-            setWhere: eq(notes.userId, ctx.userId),
+            setWhere: eq(notes.householdId, ctx.householdId),
           })
           .returning()
       : await ctx.db.insert(notes).values(values).returning()
@@ -61,23 +62,29 @@ export const notesRouter = router({
     return toNote(row)
   }),
 
-  update: protectedProcedure.input(updateNoteSchema).mutation(async ({ ctx, input }) => {
+  update: householdProcedure.input(updateNoteSchema).mutation(async ({ ctx, input }) => {
     const { id, ...fields } = input
     const [row] = await ctx.db
       .update(notes)
       .set(fields)
-      .where(and(eq(notes.id, id), eq(notes.userId, ctx.userId), isNull(notes.deletedAt)))
+      .where(and(eq(notes.id, id), eq(notes.householdId, ctx.householdId), isNull(notes.deletedAt)))
       .returning()
     if (!row) throw new TRPCError({ code: "NOT_FOUND" })
     return toNote(row)
   }),
 
   // Soft delete: stamp deletedAt, don't remove the row.
-  softDelete: protectedProcedure.input(noteIdSchema).mutation(async ({ ctx, input }) => {
+  softDelete: householdProcedure.input(noteIdSchema).mutation(async ({ ctx, input }) => {
     const [row] = await ctx.db
       .update(notes)
       .set({ deletedAt: new Date() })
-      .where(and(eq(notes.id, input.id), eq(notes.userId, ctx.userId), isNull(notes.deletedAt)))
+      .where(
+        and(
+          eq(notes.id, input.id),
+          eq(notes.householdId, ctx.householdId),
+          isNull(notes.deletedAt),
+        ),
+      )
       .returning()
     if (!row) throw new TRPCError({ code: "NOT_FOUND" })
     return toNote(row)

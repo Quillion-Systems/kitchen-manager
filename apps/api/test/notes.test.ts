@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto"
 import { eq } from "drizzle-orm"
 import { afterAll, beforeAll, describe, expect, it } from "vitest"
 import { db } from "../src/db"
+import { household, householdMember } from "../src/db/household"
 import { notes } from "../src/db/notes"
 import { user } from "../src/db/schema"
 import { createCallerFactory } from "../src/trpc/init"
@@ -9,8 +10,11 @@ import { appRouter } from "../src/trpc/router"
 
 // Integration test for the notes router — the offline-first CRUD the PowerSync
 // connector replays. Runs a caller over a real context (see example.test.ts for
-// the harness). notes.user_id FKs the user table, so we create a throwaway user
-// first and clean up after.
+// the harness). notes.household_id FKs a household that belongs to the test
+// user; we set up all three (user + household + membership) since we're
+// bypassing Better Auth (which normally creates the default household on
+// signup). Deleting the user cascades to household_member; the trigger from
+// migration 0003 then drops the now-empty household and its notes.
 const createCaller = createCallerFactory(appRouter)
 
 const userId = `user_test_${randomUUID()}`
@@ -21,10 +25,14 @@ beforeAll(async () => {
     name: "Notes Test User",
     email: `${userId}@justinthymeapp.com`,
   })
+  const [h] = await db.insert(household).values({ name: "Test Kitchen" }).returning()
+  if (!h) throw new Error("failed to create test household")
+  await db.insert(householdMember).values({ householdId: h.id, userId })
 })
 
 afterAll(async () => {
-  // Cascades to the user's notes.
+  // Cascades to household_member; the household_member_after_delete trigger
+  // then drops the now-empty household + its notes.
   await db.delete(user).where(eq(user.id, userId))
 })
 
