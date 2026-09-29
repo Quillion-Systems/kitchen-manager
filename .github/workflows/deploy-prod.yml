@@ -111,6 +111,12 @@ jobs:
           # SMTP at Resend and requires RESEND_API_KEY. Default off → SMTP empty.
           PROD_EMAIL_ENABLED: ${{ vars.PROD_EMAIL_ENABLED }}
           RESEND_API_KEY: ${{ secrets.PROD_RESEND_API_KEY }}
+          # Comma-separated allowlist of emails auto-promoted to `admin` on
+          # signup (see apps/api/src/auth.ts). Read from a repo variable —
+          # emails aren't secret. Empty / unset → no automatic admins;
+          # existing accounts still need scripts/promote-admin.sh (or the
+          # equivalent psql UPDATE) run once.
+          ADMIN_EMAILS: ${{ vars.ADMIN_EMAILS }}
         run: |
           set -e
 
@@ -157,6 +163,7 @@ jobs:
                BETTER_AUTH_SECRET='$BETTER_AUTH_SECRET' \
                PROD_EMAIL_ENABLED='$PROD_EMAIL_ENABLED' \
                RESEND_API_KEY='$RESEND_API_KEY' \
+               ADMIN_EMAILS='$ADMIN_EMAILS' \
                bash deploy/bin/up.sh prod \
             && docker image prune -f"
 

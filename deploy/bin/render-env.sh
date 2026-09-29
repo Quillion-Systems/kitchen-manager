@@ -29,6 +29,12 @@ fi
 POSTGRES_USER="${POSTGRES_USER:-kitchen_manager}"
 POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-kitchen_manager}"
 
+# Comma-separated allowlist for auto-promoting signups to the `admin` role
+# (see apps/api/src/auth.ts's user.create.after hook). Sourced from a
+# GitHub Actions repo variable in CI; empty here means no automatic admins.
+# Emails, not secrets — plaintext exposure is fine.
+ADMIN_EMAILS="${ADMIN_EMAILS:-}"
+
 # Shared across throwaway envs is fine. Supply via env in CI; the dev default
 # keeps local `docker compose config` / previews working out of the box.
 BETTER_AUTH_SECRET="${BETTER_AUTH_SECRET:-dev-insecure-secret-change-me}"
@@ -95,6 +101,7 @@ API_URL=https://${HOST}
 POWERSYNC_URL=https://${HOST}/powersync
 
 REQUIRE_EMAIL_VERIFICATION=${REQUIRE_EMAIL_VERIFICATION}
+ADMIN_EMAILS=${ADMIN_EMAILS}
 WEB_URL=https://${HOST}
 EMAIL_FROM="${EMAIL_FROM}"
 SMTP_HOST=${SMTP_HOST}
