@@ -33,6 +33,14 @@ function AuthBar() {
             >
               Settings
             </Link>
+            {session.user.role === "admin" && (
+              <Link
+                to="/admin"
+                className="rounded-md border border-amber-800 bg-amber-950/40 px-3 py-1 text-amber-300 transition hover:border-amber-700 hover:text-amber-200"
+              >
+                Admin
+              </Link>
+            )}
             <button
               type="button"
               onClick={() => signOut()}

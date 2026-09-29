@@ -1,4 +1,4 @@
-import { jwtClient } from "better-auth/client/plugins"
+import { adminClient, jwtClient } from "better-auth/client/plugins"
 import { createAuthClient } from "better-auth/react"
 import { getConfig } from "./config"
 
@@ -20,7 +20,10 @@ export const authClient = createAuthClient({
   baseURL: getConfig().apiUrl,
   // jwtClient() exposes authClient.token(), which mints the short-lived JWT the
   // PowerSync connector hands to the sync service (verified via /api/auth/jwks).
-  plugins: [jwtClient()],
+  // adminClient() exposes authClient.admin.* (listUsers, banUser, removeUser,
+  // setRole, ...) — the server-side gate on the /admin endpoints ensures a
+  // non-admin caller gets 403 regardless of what the client tries.
+  plugins: [jwtClient(), adminClient()],
   fetchOptions: useTokens
     ? {
         onSuccess: (ctx) => {

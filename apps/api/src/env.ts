@@ -38,6 +38,12 @@ export const env = {
   // true, sign-up creates no session and sends a verification email; sign-in
   // is blocked until the address is verified.
   REQUIRE_EMAIL_VERIFICATION: optionalBool("REQUIRE_EMAIL_VERIFICATION", false),
+  // Comma-separated emails that get the `admin` role on sign-up (see the
+  // user.create.after hook in auth.ts). A one-off statement in migration
+  // 0004 also promotes any already-registered users matching these emails,
+  // so setting this on a running system + redeploying is enough to grant
+  // access — no manual DB pokes. Empty by default → no admins.
+  ADMIN_EMAILS: optional("ADMIN_EMAILS", ""),
   // Transactional email over SMTP (nodemailer). Dev/CI/preview point at Mailpit
   // (no auth); prod points at Resend (smtp.resend.com:587, user "resend", pass
   // = the Resend API key). Same code path everywhere — only these values change.

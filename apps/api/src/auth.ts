@@ -1,7 +1,7 @@
 import { expo } from "@better-auth/expo"
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
-import { bearer, jwt } from "better-auth/plugins"
+import { admin, bearer, jwt } from "better-auth/plugins"
 import { eq } from "drizzle-orm"
 import { db } from "./db"
 import { household, householdMember } from "./db/household"
@@ -9,6 +9,14 @@ import * as schema from "./db/schema"
 import { sendEmail } from "./email/mailer"
 import { resetPasswordEmail, verificationEmail } from "./email/templates"
 import { env } from "./env"
+
+// Parsed once at module load so the create hook doesn't re-split on every
+// sign-up. Empty env → empty set → no automatic promotions.
+const adminEmails = new Set(
+  env.ADMIN_EMAILS.split(",")
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean),
+)
 
 // The mobile app (apps/mobile) authenticates via its deep-link scheme rather
 // than a browser origin; the expo() plugin handles its token-in-header flow.
@@ -38,6 +46,17 @@ export const auth = betterAuth({
           const [h] = await db.insert(household).values({ name: "My Kitchen" }).returning()
           if (!h) throw new Error("Failed to create default household")
           await db.insert(householdMember).values({ householdId: h.id, userId: createdUser.id })
+          // Auto-promote to admin when the new user's email is in the
+          // ADMIN_EMAILS allowlist. Migration 0004 backfills the same rule
+          // for users that existed before the plugin landed; this covers
+          // future signups. Lowercased on both sides since emails are
+          // case-insensitive in practice.
+          if (adminEmails.has(createdUser.email.toLowerCase())) {
+            await db
+              .update(schema.user)
+              .set({ role: "admin" })
+              .where(eq(schema.user.id, createdUser.id))
+          }
         },
       },
     },
@@ -86,6 +105,12 @@ export const auth = betterAuth({
   plugins: [
     expo(),
     bearer(),
+    // Admin plugin: adds role/banned/banReason/banExpires to user, plus
+    // /api/auth/admin/* endpoints (list-users, ban-user, remove-user,
+    // set-role, …). New users get defaultRole "user"; only users with role
+    // in adminRoles can call the admin endpoints. Membership in that role
+    // is granted via ADMIN_EMAILS at signup — no manual promotion needed.
+    admin({ defaultRole: "user", adminRoles: ["admin"] }),
     jwt({
       jwt: {
         audience: "powersync",
