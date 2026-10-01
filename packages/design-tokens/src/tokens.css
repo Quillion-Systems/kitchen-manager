@@ -1,0 +1,132 @@
+/**
+ * Design tokens — colors.
+ *
+ * Consumed by Tailwind v4 via @theme: every --color-* here becomes bg-*,
+ * text-*, border-*, ring-* utilities. Semantic names (background, primary,
+ * accent, destructive, ...) are the layer components should reach for;
+ * primitives (forest-800, cream-50, ...) are the raw palette.
+ *
+ * KEEP IN SYNC WITH ./colors.ts — both files are hand-maintained mirrors.
+ */
+
+@theme static {
+  /* ─── Primitives (palette) ─────────────────────────── */
+  --color-forest-200: #d5e4b5;
+  --color-forest-300: #bfc9a8;
+  --color-forest-400: #8fae7e;
+  --color-forest-600: #3c4f40;
+  --color-forest-700: #4e6b55;
+  --color-forest-800: #1f3a26;
+  --color-forest-900: #13241a;
+
+  --color-cream-50: #f9f7ef;
+  --color-cream-100: #f2eedf;
+  --color-cream-200: #eae5d3;
+  --color-cream-300: #ddd7c3;
+
+  --color-lime-400: #d4f76e;
+  --color-lime-500: #c6f24e;
+  --color-lime-600: #b6e43c;
+
+  --color-rust-300: #f6ddd3;
+  --color-rust-400: #f2a98e;
+  --color-rust-500: #a8462a;
+  --color-rust-700: #7c2e17;
+
+  --color-amber-300: #f4e3c8;
+  --color-amber-500: #b7791f;
+  --color-amber-700: #6b4413;
+
+  --color-leaf-400: #c8daa2;
+  --color-leaf-500: #6e9a2e;
+
+  /* ─── Semantics (role-based) ───────────────────────── */
+  --color-background: var(--color-cream-100);
+  --color-foreground: var(--color-forest-900);
+
+  --color-surface: var(--color-cream-50);
+  --color-surface-foreground: var(--color-forest-900);
+
+  --color-muted: var(--color-cream-200);
+  --color-muted-foreground: var(--color-forest-600);
+
+  --color-primary: var(--color-forest-800);
+  --color-primary-foreground: var(--color-cream-50);
+
+  --color-accent: var(--color-lime-500);
+  --color-accent-foreground: var(--color-forest-900);
+
+  --color-soft: var(--color-forest-200);
+  --color-soft-foreground: var(--color-forest-800);
+
+  --color-border: var(--color-cream-300);
+  --color-input: var(--color-forest-300);
+  --color-input-background: #ffffff;
+  --color-ring: var(--color-forest-700);
+
+  --color-success: var(--color-leaf-500);
+  --color-success-foreground: var(--color-cream-50);
+  --color-warning: var(--color-amber-500);
+  --color-warning-foreground: var(--color-cream-50);
+  --color-destructive: var(--color-rust-500);
+  --color-destructive-foreground: var(--color-cream-50);
+
+  /* ─── Typography — families ────────────────────────── */
+  --font-sans:
+    "Bricolage Grotesque Variable", "Bricolage Grotesque", system-ui, -apple-system, sans-serif;
+  --font-serif: "Instrument Serif", Georgia, serif;
+
+  /* ─── Typography — weights ─────────────────────────── */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  /* ─── Typography — line-heights (unitless) ─────────── */
+  --leading-tight: 1.1;
+  --leading-snug: 1.25;
+  --leading-normal: 1.45;
+  --leading-relaxed: 1.6;
+
+  /* ─── Typography — letter-spacing ──────────────────── */
+  --tracking-tightest: -0.055em;
+  --tracking-tighter: -0.03em;
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0em;
+
+  /* ─── Typography — sizes w/ paired leading + tracking ─ */
+  --text-2xs: 11px;
+  --text-2xs--line-height: 1.4;
+
+  --text-xs: 12px;
+  --text-xs--line-height: 1.4;
+
+  --text-sm: 14px;
+  --text-sm--line-height: 1.45;
+
+  --text-base: 16px;
+  --text-base--line-height: 1.5;
+
+  --text-md: 18px;
+  --text-md--line-height: 1.5;
+
+  --text-lg: 20px;
+  --text-lg--line-height: 1.4;
+
+  --text-xl: 24px;
+  --text-xl--line-height: 1.25;
+  --text-xl--letter-spacing: -0.02em;
+
+  --text-2xl: 28px;
+  --text-2xl--line-height: 1.2;
+  --text-2xl--letter-spacing: -0.03em;
+
+  --text-3xl: 32px;
+  --text-3xl--line-height: 1.15;
+  --text-3xl--letter-spacing: -0.03em;
+
+  --text-4xl: 40px;
+  --text-4xl--line-height: 1.1;
+  --text-4xl--letter-spacing: -0.03em;
+}

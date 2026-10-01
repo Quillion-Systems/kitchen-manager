@@ -30,7 +30,7 @@ test("signing up with an existing email is rejected", async ({ page, request }) 
   await page.getByLabel("Name").fill("Duplicate")
   await page.getByLabel("Email").fill(email)
   await page.getByLabel("Password", { exact: true }).fill(PASSWORD)
-  await page.getByRole("button", { name: "Sign up" }).click()
+  await page.getByRole("button", { name: "Create account" }).click()
 
   await expect(page.getByRole("alert")).toBeVisible()
 })

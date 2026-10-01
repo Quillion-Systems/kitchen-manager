@@ -1,19 +1,17 @@
+import { fontSizes, mobileFonts, semantics } from "@kitchen-manager/design-tokens"
 import { Link } from "expo-router"
-import { useState } from "react"
-import { Pressable, StyleSheet, Text } from "react-native"
+import { type ReactNode, useState } from "react"
+import { StyleSheet, Text } from "react-native"
 import { resendVerificationEmail } from "../lib/auth-client"
 import { AuthShell } from "./AuthShell"
+import { AuthTitle } from "./AuthTitle"
+import { Button } from "./Button"
+import { ErrorBanner } from "./ErrorBanner"
 
-// Shown after sign-up (and reusable when an unverified user tries to sign in):
-// account exists but is gated on verification. Includes a Resend action so the
-// user has a path forward if the mail didn't arrive.
-export function CheckYourEmail({
-  email,
-  title = "Check your email",
-}: {
-  email: string
-  title?: string
-}) {
+// Shown after sign-up and reused when an unverified user tries to sign in: the
+// account exists but is gated until the emailed link is clicked. Offers a
+// resend so the user has a path forward if the mail didn't arrive.
+export function CheckYourEmail({ email, title }: { email: string; title?: ReactNode }) {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle")
 
   async function onResend() {
@@ -22,54 +20,69 @@ export function CheckYourEmail({
     setStatus(result.error ? "error" : "sent")
   }
 
-  const disabled = status === "sending" || status === "sent"
-  const label =
-    status === "sending" ? "…" : status === "sent" ? "Sent — check your inbox" : "Resend email"
-
   return (
     <AuthShell
-      title={title}
+      title={title ?? <AuthTitle prefix="Check your" italic="email" />}
+      subtitle={
+        <Text style={styles.subtitle}>
+          We sent a verification link to <Text style={styles.emailText}>{email}</Text>. Open it to
+          activate your account.
+        </Text>
+      }
       footer={
-        <Link href="/sign-in" style={styles.link}>
-          Back to sign in
-        </Link>
+        <Text style={styles.footerText}>
+          <Link href="/sign-in" style={styles.footerLink}>
+            Back to sign in
+          </Link>
+        </Text>
       }
     >
-      <Text style={styles.body}>
-        We sent a verification link to <Text style={styles.email}>{email}</Text>. Open it to
-        activate your account.
-      </Text>
       <Text style={styles.body}>Didn't get it? Check spam, or resend below.</Text>
-      <Pressable
-        testID="resend-verification"
-        style={({ pressed }) => [styles.button, (disabled || pressed) && styles.buttonDim]}
-        onPress={onResend}
-        disabled={disabled}
-      >
-        <Text style={styles.buttonText}>{label}</Text>
-      </Pressable>
       {status === "error" ? (
-        <Text testID="resend-error" style={styles.error}>
+        <ErrorBanner testID="resend-error">
           Couldn't resend right now. Try again in a moment.
-        </Text>
+        </ErrorBanner>
       ) : null}
+      <Button
+        testID="resend-verification"
+        variant="secondary"
+        size="lg"
+        loading={status === "sending"}
+        disabled={status === "sent"}
+        onPress={onResend}
+      >
+        {status === "sent" ? "Sent — check your inbox" : "Resend email"}
+      </Button>
     </AuthShell>
   )
 }
 
 const styles = StyleSheet.create({
-  link: { color: "#38bdf8" },
-  body: { color: "#a3a3a3", fontSize: 14, lineHeight: 20 },
-  email: { color: "#e5e5e5", fontWeight: "600" },
-  button: {
-    alignItems: "center",
-    backgroundColor: "#0a0a0a",
-    borderColor: "#404040",
-    borderRadius: 8,
-    borderWidth: 1,
-    paddingVertical: 12,
+  subtitle: {
+    color: semantics.mutedForeground,
+    fontFamily: mobileFonts.sansRegular,
+    fontSize: fontSizes.base,
+    lineHeight: 24,
+    marginTop: 12,
   },
-  buttonDim: { opacity: 0.6 },
-  buttonText: { color: "#e5e5e5", fontSize: 15, fontWeight: "500" },
-  error: { color: "#f87171", fontSize: 14 },
+  body: {
+    color: semantics.mutedForeground,
+    fontFamily: mobileFonts.sansRegular,
+    fontSize: fontSizes.base,
+    lineHeight: 24,
+  },
+  emailText: {
+    color: semantics.foreground,
+    fontFamily: mobileFonts.sansSemibold,
+  },
+  footerText: {
+    color: semantics.mutedForeground,
+    fontFamily: mobileFonts.sansRegular,
+    fontSize: fontSizes.sm,
+  },
+  footerLink: {
+    color: semantics.foreground,
+    fontFamily: mobileFonts.sansSemibold,
+    textDecorationLine: "underline",
+  },
 })

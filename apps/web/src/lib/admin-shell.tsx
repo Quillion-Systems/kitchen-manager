@@ -56,7 +56,7 @@ function Layout({ children }: { children: ReactNode }) {
             to="/"
             className="text-xs uppercase tracking-widest text-neutral-500 hover:text-neutral-300"
           >
-            ← Kitchen Manager
+            ← Just in Thyme
           </Link>
           <h1 className="mt-4 text-2xl font-semibold">Admin</h1>
         </div>

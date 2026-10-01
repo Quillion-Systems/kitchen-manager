@@ -51,5 +51,5 @@ export const env = {
   SMTP_PORT: Number(optional("SMTP_PORT", "1025")),
   SMTP_USER: process.env.SMTP_USER,
   SMTP_PASS: process.env.SMTP_PASS,
-  EMAIL_FROM: optional("EMAIL_FROM", "Kitchen Manager <no-reply@kitchen-manager.local>"),
+  EMAIL_FROM: optional("EMAIL_FROM", "Just in Thyme <no-reply@kitchen-manager.local>"),
 }

@@ -1,0 +1,16 @@
+{
+  "name": "@kitchen-manager/design-tokens",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./tokens.css": "./src/tokens.css"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@kitchen-manager/tsconfig": "workspace:*",
+    "typescript": "^6.0.2"
+  }
+}

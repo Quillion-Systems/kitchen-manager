@@ -1,9 +1,12 @@
+import { fontSizes, mobileFonts, semantics } from "@kitchen-manager/design-tokens"
 import { Link } from "expo-router"
 import { useState } from "react"
 import { StyleSheet, Text } from "react-native"
 import { AuthShell } from "../../components/AuthShell"
+import { AuthTitle } from "../../components/AuthTitle"
+import { Button } from "../../components/Button"
+import { ErrorBanner } from "../../components/ErrorBanner"
 import { Field } from "../../components/Field"
-import { SubmitButton } from "../../components/SubmitButton"
 import { requestPasswordReset } from "../../lib/auth-client"
 
 export default function ForgotPassword() {
@@ -21,7 +24,10 @@ export default function ForgotPassword() {
     // redirectTo isn't strictly needed (the API rewrites the URL onto WEB_URL
     // itself in api/src/auth.ts) but Better Auth wants it for its own default-
     // URL path; harmless when the server-side override kicks in.
-    const result = await requestPasswordReset({ email, redirectTo: "/reset-password" })
+    const result = await requestPasswordReset({
+      email,
+      redirectTo: "/reset-password",
+    })
     setPending(false)
     // Better Auth returns 400 for "unknown email" — fall through to the
     // enumeration-safe success state. Real transport failures surface an error.
@@ -35,17 +41,21 @@ export default function ForgotPassword() {
   if (submitted) {
     return (
       <AuthShell
-        title="Check your email"
+        title={<AuthTitle prefix="Check your" italic="email" />}
+        subtitle={
+          <Text style={styles.subtitle}>
+            If an account exists for <Text style={styles.emailText}>{email}</Text>, we've sent a
+            link to reset the password. Open it and set a new one.
+          </Text>
+        }
         footer={
-          <Link href="/sign-in" style={styles.link}>
-            Back to sign in
-          </Link>
+          <Text style={styles.footerText}>
+            <Link href="/sign-in" style={styles.footerLink}>
+              Back to sign in
+            </Link>
+          </Text>
         }
       >
-        <Text style={styles.body}>
-          If an account exists for <Text style={styles.email}>{email}</Text>, we've sent a link to
-          reset the password. Open it and set a new one.
-        </Text>
         <Text style={styles.body}>
           The link expires shortly for security — request a new one if it does.
         </Text>
@@ -55,16 +65,18 @@ export default function ForgotPassword() {
 
   return (
     <AuthShell
-      title="Reset your password"
+      title={<AuthTitle prefix="Forgot" italic="password" />}
+      subtitle="Enter your account email and we'll send a link to set a new one."
       footer={
-        <Link href="/sign-in" style={styles.link}>
-          Back to sign in
-        </Link>
+        <Text style={styles.footerText}>
+          <Link href="/sign-in" style={styles.footerLink}>
+            Back to sign in
+          </Link>
+        </Text>
       }
     >
-      <Text style={styles.body}>
-        Enter your account email and we'll send a link to set a new password.
-      </Text>
+      {error ? <ErrorBanner testID="forgot-error">{error}</ErrorBanner> : null}
+
       <Field
         label="Email"
         testID="email-input"
@@ -76,21 +88,46 @@ export default function ForgotPassword() {
         autoComplete="email"
         textContentType="username"
       />
-      {error ? (
-        <Text testID="forgot-error" style={styles.error}>
-          {error}
-        </Text>
-      ) : null}
-      <SubmitButton testID="submit-button" pending={pending} onPress={onSubmit}>
+
+      <Button
+        testID="submit-button"
+        size="lg"
+        loading={pending}
+        disabled={!email}
+        onPress={onSubmit}
+      >
         Send reset link
-      </SubmitButton>
+      </Button>
     </AuthShell>
   )
 }
 
 const styles = StyleSheet.create({
-  link: { color: "#38bdf8" },
-  body: { color: "#a3a3a3", fontSize: 14, lineHeight: 20 },
-  email: { color: "#e5e5e5", fontWeight: "600" },
-  error: { color: "#f87171", fontSize: 14 },
+  subtitle: {
+    color: semantics.mutedForeground,
+    fontFamily: mobileFonts.sansRegular,
+    fontSize: fontSizes.base,
+    lineHeight: 24,
+    marginTop: 12,
+  },
+  body: {
+    color: semantics.mutedForeground,
+    fontFamily: mobileFonts.sansRegular,
+    fontSize: fontSizes.base,
+    lineHeight: 24,
+  },
+  emailText: {
+    color: semantics.foreground,
+    fontFamily: mobileFonts.sansSemibold,
+  },
+  footerText: {
+    color: semantics.mutedForeground,
+    fontFamily: mobileFonts.sansRegular,
+    fontSize: fontSizes.sm,
+  },
+  footerLink: {
+    color: semantics.foreground,
+    fontFamily: mobileFonts.sansSemibold,
+    textDecorationLine: "underline",
+  },
 })

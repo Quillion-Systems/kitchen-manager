@@ -253,7 +253,7 @@ function Home() {
         <AuthBar />
         <header className="mb-10">
           <h1 className="bg-gradient-to-r from-sky-400 to-indigo-400 bg-clip-text text-5xl font-bold tracking-tight text-transparent">
-            Kitchen Manager
+            Just in Thyme
           </h1>
           <p className="mt-2 italic text-neutral-400">web · desktop · mobile — one stack</p>
           <p className="mt-4 text-xs uppercase tracking-widest text-neutral-500">

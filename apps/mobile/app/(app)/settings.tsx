@@ -30,7 +30,7 @@ export default function Settings() {
         showsVerticalScrollIndicator={false}
       >
         <Link href="/" style={styles.back}>
-          ← Kitchen Manager
+          ← Just in Thyme
         </Link>
         <Text style={styles.title}>Settings</Text>
 

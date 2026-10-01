@@ -1,21 +1,24 @@
+import { fontSizes, mobileFonts, semantics } from "@kitchen-manager/design-tokens"
 import { Link } from "expo-router"
 import { useState } from "react"
-import { StyleSheet, Text } from "react-native"
+import { StyleSheet, Text, View } from "react-native"
 import { AuthShell } from "../../components/AuthShell"
+import { AuthTitle } from "../../components/AuthTitle"
+import { Button } from "../../components/Button"
+import { Checkbox } from "../../components/Checkbox"
 import { CheckYourEmail } from "../../components/CheckYourEmail"
+import { ErrorBanner } from "../../components/ErrorBanner"
 import { Field } from "../../components/Field"
-import { PasswordField } from "../../components/PasswordField"
-import { SubmitButton } from "../../components/SubmitButton"
+import { PasswordToggle } from "../../components/PasswordToggle"
 import { signIn } from "../../lib/auth-client"
 
 export default function SignIn() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
+  const [remember, setRemember] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
-  // Set when Better Auth rejects sign-in because the account exists but hasn't
-  // been verified. Swaps to CheckYourEmail (with a Resend button) instead of a
-  // dead-end error message.
   const [needsVerification, setNeedsVerification] = useState(false)
 
   async function onSubmit() {
@@ -31,22 +34,32 @@ export default function SignIn() {
       setError(result.error.message ?? "Could not sign in")
       return
     }
-    // On success, the root layout's guard re-renders into the (app) group.
+    // Root layout's guard swaps to (app) on next render.
   }
 
   if (needsVerification) {
-    return <CheckYourEmail email={email} title="Verify your email" />
+    return (
+      <CheckYourEmail email={email} title={<AuthTitle prefix="Verify your" italic="email" />} />
+    )
   }
 
   return (
     <AuthShell
-      title="Sign in"
+      title={<AuthTitle prefix="Welcome" italic="back" />}
+      subtitle="Sign in to access your recipes and weekly meal plans."
       footer={
-        <Link href="/sign-up" style={styles.link}>
-          Need an account? Sign up
-        </Link>
+        <Text style={styles.footerText}>
+          New to thyme?{" "}
+          <Link href="/sign-up" style={styles.footerLink}>
+            Create an account
+          </Link>
+        </Text>
       }
     >
+      {error ? (
+        <ErrorBanner testID="auth-error">{`${error}. Try again, or reset it below.`}</ErrorBanner>
+      ) : null}
+
       <Field
         label="Email"
         testID="email-input"
@@ -58,30 +71,66 @@ export default function SignIn() {
         autoComplete="email"
         textContentType="username"
       />
-      <PasswordField
+      <Field
+        label="Password"
         testID="password-input"
-        toggleTestID="password-toggle"
         value={password}
         onChangeText={setPassword}
+        secureTextEntry={!showPassword}
+        autoComplete="current-password"
         textContentType="password"
+        invalid={!!error}
+        rightSlot={
+          <PasswordToggle
+            testID="password-toggle"
+            show={showPassword}
+            onToggle={() => setShowPassword((s) => !s)}
+          />
+        }
       />
-      <Link href="/forgot-password" testID="forgot-link" style={styles.forgot}>
-        Forgot password?
-      </Link>
-      {error ? (
-        <Text testID="auth-error" style={styles.error}>
-          {error}
-        </Text>
-      ) : null}
-      <SubmitButton testID="submit-button" pending={pending} onPress={onSubmit}>
+
+      <View style={styles.row}>
+        <Checkbox checked={remember} onCheckedChange={setRemember}>
+          Remember me
+        </Checkbox>
+        <Link href="/forgot-password" testID="forgot-link" style={styles.forgotLink}>
+          Forgot password?
+        </Link>
+      </View>
+
+      <Button
+        testID="submit-button"
+        size="lg"
+        loading={pending}
+        disabled={!email || !password}
+        onPress={onSubmit}
+      >
         Sign in
-      </SubmitButton>
+      </Button>
     </AuthShell>
   )
 }
 
 const styles = StyleSheet.create({
-  link: { color: "#38bdf8" },
-  forgot: { color: "#a3a3a3", fontSize: 13, textAlign: "right" },
-  error: { color: "#f87171", fontSize: 14 },
+  row: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  forgotLink: {
+    color: semantics.foreground,
+    fontFamily: mobileFonts.sansSemibold,
+    fontSize: fontSizes.sm,
+    textDecorationLine: "underline",
+  },
+  footerText: {
+    color: semantics.mutedForeground,
+    fontFamily: mobileFonts.sansRegular,
+    fontSize: fontSizes.sm,
+  },
+  footerLink: {
+    color: semantics.foreground,
+    fontFamily: mobileFonts.sansSemibold,
+    textDecorationLine: "underline",
+  },
 })

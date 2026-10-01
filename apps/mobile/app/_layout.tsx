@@ -1,3 +1,11 @@
+import { BricolageGrotesque_400Regular } from "@expo-google-fonts/bricolage-grotesque/400Regular"
+import { BricolageGrotesque_500Medium } from "@expo-google-fonts/bricolage-grotesque/500Medium"
+import { BricolageGrotesque_600SemiBold } from "@expo-google-fonts/bricolage-grotesque/600SemiBold"
+import { BricolageGrotesque_700Bold } from "@expo-google-fonts/bricolage-grotesque/700Bold"
+import { BricolageGrotesque_800ExtraBold } from "@expo-google-fonts/bricolage-grotesque/800ExtraBold"
+import { useFonts } from "@expo-google-fonts/bricolage-grotesque/useFonts"
+import { InstrumentSerif_400Regular } from "@expo-google-fonts/instrument-serif/400Regular"
+import { InstrumentSerif_400Regular_Italic } from "@expo-google-fonts/instrument-serif/400Regular_Italic"
 import { Stack } from "expo-router"
 import { StatusBar } from "expo-status-bar"
 import { useRef } from "react"
@@ -17,11 +25,23 @@ import { useSession } from "../lib/auth-client"
 // of the CheckYourEmail screen. Only gate on isPending until we've seen data
 // resolve once; after that, trust the last-known session value.
 export default function RootLayout() {
+  const [fontsLoaded, fontError] = useFonts({
+    BricolageGrotesque_400Regular,
+    BricolageGrotesque_500Medium,
+    BricolageGrotesque_600SemiBold,
+    BricolageGrotesque_700Bold,
+    BricolageGrotesque_800ExtraBold,
+    InstrumentSerif_400Regular,
+    InstrumentSerif_400Regular_Italic,
+  })
   const { data: session, isPending } = useSession()
   const initialLoad = useRef(true)
   if (!isPending) initialLoad.current = false
 
-  if (isPending && initialLoad.current) {
+  // Font loading only matters on first render; once loaded (or failed), the
+  // state is stable and won't retrigger the splash. If fonts error out we
+  // proceed with system fallbacks rather than blocking the app forever.
+  if ((!fontsLoaded && !fontError) || (isPending && initialLoad.current)) {
     return (
       <View style={styles.center}>
         <StatusBar style="light" />

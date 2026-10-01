@@ -9,7 +9,7 @@ const sampleTasks = [
   { id: 1, title: "Set up the monorepo", done: true },
   { id: 2, title: "Stand up the web + desktop shells", done: true },
   { id: 3, title: "Get the mobile shell on a real device", done: true },
-  { id: 4, title: 'Figure out what a "task" actually is in Kitchen Manager', done: false },
+  { id: 4, title: 'Figure out what a "task" actually is in Just in Thyme', done: false },
 ]
 
 export default function Home() {
@@ -37,7 +37,7 @@ export default function Home() {
         </View>
       </View>
 
-      <Text style={styles.brand}>Kitchen Manager</Text>
+      <Text style={styles.brand}>Just in Thyme</Text>
       <Text style={styles.tag}>web · desktop · mobile — one stack</Text>
       <Text style={styles.eyebrow}>Native shell · signed in</Text>
 
