@@ -1,41 +1,69 @@
-import { StyleSheet, Text, TextInput, type TextInputProps, View } from "react-native"
+import {
+  fontSizes,
+  mobileFonts,
+  semantics,
+} from "@kitchen-manager/design-tokens"
+import type { ReactNode } from "react"
+import { StyleSheet, Text, View } from "react-native"
+import { Input, type InputProps } from "./Input"
 
-type Props = {
-  label: string
-  value: string
-  onChangeText: (value: string) => void
-  testID?: string
-} & Pick<
-  TextInputProps,
-  "autoCapitalize" | "autoComplete" | "autoCorrect" | "keyboardType" | "textContentType"
->
+export type FieldProps = InputProps & {
+  label: ReactNode
+  hint?: ReactNode
+  error?: ReactNode
+}
 
-export function Field({ label, value, onChangeText, testID, ...inputProps }: Props) {
+export function Field({
+  label,
+  hint,
+  error,
+  accessibilityLabel,
+  ...inputProps
+}: FieldProps) {
+  const invalid = !!error
+  const resolvedA11yLabel =
+    accessibilityLabel ?? (typeof label === "string" ? label : undefined)
+
   return (
-    <View>
+    <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
-      <TextInput
-        testID={testID}
-        style={styles.input}
-        placeholderTextColor="#525252"
-        value={value}
-        onChangeText={onChangeText}
+      <Input
         {...inputProps}
+        accessibilityLabel={resolvedA11yLabel}
+        invalid={invalid}
       />
+      {error ? (
+        typeof error === "string" ? (
+          <Text style={styles.error}>{error}</Text>
+        ) : (
+          error
+        )
+      ) : hint ? (
+        typeof hint === "string" ? (
+          <Text style={styles.hint}>{hint}</Text>
+        ) : (
+          hint
+        )
+      ) : null}
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  label: { color: "#a3a3a3", fontSize: 13, marginBottom: 6 },
-  input: {
-    backgroundColor: "#0a0a0a",
-    borderColor: "#404040",
-    borderRadius: 8,
-    borderWidth: 1,
-    color: "#e5e5e5",
-    fontSize: 15,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
+  container: { gap: 8 },
+  error: {
+    color: semantics.destructive,
+    fontFamily: mobileFonts.sansRegular,
+    fontSize: fontSizes.sm,
+  },
+  hint: {
+    color: semantics.mutedForeground,
+    fontFamily: mobileFonts.sansRegular,
+    fontSize: fontSizes.sm,
+  },
+  label: {
+    color: semantics.foreground,
+    fontFamily: mobileFonts.sansMedium,
+    fontSize: fontSizes.sm,
   },
 })

@@ -60,7 +60,8 @@
   --color-soft-foreground: var(--color-forest-800);
 
   --color-border: var(--color-cream-300);
-  --color-input: var(--color-cream-300);
+  --color-input: var(--color-forest-300);
+  --color-input-background: #ffffff;
   --color-ring: var(--color-forest-700);
 
   --color-success: var(--color-leaf-500);

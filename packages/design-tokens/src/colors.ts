@@ -72,7 +72,8 @@ export const semantics = {
   softForeground: primitives.forest[800],
 
   border: primitives.cream[300],
-  input: primitives.cream[300],
+  input: primitives.forest[300],
+  inputBackground: primitives.white,
   ring: primitives.forest[700],
 
   success: primitives.leaf[500],
