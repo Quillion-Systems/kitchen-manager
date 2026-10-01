@@ -1,8 +1,4 @@
-import {
-  fontSizes,
-  mobileFonts,
-  semantics,
-} from "@kitchen-manager/design-tokens"
+import { fontSizes, mobileFonts, semantics } from "@kitchen-manager/design-tokens"
 import { useRouter } from "expo-router"
 import { StatusBar } from "expo-status-bar"
 import { ChevronLeft } from "lucide-react-native"
@@ -45,10 +41,7 @@ export function AuthShell({
     >
       <StatusBar style="dark" />
       <ScrollView
-        contentContainerStyle={[
-          styles.scroll,
-          { paddingTop: insets.top + 16 },
-        ]}
+        contentContainerStyle={[styles.scroll, { paddingTop: insets.top + 16 }]}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
@@ -63,9 +56,7 @@ export function AuthShell({
           </Pressable>
         ) : null}
 
-        <Text style={styles.title}>
-          {typeof title === "string" ? title : title}
-        </Text>
+        <Text style={styles.title}>{typeof title === "string" ? title : title}</Text>
         {subtitle ? (
           typeof subtitle === "string" ? (
             <Text style={styles.subtitle}>{subtitle}</Text>
@@ -78,11 +69,7 @@ export function AuthShell({
 
         {footer ? (
           <View style={styles.footer}>
-            {typeof footer === "string" ? (
-              <Text style={styles.footerText}>{footer}</Text>
-            ) : (
-              footer
-            )}
+            {typeof footer === "string" ? <Text style={styles.footerText}>{footer}</Text> : footer}
           </View>
         ) : null}
       </ScrollView>

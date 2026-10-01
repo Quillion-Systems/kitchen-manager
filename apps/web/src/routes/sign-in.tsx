@@ -3,8 +3,8 @@ import { type FormEvent, useState } from "react"
 import { AuthShell } from "#/components/auth-shell"
 import { AuthTitle } from "#/components/auth-title"
 import { Button } from "#/components/button"
-import { Checkbox } from "#/components/checkbox"
 import { CheckYourEmail } from "#/components/check-your-email"
+import { Checkbox } from "#/components/checkbox"
 import { ErrorBanner } from "#/components/error-banner"
 import { Field } from "#/components/field"
 import { PasswordToggle } from "#/components/password-toggle"
@@ -41,10 +41,7 @@ function SignIn() {
 
   if (needsVerification) {
     return (
-      <CheckYourEmail
-        email={email}
-        title={<AuthTitle prefix="Verify your" italic="email" />}
-      />
+      <CheckYourEmail email={email} title={<AuthTitle prefix="Verify your" italic="email" />} />
     )
   }
 
@@ -65,9 +62,7 @@ function SignIn() {
       }
     >
       <form onSubmit={onSubmit} className="flex flex-col gap-5">
-        {error ? (
-          <ErrorBanner>{error}. Try again, or reset it below.</ErrorBanner>
-        ) : null}
+        {error ? <ErrorBanner>{error}. Try again, or reset it below.</ErrorBanner> : null}
 
         <Field
           label="Email"
@@ -86,10 +81,7 @@ function SignIn() {
           onChange={(e) => setPassword(e.target.value)}
           invalid={!!error}
           rightSlot={
-            <PasswordToggle
-              show={showPassword}
-              onToggle={() => setShowPassword((s) => !s)}
-            />
+            <PasswordToggle show={showPassword} onToggle={() => setShowPassword((s) => !s)} />
           }
         />
 
@@ -105,12 +97,7 @@ function SignIn() {
           </Link>
         </div>
 
-        <Button
-          type="submit"
-          loading={pending}
-          disabled={!email || !password}
-          className="w-full"
-        >
+        <Button type="submit" loading={pending} disabled={!email || !password} className="w-full">
           Sign in
         </Button>
       </form>

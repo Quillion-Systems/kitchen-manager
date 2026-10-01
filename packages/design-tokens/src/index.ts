@@ -7,14 +7,14 @@ export {
 } from "./colors"
 export {
   type FontFamilies,
-  fontFamilies,
   type FontSizes,
-  fontSizes,
   type FontWeights,
+  fontFamilies,
+  fontSizes,
   fontWeights,
   type LetterSpacings,
-  letterSpacings,
   type LineHeights,
+  letterSpacings,
   lineHeights,
   type MobileFonts,
   mobileFonts,

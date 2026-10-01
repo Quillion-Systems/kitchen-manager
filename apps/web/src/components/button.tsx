@@ -52,16 +52,13 @@ export function Button({
   const merged = className ? `${classes} ${className}` : classes
   return (
     <button
-      // biome-ignore lint/a11y/useButtonType: default narrowed above
       type={type}
       disabled={disabled || loading}
       aria-busy={loading || undefined}
       className={merged}
       {...rest}
     >
-      <span
-        className={`inline-flex items-center gap-2${loading ? " opacity-0" : ""}`}
-      >
+      <span className={`inline-flex items-center gap-2${loading ? " opacity-0" : ""}`}>
         {children}
       </span>
       {loading && (
@@ -75,20 +72,8 @@ export function Button({
 
 function Spinner() {
   return (
-    <svg
-      className="h-4 w-4 animate-spin"
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden="true"
-    >
-      <circle
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="3"
-        strokeOpacity="0.25"
-      />
+    <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity="0.25" />
       <path
         d="M12 2a10 10 0 0 1 10 10"
         stroke="currentColor"

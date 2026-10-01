@@ -72,8 +72,8 @@
   --color-destructive-foreground: var(--color-cream-50);
 
   /* ─── Typography — families ────────────────────────── */
-  --font-sans: "Bricolage Grotesque Variable", "Bricolage Grotesque", system-ui,
-    -apple-system, sans-serif;
+  --font-sans:
+    "Bricolage Grotesque Variable", "Bricolage Grotesque", system-ui, -apple-system, sans-serif;
   --font-serif: "Instrument Serif", Georgia, serif;
 
   /* ─── Typography — weights ─────────────────────────── */

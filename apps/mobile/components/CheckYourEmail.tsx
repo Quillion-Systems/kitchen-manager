@@ -1,8 +1,4 @@
-import {
-  fontSizes,
-  mobileFonts,
-  semantics,
-} from "@kitchen-manager/design-tokens"
+import { fontSizes, mobileFonts, semantics } from "@kitchen-manager/design-tokens"
 import { Link } from "expo-router"
 import { type ReactNode, useState } from "react"
 import { StyleSheet, Text } from "react-native"
@@ -15,16 +11,8 @@ import { ErrorBanner } from "./ErrorBanner"
 // Shown after sign-up and reused when an unverified user tries to sign in: the
 // account exists but is gated until the emailed link is clicked. Offers a
 // resend so the user has a path forward if the mail didn't arrive.
-export function CheckYourEmail({
-  email,
-  title,
-}: {
-  email: string
-  title?: ReactNode
-}) {
-  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
-    "idle",
-  )
+export function CheckYourEmail({ email, title }: { email: string; title?: ReactNode }) {
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle")
 
   async function onResend() {
     setStatus("sending")
@@ -37,9 +25,8 @@ export function CheckYourEmail({
       title={title ?? <AuthTitle prefix="Check your" italic="email" />}
       subtitle={
         <Text style={styles.subtitle}>
-          We sent a verification link to{" "}
-          <Text style={styles.emailText}>{email}</Text>. Open it to activate
-          your account.
+          We sent a verification link to <Text style={styles.emailText}>{email}</Text>. Open it to
+          activate your account.
         </Text>
       }
       footer={
@@ -50,9 +37,7 @@ export function CheckYourEmail({
         </Text>
       }
     >
-      <Text style={styles.body}>
-        Didn't get it? Check spam, or resend below.
-      </Text>
+      <Text style={styles.body}>Didn't get it? Check spam, or resend below.</Text>
       {status === "error" ? (
         <ErrorBanner testID="resend-error">
           Couldn't resend right now. Try again in a moment.

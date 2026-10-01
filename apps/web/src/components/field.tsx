@@ -8,13 +8,7 @@ export type FieldProps = Omit<InputProps, "id"> & {
   error?: ReactNode
 }
 
-export function Field({
-  label,
-  hint,
-  error,
-  id: idProp,
-  ...inputProps
-}: FieldProps) {
+export function Field({ label, hint, error, id: idProp, ...inputProps }: FieldProps) {
   const autoId = useId()
   const id = idProp ?? autoId
   const errorId = `${id}-err`
@@ -24,10 +18,7 @@ export function Field({
 
   return (
     <div className="flex flex-col gap-2">
-      <label
-        htmlFor={id}
-        className="font-sans text-sm font-medium text-foreground"
-      >
+      <label htmlFor={id} className="font-sans text-sm font-medium text-foreground">
         {label}
       </label>
       <Input

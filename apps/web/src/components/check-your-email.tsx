@@ -16,9 +16,7 @@ export function CheckYourEmail({
   email: string
   title?: ReactNode
 }) {
-  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
-    "idle",
-  )
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle")
 
   async function onResend() {
     setStatus("sending")
@@ -32,8 +30,8 @@ export function CheckYourEmail({
       subtitle={
         <>
           We sent a verification link to{" "}
-          <span className="font-semibold text-foreground">{email}</span>. Click
-          it to activate your account.
+          <span className="font-semibold text-foreground">{email}</span>. Click it to activate your
+          account.
         </>
       }
       headerRight={
@@ -50,9 +48,7 @@ export function CheckYourEmail({
           Didn't get it? Check spam, or resend below.
         </p>
         {status === "error" ? (
-          <ErrorBanner>
-            Couldn't resend right now. Try again in a moment.
-          </ErrorBanner>
+          <ErrorBanner>Couldn't resend right now. Try again in a moment.</ErrorBanner>
         ) : null}
         <Button
           variant="secondary"

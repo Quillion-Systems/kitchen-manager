@@ -1,8 +1,4 @@
-import {
-  fontSizes,
-  mobileFonts,
-  semantics,
-} from "@kitchen-manager/design-tokens"
+import { fontSizes, mobileFonts, semantics } from "@kitchen-manager/design-tokens"
 import { Link } from "expo-router"
 import { useState } from "react"
 import { StyleSheet, Text, View } from "react-native"
@@ -43,10 +39,7 @@ export default function SignIn() {
 
   if (needsVerification) {
     return (
-      <CheckYourEmail
-        email={email}
-        title={<AuthTitle prefix="Verify your" italic="email" />}
-      />
+      <CheckYourEmail email={email} title={<AuthTitle prefix="Verify your" italic="email" />} />
     )
   }
 
@@ -64,9 +57,7 @@ export default function SignIn() {
       }
     >
       {error ? (
-        <ErrorBanner testID="auth-error">
-          {`${error}. Try again, or reset it below.`}
-        </ErrorBanner>
+        <ErrorBanner testID="auth-error">{`${error}. Try again, or reset it below.`}</ErrorBanner>
       ) : null}
 
       <Field

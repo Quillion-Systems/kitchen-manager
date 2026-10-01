@@ -1,8 +1,4 @@
-import {
-  fontSizes,
-  mobileFonts,
-  semantics,
-} from "@kitchen-manager/design-tokens"
+import { fontSizes, mobileFonts, semantics } from "@kitchen-manager/design-tokens"
 import { Link } from "expo-router"
 import { useState } from "react"
 import { StyleSheet, Text } from "react-native"
@@ -48,9 +44,8 @@ export default function ForgotPassword() {
         title={<AuthTitle prefix="Check your" italic="email" />}
         subtitle={
           <Text style={styles.subtitle}>
-            If an account exists for{" "}
-            <Text style={styles.emailText}>{email}</Text>, we've sent a link to
-            reset the password. Open it and set a new one.
+            If an account exists for <Text style={styles.emailText}>{email}</Text>, we've sent a
+            link to reset the password. Open it and set a new one.
           </Text>
         }
         footer={

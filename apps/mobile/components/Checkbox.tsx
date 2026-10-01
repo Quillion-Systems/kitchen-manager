@@ -1,8 +1,4 @@
-import {
-  fontSizes,
-  mobileFonts,
-  semantics,
-} from "@kitchen-manager/design-tokens"
+import { fontSizes, mobileFonts, semantics } from "@kitchen-manager/design-tokens"
 import { Check } from "lucide-react-native"
 import type { ReactNode } from "react"
 import { Pressable, StyleSheet, Text, View } from "react-native"
@@ -29,8 +25,7 @@ export function Checkbox({
       accessibilityRole="checkbox"
       accessibilityState={{ checked, disabled }}
       accessibilityLabel={
-        accessibilityLabel ??
-        (typeof children === "string" ? children : undefined)
+        accessibilityLabel ?? (typeof children === "string" ? children : undefined)
       }
       disabled={disabled}
       onPress={() => onCheckedChange(!checked)}

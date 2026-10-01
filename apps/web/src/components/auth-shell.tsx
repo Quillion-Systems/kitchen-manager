@@ -18,9 +18,7 @@ export function AuthShell({
         <Link to="/" aria-label="Thyme home">
           <Wordmark />
         </Link>
-        {headerRight ? (
-          <div className="text-sm text-foreground">{headerRight}</div>
-        ) : null}
+        {headerRight ? <div className="text-sm text-foreground">{headerRight}</div> : null}
       </header>
 
       <div className="flex flex-1 items-center justify-center px-6 pb-12">
@@ -28,9 +26,7 @@ export function AuthShell({
           <h1 className="font-sans text-5xl font-extrabold tracking-tighter text-foreground">
             {title}
           </h1>
-          {subtitle ? (
-            <p className="mt-3 text-base text-muted-foreground">{subtitle}</p>
-          ) : null}
+          {subtitle ? <p className="mt-3 text-base text-muted-foreground">{subtitle}</p> : null}
           <div className="mt-8">{children}</div>
         </div>
       </div>

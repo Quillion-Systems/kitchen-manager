@@ -38,10 +38,7 @@ function Verified() {
       title={<AuthTitle prefix="Email" italic="verified" />}
       subtitle="Your email is confirmed. You can now sign in to thyme."
     >
-      <VerifiedCta
-        schemeUrl="kitchenmanager://sign-in"
-        webFallbackHref="/sign-in"
-      />
+      <VerifiedCta schemeUrl="kitchenmanager://sign-in" webFallbackHref="/sign-in" />
     </AuthShell>
   )
 }

@@ -57,9 +57,7 @@ function ResetPassword() {
     const result = await resetPassword({ newPassword: next, token })
     setPending(false)
     if (result.error) {
-      setError(
-        result.error.message ?? "That reset link is invalid or has expired.",
-      )
+      setError(result.error.message ?? "That reset link is invalid or has expired.")
       return
     }
     setDone(true)
@@ -71,10 +69,7 @@ function ResetPassword() {
         title={<AuthTitle prefix="Password" italic="updated" />}
         subtitle="Your password is set. Sign in with your new password."
       >
-        <VerifiedCta
-          schemeUrl="kitchenmanager://sign-in"
-          webFallbackHref="/sign-in"
-        />
+        <VerifiedCta schemeUrl="kitchenmanager://sign-in" webFallbackHref="/sign-in" />
       </AuthShell>
     )
   }
@@ -101,12 +96,7 @@ function ResetPassword() {
           required
           value={next}
           onChange={(e) => setNext(e.target.value)}
-          rightSlot={
-            <PasswordToggle
-              show={showNext}
-              onToggle={() => setShowNext((s) => !s)}
-            />
-          }
+          rightSlot={<PasswordToggle show={showNext} onToggle={() => setShowNext((s) => !s)} />}
         />
         <Field
           label="Confirm new password"
@@ -117,18 +107,10 @@ function ResetPassword() {
           onChange={(e) => setConfirm(e.target.value)}
           error={mismatch ? "Passwords don't match" : undefined}
           rightSlot={
-            <PasswordToggle
-              show={showConfirm}
-              onToggle={() => setShowConfirm((s) => !s)}
-            />
+            <PasswordToggle show={showConfirm} onToggle={() => setShowConfirm((s) => !s)} />
           }
         />
-        <Button
-          type="submit"
-          loading={pending}
-          disabled={!canSubmit}
-          className="w-full"
-        >
+        <Button type="submit" loading={pending} disabled={!canSubmit} className="w-full">
           Reset password
         </Button>
       </form>

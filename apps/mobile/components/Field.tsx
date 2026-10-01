@@ -1,8 +1,4 @@
-import {
-  fontSizes,
-  mobileFonts,
-  semantics,
-} from "@kitchen-manager/design-tokens"
+import { fontSizes, mobileFonts, semantics } from "@kitchen-manager/design-tokens"
 import type { ReactNode } from "react"
 import { StyleSheet, Text, View } from "react-native"
 import { Input, type InputProps } from "./Input"
@@ -13,25 +9,14 @@ export type FieldProps = InputProps & {
   error?: ReactNode
 }
 
-export function Field({
-  label,
-  hint,
-  error,
-  accessibilityLabel,
-  ...inputProps
-}: FieldProps) {
+export function Field({ label, hint, error, accessibilityLabel, ...inputProps }: FieldProps) {
   const invalid = !!error
-  const resolvedA11yLabel =
-    accessibilityLabel ?? (typeof label === "string" ? label : undefined)
+  const resolvedA11yLabel = accessibilityLabel ?? (typeof label === "string" ? label : undefined)
 
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
-      <Input
-        {...inputProps}
-        accessibilityLabel={resolvedA11yLabel}
-        invalid={invalid}
-      />
+      <Input {...inputProps} accessibilityLabel={resolvedA11yLabel} invalid={invalid} />
       {error ? (
         typeof error === "string" ? (
           <Text style={styles.error}>{error}</Text>

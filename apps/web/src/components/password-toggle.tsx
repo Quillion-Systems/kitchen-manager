@@ -1,10 +1,4 @@
-export function PasswordToggle({
-  show,
-  onToggle,
-}: {
-  show: boolean
-  onToggle: () => void
-}) {
+export function PasswordToggle({ show, onToggle }: { show: boolean; onToggle: () => void }) {
   return (
     <button
       type="button"

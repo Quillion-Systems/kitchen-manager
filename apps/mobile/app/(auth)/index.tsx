@@ -1,8 +1,4 @@
-import {
-  fontSizes,
-  mobileFonts,
-  primitives,
-} from "@kitchen-manager/design-tokens"
+import { fontSizes, mobileFonts, primitives } from "@kitchen-manager/design-tokens"
 import { useRouter } from "expo-router"
 import { StatusBar } from "expo-status-bar"
 import { Pressable, StyleSheet, Text, View } from "react-native"
@@ -29,32 +25,22 @@ export default function Welcome() {
           <Text style={styles.title}>Tonight's dinner,</Text>
           <Text style={styles.titleItalic}>sorted</Text>
           <Text style={styles.subtitle}>
-            Save the recipes you love, plan your week, and shop from one
-            simple list.
+            Save the recipes you love, plan your week, and shop from one simple list.
           </Text>
         </View>
 
         <View style={styles.actions}>
-          <Button
-            variant="accent"
-            size="lg"
-            onPress={() => router.push("/sign-up")}
-          >
+          <Button variant="accent" size="lg" onPress={() => router.push("/sign-up")}>
             Create account
           </Button>
           <Pressable
             accessibilityRole="button"
             onPress={() => router.push("/sign-in")}
-            style={({ pressed }) => [
-              styles.signInButton,
-              pressed && styles.signInButtonPressed,
-            ]}
+            style={({ pressed }) => [styles.signInButton, pressed && styles.signInButtonPressed]}
           >
             <Text style={styles.signInText}>Sign in</Text>
           </Pressable>
-          <Text style={styles.legal}>
-            By continuing you agree to our Terms and Privacy Policy.
-          </Text>
+          <Text style={styles.legal}>By continuing you agree to our Terms and Privacy Policy.</Text>
         </View>
       </SafeAreaView>
     </View>

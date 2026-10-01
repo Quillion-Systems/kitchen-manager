@@ -1,28 +1,13 @@
-import {
-  fontSizes,
-  mobileFonts,
-  primitives,
-  semantics,
-} from "@kitchen-manager/design-tokens"
+import { fontSizes, mobileFonts, primitives, semantics } from "@kitchen-manager/design-tokens"
 import { X } from "lucide-react-native"
 import type { ReactNode } from "react"
 import { StyleSheet, Text, View } from "react-native"
 
-export function ErrorBanner({
-  children,
-  testID,
-}: {
-  children: ReactNode
-  testID?: string
-}) {
+export function ErrorBanner({ children, testID }: { children: ReactNode; testID?: string }) {
   return (
     <View testID={testID} style={styles.banner}>
       <View style={styles.icon}>
-        <X
-          size={14}
-          color={semantics.destructiveForeground}
-          strokeWidth={3}
-        />
+        <X size={14} color={semantics.destructiveForeground} strokeWidth={3} />
       </View>
       <Text style={styles.text}>{children}</Text>
     </View>

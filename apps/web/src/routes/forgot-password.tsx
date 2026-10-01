@@ -46,8 +46,7 @@ function ForgotPassword() {
         title={<AuthTitle prefix="Check your" italic="email" />}
         subtitle={
           <>
-            If an account exists for{" "}
-            <span className="font-semibold text-foreground">{email}</span>,
+            If an account exists for <span className="font-semibold text-foreground">{email}</span>,
             we've sent a link to reset the password. Open it and set a new one.
           </>
         }
@@ -90,12 +89,7 @@ function ForgotPassword() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <Button
-          type="submit"
-          loading={pending}
-          disabled={!email}
-          className="w-full"
-        >
+        <Button type="submit" loading={pending} disabled={!email} className="w-full">
           Send reset link
         </Button>
       </form>

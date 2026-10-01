@@ -90,10 +90,7 @@ function SignUp() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           rightSlot={
-            <PasswordToggle
-              show={showPassword}
-              onToggle={() => setShowPassword((s) => !s)}
-            />
+            <PasswordToggle show={showPassword} onToggle={() => setShowPassword((s) => !s)} />
           }
         />
 

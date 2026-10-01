@@ -1,16 +1,6 @@
-import {
-  fontSizes,
-  mobileFonts,
-  semantics,
-} from "@kitchen-manager/design-tokens"
+import { fontSizes, mobileFonts, semantics } from "@kitchen-manager/design-tokens"
 import { type ReactNode, useState } from "react"
-import {
-  StyleSheet,
-  TextInput,
-  type TextInputProps,
-  View,
-  type ViewStyle,
-} from "react-native"
+import { StyleSheet, TextInput, type TextInputProps, View, type ViewStyle } from "react-native"
 
 export type InputProps = Omit<TextInputProps, "style"> & {
   invalid?: boolean
@@ -39,19 +29,11 @@ export function Input({
       : disabled
         ? semantics.border
         : semantics.input
-  const backgroundColor = disabled
-    ? semantics.muted
-    : semantics.inputBackground
+  const backgroundColor = disabled ? semantics.muted : semantics.inputBackground
   const textColor = disabled ? semantics.mutedForeground : semantics.foreground
 
   return (
-    <View
-      style={[
-        styles.container,
-        { backgroundColor, borderColor },
-        containerStyle,
-      ]}
-    >
+    <View style={[styles.container, { backgroundColor, borderColor }, containerStyle]}>
       {leftSlot ? <View style={styles.slotLeft}>{leftSlot}</View> : null}
       <TextInput
         placeholderTextColor={semantics.mutedForeground}

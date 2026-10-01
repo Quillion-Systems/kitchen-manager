@@ -1,8 +1,4 @@
-import {
-  fontSizes,
-  mobileFonts,
-  semantics,
-} from "@kitchen-manager/design-tokens"
+import { fontSizes, mobileFonts, semantics } from "@kitchen-manager/design-tokens"
 import type { ReactNode } from "react"
 import {
   ActivityIndicator,
@@ -15,14 +11,7 @@ import {
   type ViewStyle,
 } from "react-native"
 
-type Variant =
-  | "primary"
-  | "accent"
-  | "secondary"
-  | "soft"
-  | "ghost"
-  | "destructive"
-  | "white"
+type Variant = "primary" | "accent" | "secondary" | "soft" | "ghost" | "destructive" | "white"
 type Size = "sm" | "md" | "lg"
 
 export type ButtonProps = Omit<PressableProps, "style" | "children"> & {
@@ -42,8 +31,7 @@ export function Button({
 }: ButtonProps) {
   const sizeDef = sizeStyles[size]
   const variantDef = variantStyles[variant]
-  const containerSize =
-    variant === "ghost" ? sizeDef.containerGhost : sizeDef.container
+  const containerSize = variant === "ghost" ? sizeDef.containerGhost : sizeDef.container
   const isInteractive = !disabled && !loading
   const hitSlop = size === "sm" ? 8 : undefined
 
@@ -122,10 +110,7 @@ const sizeStyles: Record<
   },
 }
 
-const variantStyles: Record<
-  Variant,
-  { container: ViewStyle; label: TextStyle }
-> = {
+const variantStyles: Record<Variant, { container: ViewStyle; label: TextStyle }> = {
   primary: {
     container: { backgroundColor: semantics.primary },
     label: { color: semantics.accent, fontFamily: mobileFonts.sansBold },

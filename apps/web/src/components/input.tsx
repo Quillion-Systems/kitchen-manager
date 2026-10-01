@@ -20,13 +20,7 @@ export type InputProps = InputHTMLAttributes<HTMLInputElement> &
     rightSlot?: ReactNode
   }
 
-export function Input({
-  invalid,
-  leftSlot,
-  rightSlot,
-  className,
-  ...rest
-}: InputProps) {
+export function Input({ invalid, leftSlot, rightSlot, className, ...rest }: InputProps) {
   const base = inputVariants({ invalid })
 
   if (!leftSlot && !rightSlot) {
