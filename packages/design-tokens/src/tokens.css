@@ -41,10 +41,10 @@
   --color-leaf-500: #6e9a2e;
 
   /* ─── Semantics (role-based) ───────────────────────── */
-  --color-background: var(--color-cream-50);
+  --color-background: var(--color-cream-100);
   --color-foreground: var(--color-forest-900);
 
-  --color-surface: var(--color-cream-100);
+  --color-surface: var(--color-cream-50);
   --color-surface-foreground: var(--color-forest-900);
 
   --color-muted: var(--color-cream-200);

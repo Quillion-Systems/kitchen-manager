@@ -53,10 +53,10 @@ export const primitives = {
 } as const
 
 export const semantics = {
-  background: primitives.cream[50],
+  background: primitives.cream[100],
   foreground: primitives.forest[900],
 
-  surface: primitives.cream[100],
+  surface: primitives.cream[50],
   surfaceForeground: primitives.forest[900],
 
   muted: primitives.cream[200],

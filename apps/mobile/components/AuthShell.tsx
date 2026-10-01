@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   scroll: { flexGrow: 1, paddingBottom: 32, paddingHorizontal: 24 },
   backButton: {
     alignItems: "center",
-    backgroundColor: semantics.muted,
+    backgroundColor: semantics.surface,
     borderRadius: 22,
     height: 44,
     justifyContent: "center",
