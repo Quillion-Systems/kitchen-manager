@@ -5,6 +5,7 @@ import { BricolageGrotesque_700Bold } from "@expo-google-fonts/bricolage-grotesq
 import { BricolageGrotesque_800ExtraBold } from "@expo-google-fonts/bricolage-grotesque/800ExtraBold"
 import { useFonts } from "@expo-google-fonts/bricolage-grotesque/useFonts"
 import { InstrumentSerif_400Regular } from "@expo-google-fonts/instrument-serif/400Regular"
+import { InstrumentSerif_400Regular_Italic } from "@expo-google-fonts/instrument-serif/400Regular_Italic"
 import { Stack } from "expo-router"
 import { StatusBar } from "expo-status-bar"
 import { useRef } from "react"
@@ -31,6 +32,7 @@ export default function RootLayout() {
     BricolageGrotesque_700Bold,
     BricolageGrotesque_800ExtraBold,
     InstrumentSerif_400Regular,
+    InstrumentSerif_400Regular_Italic,
   })
   const { data: session, isPending } = useSession()
   const initialLoad = useRef(true)

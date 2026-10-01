@@ -32,6 +32,7 @@ export const mobileFonts = {
   sansBold: "BricolageGrotesque_700Bold",
   sansExtrabold: "BricolageGrotesque_800ExtraBold",
   serifRegular: "InstrumentSerif_400Regular",
+  serifItalic: "InstrumentSerif_400Regular_Italic",
 } as const
 
 /** Numeric scale in px. Overrides Tailwind's defaults from text-lg upward. */

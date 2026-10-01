@@ -27,7 +27,6 @@ const styles = StyleSheet.create({
     lineHeight: 48,
   },
   italic: {
-    fontFamily: mobileFonts.serifRegular,
-    fontStyle: "italic",
+    fontFamily: mobileFonts.serifItalic,
   },
 })

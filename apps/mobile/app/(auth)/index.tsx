@@ -83,9 +83,8 @@ const styles = StyleSheet.create({
   },
   titleItalic: {
     color: primitives.lime[500],
-    fontFamily: mobileFonts.serifRegular,
+    fontFamily: mobileFonts.serifItalic,
     fontSize: 52,
-    fontStyle: "italic",
     lineHeight: 56,
     marginTop: 4,
   },
