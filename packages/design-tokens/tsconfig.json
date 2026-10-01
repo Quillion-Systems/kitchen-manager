@@ -1,0 +1,7 @@
+{
+  "extends": "@kitchen-manager/tsconfig/base.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": ["src/**/*.ts"]
+}

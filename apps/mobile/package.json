@@ -5,6 +5,7 @@
   "dependencies": {
     "@better-auth/expo": "1.4.22",
     "@kitchen-manager/api-client": "workspace:*",
+    "@kitchen-manager/design-tokens": "workspace:*",
     "@kitchen-manager/powersync": "workspace:*",
     "@powersync/react": "^2.0.0",
     "@powersync/react-native": "^2.0.2",

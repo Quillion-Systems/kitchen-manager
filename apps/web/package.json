@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@kitchen-manager/api-client": "workspace:*",
+    "@kitchen-manager/design-tokens": "workspace:*",
     "@kitchen-manager/powersync": "workspace:*",
     "@powersync/common": "^2.0.0",
     "@powersync/react": "^2.0.0",
