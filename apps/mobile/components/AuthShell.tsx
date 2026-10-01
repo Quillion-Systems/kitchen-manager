@@ -47,7 +47,7 @@ export function AuthShell({
             onPress={() => router.back()}
             style={styles.backButton}
           >
-            <ChevronLeft size={22} color={semantics.foreground} />
+            <ChevronLeft size={24} color={semantics.foreground} />
           </Pressable>
         ) : null}
 
@@ -83,11 +83,12 @@ const styles = StyleSheet.create({
   scroll: { flexGrow: 1, paddingHorizontal: 24, paddingBottom: 32, paddingTop: 24 },
   backButton: {
     alignItems: "center",
-    backgroundColor: semantics.surface,
-    borderRadius: 999,
+    backgroundColor: semantics.muted,
+    borderRadius: 22,
     height: 44,
     justifyContent: "center",
     marginBottom: 16,
+    overflow: "hidden",
     width: 44,
   },
   title: {
