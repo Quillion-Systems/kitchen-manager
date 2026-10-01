@@ -66,7 +66,7 @@ function SignIn() {
     >
       <form onSubmit={onSubmit} className="flex flex-col gap-5">
         {error ? (
-          <ErrorBanner>{error} Try again, or reset it below.</ErrorBanner>
+          <ErrorBanner>{error}. Try again, or reset it below.</ErrorBanner>
         ) : null}
 
         <Field
@@ -84,7 +84,7 @@ function SignIn() {
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          error={error ? "Incorrect password. Try again or reset it." : undefined}
+          invalid={!!error}
           rightSlot={
             <PasswordToggle
               show={showPassword}

@@ -24,11 +24,7 @@ export function ErrorBanner({
           strokeWidth={3}
         />
       </View>
-      {typeof children === "string" ? (
-        <Text style={styles.text}>{children}</Text>
-      ) : (
-        children
-      )}
+      <Text style={styles.text}>{children}</Text>
     </View>
   )
 }

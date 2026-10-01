@@ -65,7 +65,7 @@ export default function SignIn() {
     >
       {error ? (
         <ErrorBanner testID="auth-error">
-          {error} Try again, or reset it below.
+          {`${error}. Try again, or reset it below.`}
         </ErrorBanner>
       ) : null}
 
@@ -88,7 +88,7 @@ export default function SignIn() {
         secureTextEntry={!showPassword}
         autoComplete="current-password"
         textContentType="password"
-        error={error ? "Incorrect password. Try again or reset it." : undefined}
+        invalid={!!error}
         rightSlot={
           <PasswordToggle
             testID="password-toggle"
