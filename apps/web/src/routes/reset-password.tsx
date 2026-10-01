@@ -1,8 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { type FormEvent, useState } from "react"
+import { AuthShell } from "#/components/auth-shell"
+import { AuthTitle } from "#/components/auth-title"
+import { Button } from "#/components/button"
+import { ErrorBanner } from "#/components/error-banner"
+import { Field } from "#/components/field"
+import { PasswordToggle } from "#/components/password-toggle"
 import { resetPassword } from "#/lib/auth-client"
 import { VerifiedCta } from "#/lib/verified-cta"
-import { AuthShell, PasswordField } from "./sign-up"
 
 // The link in the reset-password email points at /reset-password?token=... —
 // validate that shape so a missing/malformed token renders a friendly error
@@ -18,6 +23,8 @@ function ResetPassword() {
   const { token } = Route.useSearch()
   const [next, setNext] = useState("")
   const [confirm, setConfirm] = useState("")
+  const [showNext, setShowNext] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
   const [pending, setPending] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [done, setDone] = useState(false)
@@ -25,22 +32,22 @@ function ResetPassword() {
   if (!token) {
     return (
       <AuthShell
-        title="Missing reset link"
-        footer={
-          <Link to="/forgot-password" className="text-sky-400 hover:underline">
+        title={<AuthTitle prefix="Missing" italic="link" />}
+        subtitle="This page needs a reset token. Start over from the forgot-password screen and click the link we email you."
+        headerRight={
+          <Link
+            to="/forgot-password"
+            className="font-semibold text-foreground underline underline-offset-4 hover:text-primary"
+          >
             Request a new link
           </Link>
         }
-      >
-        <p className="text-sm text-neutral-400">
-          This page needs a reset token. Start over from the forgot-password screen and click the
-          link we email you.
-        </p>
-      </AuthShell>
+      />
     )
   }
 
-  const canSubmit = next && next === confirm
+  const mismatch = Boolean(confirm) && next !== confirm
+  const canSubmit = Boolean(next) && next === confirm
 
   async function onSubmit(event: FormEvent) {
     event.preventDefault()
@@ -50,7 +57,9 @@ function ResetPassword() {
     const result = await resetPassword({ newPassword: next, token })
     setPending(false)
     if (result.error) {
-      setError(result.error.message ?? "That reset link is invalid or has expired.")
+      setError(
+        result.error.message ?? "That reset link is invalid or has expired.",
+      )
       return
     }
     setDone(true)
@@ -58,52 +67,70 @@ function ResetPassword() {
 
   if (done) {
     return (
-      <AuthShell title="Password updated" footer={null}>
-        <p className="mb-4 text-sm text-neutral-400">
-          Your password is set. Sign in with your new password.
-        </p>
-        <VerifiedCta schemeUrl="kitchenmanager://sign-in" webFallbackHref="/sign-in" />
+      <AuthShell
+        title={<AuthTitle prefix="Password" italic="updated" />}
+        subtitle="Your password is set. Sign in with your new password."
+      >
+        <VerifiedCta
+          schemeUrl="kitchenmanager://sign-in"
+          webFallbackHref="/sign-in"
+        />
       </AuthShell>
     )
   }
 
   return (
     <AuthShell
-      title="Set a new password"
-      footer={
-        <Link to="/sign-in" className="text-sky-400 hover:underline">
+      title={<AuthTitle prefix="Set a new" italic="password" />}
+      subtitle="Choose a password you'll remember — it'll replace your current one."
+      headerRight={
+        <Link
+          to="/sign-in"
+          className="font-semibold text-foreground underline underline-offset-4 hover:text-primary"
+        >
           Back to sign in
         </Link>
       }
     >
-      <form onSubmit={onSubmit} className="space-y-4">
-        <PasswordField
+      <form onSubmit={onSubmit} className="flex flex-col gap-5">
+        {error ? <ErrorBanner>{error}</ErrorBanner> : null}
+        <Field
           label="New password"
+          type={showNext ? "text" : "password"}
+          autoComplete="new-password"
+          required
           value={next}
-          onChange={setNext}
-          autoComplete="new-password"
+          onChange={(e) => setNext(e.target.value)}
+          rightSlot={
+            <PasswordToggle
+              show={showNext}
+              onToggle={() => setShowNext((s) => !s)}
+            />
+          }
         />
-        <PasswordField
+        <Field
           label="Confirm new password"
-          value={confirm}
-          onChange={setConfirm}
+          type={showConfirm ? "text" : "password"}
           autoComplete="new-password"
+          required
+          value={confirm}
+          onChange={(e) => setConfirm(e.target.value)}
+          error={mismatch ? "Passwords don't match" : undefined}
+          rightSlot={
+            <PasswordToggle
+              show={showConfirm}
+              onToggle={() => setShowConfirm((s) => !s)}
+            />
+          }
         />
-        {confirm && next !== confirm && (
-          <p className="text-sm text-red-400">Passwords don't match</p>
-        )}
-        {error && (
-          <p role="alert" className="text-sm text-red-400">
-            {error}
-          </p>
-        )}
-        <button
+        <Button
           type="submit"
-          disabled={pending || !canSubmit}
-          className="w-full rounded-lg bg-sky-500 px-3 py-2 font-medium text-neutral-950 transition hover:bg-sky-400 disabled:opacity-50"
+          loading={pending}
+          disabled={!canSubmit}
+          className="w-full"
         >
-          {pending ? "…" : "Reset password"}
-        </button>
+          Reset password
+        </Button>
       </form>
     </AuthShell>
   )

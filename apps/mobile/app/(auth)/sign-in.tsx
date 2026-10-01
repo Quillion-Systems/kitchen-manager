@@ -7,6 +7,7 @@ import { Link } from "expo-router"
 import { useState } from "react"
 import { StyleSheet, Text, View } from "react-native"
 import { AuthShell } from "../../components/AuthShell"
+import { AuthTitle } from "../../components/AuthTitle"
 import { Button } from "../../components/Button"
 import { Checkbox } from "../../components/Checkbox"
 import { CheckYourEmail } from "../../components/CheckYourEmail"
@@ -41,16 +42,17 @@ export default function SignIn() {
   }
 
   if (needsVerification) {
-    return <CheckYourEmail email={email} title="Verify your email" />
+    return (
+      <CheckYourEmail
+        email={email}
+        title={<AuthTitle prefix="Verify your" italic="email" />}
+      />
+    )
   }
 
   return (
     <AuthShell
-      title={
-        <Text style={styles.title}>
-          Welcome <Text style={styles.titleItalic}>back</Text>
-        </Text>
-      }
+      title={<AuthTitle prefix="Welcome" italic="back" />}
       subtitle="Sign in to access your recipes and weekly meal plans."
       footer={
         <Text style={styles.footerText}>
@@ -119,17 +121,6 @@ export default function SignIn() {
 }
 
 const styles = StyleSheet.create({
-  title: {
-    color: semantics.foreground,
-    fontFamily: mobileFonts.sansExtrabold,
-    fontSize: 44,
-    letterSpacing: -1.2,
-    lineHeight: 48,
-  },
-  titleItalic: {
-    fontFamily: mobileFonts.serifRegular,
-    fontStyle: "italic",
-  },
   row: {
     alignItems: "center",
     flexDirection: "row",

@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
+import { AuthShell } from "#/components/auth-shell"
+import { AuthTitle } from "#/components/auth-title"
 import { VerifiedCta } from "#/lib/verified-cta"
-import { AuthShell } from "./sign-up"
 
 // Where the verification link lands after Better Auth processes the token. On
 // success the API redirects here clean; on a bad/expired token it redirects
@@ -18,26 +19,29 @@ function Verified() {
   if (error) {
     return (
       <AuthShell
-        title="Verification failed"
-        footer={
-          <Link to="/sign-in" className="text-sky-400 hover:underline">
+        title={<AuthTitle prefix="Verification" italic="failed" />}
+        subtitle="That verification link is invalid or has expired. Sign in to have a fresh one sent to you."
+        headerRight={
+          <Link
+            to="/sign-in"
+            className="font-semibold text-foreground underline underline-offset-4 hover:text-primary"
+          >
             Back to sign in
           </Link>
         }
-      >
-        <p className="text-sm text-neutral-400">
-          That verification link is invalid or has expired. Sign in to have a fresh one sent to you.
-        </p>
-      </AuthShell>
+      />
     )
   }
 
   return (
-    <AuthShell title="Email verified" footer={null}>
-      <p className="mb-4 text-sm text-neutral-400">
-        Your email is confirmed. You can now sign in to Kitchen Manager.
-      </p>
-      <VerifiedCta schemeUrl="kitchenmanager://sign-in" webFallbackHref="/sign-in" />
+    <AuthShell
+      title={<AuthTitle prefix="Email" italic="verified" />}
+      subtitle="Your email is confirmed. You can now sign in to thyme."
+    >
+      <VerifiedCta
+        schemeUrl="kitchenmanager://sign-in"
+        webFallbackHref="/sign-in"
+      />
     </AuthShell>
   )
 }

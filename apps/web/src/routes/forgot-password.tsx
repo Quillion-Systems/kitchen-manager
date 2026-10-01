@@ -1,9 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { type FormEvent, useState } from "react"
+import { AuthShell } from "#/components/auth-shell"
+import { AuthTitle } from "#/components/auth-title"
+import { Button } from "#/components/button"
+import { ErrorBanner } from "#/components/error-banner"
+import { Field } from "#/components/field"
 import { requestPasswordReset } from "#/lib/auth-client"
-import { AuthShell, Field, SubmitButton } from "./sign-up"
 
-export const Route = createFileRoute("/forgot-password")({ component: ForgotPassword })
+export const Route = createFileRoute("/forgot-password")({
+  component: ForgotPassword,
+})
 
 function ForgotPassword() {
   const [email, setEmail] = useState("")
@@ -20,7 +26,10 @@ function ForgotPassword() {
     setError(null)
     // redirectTo isn't strictly needed (auth.ts builds the URL itself) but Better
     // Auth wants it for its own default-URL path; harmless when we override.
-    const result = await requestPasswordReset({ email, redirectTo: "/reset-password" })
+    const result = await requestPasswordReset({
+      email,
+      redirectTo: "/reset-password",
+    })
     setPending(false)
     // A real network/transport failure gets its own error; a valid response —
     // even for an unknown email — falls into "we sent it if it exists".
@@ -34,44 +43,61 @@ function ForgotPassword() {
   if (submitted) {
     return (
       <AuthShell
-        title="Check your email"
-        footer={
-          <Link to="/sign-in" className="text-sky-400 hover:underline">
+        title={<AuthTitle prefix="Check your" italic="email" />}
+        subtitle={
+          <>
+            If an account exists for{" "}
+            <span className="font-semibold text-foreground">{email}</span>,
+            we've sent a link to reset the password. Open it and set a new one.
+          </>
+        }
+        headerRight={
+          <Link
+            to="/sign-in"
+            className="font-semibold text-foreground underline underline-offset-4 hover:text-primary"
+          >
             Back to sign in
           </Link>
         }
       >
-        <div className="space-y-3 text-sm text-neutral-400">
-          <p>
-            If an account exists for <span className="font-medium text-neutral-100">{email}</span>,
-            we've sent a link to reset the password. Click it and set a new one.
-          </p>
-          <p>The link expires shortly for security — resend if it does.</p>
-        </div>
+        <p className="text-base text-muted-foreground">
+          The link expires shortly for security — request a new one if it does.
+        </p>
       </AuthShell>
     )
   }
 
   return (
     <AuthShell
-      title="Reset your password"
-      footer={
-        <Link to="/sign-in" className="text-sky-400 hover:underline">
+      title={<AuthTitle prefix="Forgot" italic="password" />}
+      subtitle="Enter your account email and we'll send a link to set a new one."
+      headerRight={
+        <Link
+          to="/sign-in"
+          className="font-semibold text-foreground underline underline-offset-4 hover:text-primary"
+        >
           Back to sign in
         </Link>
       }
     >
-      <form onSubmit={onSubmit} className="space-y-4">
-        <p className="text-sm text-neutral-400">
-          Enter your account email and we'll send a link to set a new password.
-        </p>
-        <Field label="Email" value={email} onChange={setEmail} type="email" autoComplete="email" />
-        {error && (
-          <p role="alert" className="text-sm text-red-400">
-            {error}
-          </p>
-        )}
-        <SubmitButton pending={pending}>Send reset link</SubmitButton>
+      <form onSubmit={onSubmit} className="flex flex-col gap-5">
+        {error ? <ErrorBanner>{error}</ErrorBanner> : null}
+        <Field
+          label="Email"
+          type="email"
+          autoComplete="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <Button
+          type="submit"
+          loading={pending}
+          disabled={!email}
+          className="w-full"
+        >
+          Send reset link
+        </Button>
       </form>
     </AuthShell>
   )

@@ -10,7 +10,7 @@ export function AuthShell({
   title: ReactNode
   subtitle?: ReactNode
   headerRight?: ReactNode
-  children: ReactNode
+  children?: ReactNode
 }) {
   return (
     <main className="flex min-h-screen flex-col bg-background text-foreground">

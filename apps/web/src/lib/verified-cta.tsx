@@ -35,7 +35,7 @@ export function VerifiedCta({
 }
 
 const buttonClasses =
-  "inline-block rounded-lg bg-sky-500 px-4 py-2 font-medium text-neutral-950 transition hover:bg-sky-400"
+  "inline-flex h-12 items-center justify-center rounded-full bg-primary px-6 font-sans text-base font-bold text-accent transition-colors hover:bg-forest-900"
 
 // SPA-only app, so window is defined at render time in the browser. Regex
 // catches phones + Android tablets; iPadOS ≥13 Safari lies and reports as

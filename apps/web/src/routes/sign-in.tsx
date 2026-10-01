@@ -1,13 +1,14 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router"
 import { type FormEvent, useState } from "react"
 import { AuthShell } from "#/components/auth-shell"
+import { AuthTitle } from "#/components/auth-title"
 import { Button } from "#/components/button"
 import { Checkbox } from "#/components/checkbox"
+import { CheckYourEmail } from "#/components/check-your-email"
 import { ErrorBanner } from "#/components/error-banner"
 import { Field } from "#/components/field"
 import { PasswordToggle } from "#/components/password-toggle"
 import { signIn } from "#/lib/auth-client"
-import { CheckYourEmail } from "./sign-up"
 
 export const Route = createFileRoute("/sign-in")({ component: SignIn })
 
@@ -39,16 +40,17 @@ function SignIn() {
   }
 
   if (needsVerification) {
-    return <CheckYourEmail email={email} title="Verify your email" />
+    return (
+      <CheckYourEmail
+        email={email}
+        title={<AuthTitle prefix="Verify your" italic="email" />}
+      />
+    )
   }
 
   return (
     <AuthShell
-      title={
-        <>
-          Welcome <em className="font-serif font-normal italic">back</em>
-        </>
-      }
+      title={<AuthTitle prefix="Welcome" italic="back" />}
       subtitle="Sign in to access your recipes and weekly meal plans."
       headerRight={
         <>

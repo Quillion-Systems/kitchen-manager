@@ -1,11 +1,13 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router"
 import { type FormEvent, useId, useState } from "react"
 import { AuthShell as NewAuthShell } from "#/components/auth-shell"
+import { AuthTitle } from "#/components/auth-title"
 import { Button } from "#/components/button"
+import { CheckYourEmail } from "#/components/check-your-email"
 import { ErrorBanner } from "#/components/error-banner"
 import { Field as NewField } from "#/components/field"
 import { PasswordToggle } from "#/components/password-toggle"
-import { resendVerificationEmail, signUp } from "#/lib/auth-client"
+import { signUp } from "#/lib/auth-client"
 
 export const Route = createFileRoute("/sign-up")({ component: SignUp })
 
@@ -47,11 +49,7 @@ function SignUp() {
 
   return (
     <NewAuthShell
-      title={
-        <>
-          Create <em className="font-serif font-normal italic">account</em>
-        </>
-      }
+      title={<AuthTitle prefix="Create" italic="account" />}
       subtitle="Save the recipes you love, plan your week, and shop from one simple list."
       headerRight={
         <>
@@ -237,62 +235,6 @@ function EyeSlashIcon() {
       />
       <path d="M10.748 13.93l2.523 2.523a9.987 9.987 0 01-3.27.547c-4.258 0-7.894-2.66-9.337-6.41a1.651 1.651 0 010-1.186A10.007 10.007 0 012.839 6.02L6.07 9.252a4 4 0 004.678 4.678z" />
     </svg>
-  )
-}
-
-// Shown after sign-up (and reused when an unverified user tries to sign in): the
-// account exists but is gated until the emailed link is clicked. Offers a resend
-// so the user has a path forward if the mail didn't arrive.
-export function CheckYourEmail({
-  email,
-  title = "Check your email",
-}: {
-  email: string
-  title?: string
-}) {
-  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle")
-
-  async function onResend() {
-    setStatus("sending")
-    const result = await resendVerificationEmail(email)
-    setStatus(result.error ? "error" : "sent")
-  }
-
-  return (
-    <AuthShell
-      title={title}
-      footer={
-        <Link to="/sign-in" className="text-sky-400 hover:underline">
-          Back to sign in
-        </Link>
-      }
-    >
-      <div className="space-y-4 text-sm text-neutral-400">
-        <p>
-          We sent a verification link to{" "}
-          <span className="font-medium text-neutral-100">{email}</span>. Click it to activate your
-          account.
-        </p>
-        <p>Didn't get it? Check spam, or resend below.</p>
-        <button
-          type="button"
-          onClick={onResend}
-          disabled={status === "sending" || status === "sent"}
-          className="w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 font-medium text-neutral-100 transition hover:bg-neutral-900 disabled:opacity-50"
-        >
-          {status === "sending"
-            ? "…"
-            : status === "sent"
-              ? "Sent — check your inbox"
-              : "Resend email"}
-        </button>
-        {status === "error" && (
-          <p role="alert" className="text-sm text-red-400">
-            Couldn't resend right now. Try again in a moment.
-          </p>
-        )}
-      </div>
-    </AuthShell>
   )
 }
 

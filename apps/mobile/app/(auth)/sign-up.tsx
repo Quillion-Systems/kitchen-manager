@@ -7,6 +7,7 @@ import { Link } from "expo-router"
 import { useState } from "react"
 import { StyleSheet, Text } from "react-native"
 import { AuthShell } from "../../components/AuthShell"
+import { AuthTitle } from "../../components/AuthTitle"
 import { Button } from "../../components/Button"
 import { CheckYourEmail } from "../../components/CheckYourEmail"
 import { ErrorBanner } from "../../components/ErrorBanner"
@@ -49,11 +50,7 @@ export default function SignUp() {
 
   return (
     <AuthShell
-      title={
-        <Text style={styles.title}>
-          Create <Text style={styles.titleItalic}>account</Text>
-        </Text>
-      }
+      title={<AuthTitle prefix="Create" italic="account" />}
       subtitle="Save the recipes you love, plan your week, and shop from one simple list."
       footer={
         <Text style={styles.footerText}>
@@ -117,17 +114,6 @@ export default function SignUp() {
 }
 
 const styles = StyleSheet.create({
-  title: {
-    color: semantics.foreground,
-    fontFamily: mobileFonts.sansExtrabold,
-    fontSize: 44,
-    letterSpacing: -1.2,
-    lineHeight: 48,
-  },
-  titleItalic: {
-    fontFamily: mobileFonts.serifRegular,
-    fontStyle: "italic",
-  },
   footerText: {
     color: semantics.mutedForeground,
     fontFamily: mobileFonts.sansRegular,

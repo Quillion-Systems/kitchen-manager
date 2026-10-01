@@ -29,7 +29,7 @@ export function AuthShell({
   subtitle?: ReactNode
   footer?: ReactNode
   showBack?: boolean
-  children: ReactNode
+  children?: ReactNode
 }) {
   const router = useRouter()
   const insets = useSafeAreaInsets()
