@@ -15,6 +15,8 @@ const buttonVariants = cva(
         ghost: "bg-transparent text-primary font-semibold hover:bg-soft",
         destructive:
           "bg-transparent text-destructive border-[1.5px] border-destructive font-semibold hover:bg-destructive hover:text-destructive-foreground",
+        white:
+          "bg-input-background text-foreground border-[1.5px] border-border font-semibold hover:bg-cream-100",
       },
       size: {
         sm: "h-9 px-4 text-sm",

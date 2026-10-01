@@ -3,32 +3,62 @@ import type { ReactNode } from "react"
 
 export function AuthShell({
   title,
+  subtitle,
+  headerRight,
   children,
-  footer,
 }: {
   title: ReactNode
+  subtitle?: ReactNode
+  headerRight?: ReactNode
   children: ReactNode
-  footer: ReactNode
 }) {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-6 text-foreground">
-      <div className="w-full max-w-sm">
-        <Link
-          to="/"
-          className="font-sans text-xs font-medium uppercase tracking-widest text-muted-foreground transition-colors hover:text-foreground"
-        >
-          ← Kitchen Manager
+    <main className="flex min-h-screen flex-col bg-background text-foreground">
+      <header className="flex items-center justify-between px-8 py-6">
+        <Link to="/" aria-label="Thyme home">
+          <Wordmark />
         </Link>
-        <h1 className="mt-6 mb-8 font-serif text-3xl text-foreground">
-          {title}
-        </h1>
-        <div className="rounded-2xl border border-border bg-background p-6">
-          {children}
+        {headerRight ? (
+          <div className="text-sm text-foreground">{headerRight}</div>
+        ) : null}
+      </header>
+
+      <div className="flex flex-1 items-center justify-center px-6 pb-12">
+        <div className="w-full max-w-md">
+          <h1 className="font-sans text-5xl font-extrabold tracking-tighter text-foreground">
+            {title}
+          </h1>
+          {subtitle ? (
+            <p className="mt-3 text-base text-muted-foreground">{subtitle}</p>
+          ) : null}
+          <div className="mt-8">{children}</div>
         </div>
-        <p className="mt-6 text-center text-sm text-muted-foreground">
-          {footer}
-        </p>
       </div>
+
+      <footer className="flex items-center justify-between px-8 py-6 text-sm text-muted-foreground">
+        <span>© {new Date().getFullYear()} thyme*</span>
+        <nav className="flex items-center gap-4">
+          <Link to="/" className="hover:text-foreground">
+            Privacy
+          </Link>
+          <span>·</span>
+          <Link to="/" className="hover:text-foreground">
+            Terms
+          </Link>
+          <span>·</span>
+          <Link to="/" className="hover:text-foreground">
+            Help
+          </Link>
+        </nav>
+      </footer>
     </main>
+  )
+}
+
+function Wordmark() {
+  return (
+    <span className="font-serif text-3xl leading-none text-primary">
+      thyme<span className="ml-0.5 text-success">✱</span>
+    </span>
   )
 }

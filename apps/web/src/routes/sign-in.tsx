@@ -1,8 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router"
-import { Eye, EyeOff } from "lucide-react"
+import { X } from "lucide-react"
 import { type FormEvent, useState } from "react"
 import { AuthShell } from "#/components/auth-shell"
 import { Button } from "#/components/button"
+import { Checkbox } from "#/components/checkbox"
 import { Field } from "#/components/field"
 import { signIn } from "#/lib/auth-client"
 import { CheckYourEmail } from "./sign-up"
@@ -14,11 +15,9 @@ function SignIn() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
+  const [remember, setRemember] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
-  // Set when Better Auth rejects sign-in because the account exists but hasn't
-  // been verified. Swaps to CheckYourEmail (with a Resend button) instead of a
-  // dead-end error string.
   const [needsVerification, setNeedsVerification] = useState(false)
 
   async function onSubmit(event: FormEvent) {
@@ -44,20 +43,27 @@ function SignIn() {
 
   return (
     <AuthShell
-      title="Sign in"
-      footer={
+      title={
         <>
-          Need an account?{" "}
+          Welcome <em className="font-serif font-normal italic">back</em>
+        </>
+      }
+      subtitle="Sign in to access your recipes and weekly meal plans."
+      headerRight={
+        <>
+          New to thyme?{" "}
           <Link
             to="/sign-up"
-            className="font-medium text-primary hover:underline"
+            className="font-semibold text-foreground underline underline-offset-4 hover:text-primary"
           >
-            Sign up
+            Create an account
           </Link>
         </>
       }
     >
-      <form onSubmit={onSubmit} className="flex flex-col gap-4">
+      <form onSubmit={onSubmit} className="flex flex-col gap-5">
+        {error ? <ErrorBanner message={error} /> : null}
+
         <Field
           label="Email"
           type="email"
@@ -73,54 +79,94 @@ function SignIn() {
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          error={error ? "Incorrect password. Try again or reset it." : undefined}
           rightSlot={
-            <PasswordToggle
-              show={showPassword}
-              onToggle={() => setShowPassword((s) => !s)}
-            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((s) => !s)}
+              className="text-sm font-medium text-foreground underline underline-offset-4 hover:text-primary"
+            >
+              {showPassword ? "Hide" : "Show"}
+            </button>
           }
         />
-        <div className="text-right text-sm">
+
+        <div className="flex items-center justify-between">
+          <Checkbox checked={remember} onCheckedChange={setRemember}>
+            Remember me
+          </Checkbox>
           <Link
             to="/forgot-password"
-            className="text-muted-foreground transition-colors hover:text-primary"
+            className="text-sm font-semibold text-foreground underline underline-offset-4 hover:text-primary"
           >
             Forgot password?
           </Link>
         </div>
-        {error ? (
-          <p role="alert" className="text-sm text-destructive">
-            {error}
-          </p>
-        ) : null}
+
         <Button
           type="submit"
           loading={pending}
           disabled={!email || !password}
+          className="w-full"
         >
           Sign in
+        </Button>
+
+        <OrDivider />
+
+        <Button variant="white" type="button" className="w-full">
+          <GooglePlaceholderIcon />
+          Continue with Google
         </Button>
       </form>
     </AuthShell>
   )
 }
 
-function PasswordToggle({
-  show,
-  onToggle,
-}: {
-  show: boolean
-  onToggle: () => void
-}) {
-  const Icon = show ? EyeOff : Eye
+function ErrorBanner({ message }: { message: string }) {
   return (
-    <button
-      type="button"
-      onClick={onToggle}
-      aria-label={show ? "Hide password" : "Show password"}
-      className="text-muted-foreground transition-colors hover:text-foreground"
+    <div
+      role="alert"
+      className="flex items-start gap-3 rounded-2xl bg-rust-300 p-4"
     >
-      <Icon className="size-5" aria-hidden="true" />
-    </button>
+      <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-destructive">
+        <X className="size-4 text-destructive-foreground" strokeWidth={3} />
+      </span>
+      <p className="text-sm font-semibold text-rust-700">
+        {message} Try again, or reset it below.
+      </p>
+    </div>
+  )
+}
+
+function OrDivider() {
+  return (
+    <div className="flex items-center gap-4">
+      <div className="h-px flex-1 bg-border" />
+      <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
+        OR
+      </span>
+      <div className="h-px flex-1 bg-border" />
+    </div>
+  )
+}
+
+function GooglePlaceholderIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      className="size-5 text-muted-foreground"
+      aria-hidden="true"
+    >
+      <circle
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeDasharray="3 3"
+      />
+    </svg>
   )
 }

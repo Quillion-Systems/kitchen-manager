@@ -22,6 +22,7 @@ type Variant =
   | "soft"
   | "ghost"
   | "destructive"
+  | "white"
 type Size = "sm" | "md" | "lg"
 
 export type ButtonProps = Omit<PressableProps, "style" | "children"> & {
@@ -163,6 +164,17 @@ const variantStyles: Record<
     },
     label: {
       color: semantics.destructive,
+      fontFamily: mobileFonts.sansSemibold,
+    },
+  },
+  white: {
+    container: {
+      backgroundColor: semantics.inputBackground,
+      borderColor: semantics.border,
+      borderWidth: 1.5,
+    },
+    label: {
+      color: semantics.foreground,
       fontFamily: mobileFonts.sansSemibold,
     },
   },
