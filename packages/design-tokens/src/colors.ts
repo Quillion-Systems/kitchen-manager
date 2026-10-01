@@ -68,6 +68,9 @@ export const semantics = {
   accent: primitives.lime[500],
   accentForeground: primitives.forest[900],
 
+  soft: primitives.forest[200],
+  softForeground: primitives.forest[800],
+
   border: primitives.cream[300],
   input: primitives.cream[300],
   ring: primitives.forest[700],

@@ -56,6 +56,9 @@
   --color-accent: var(--color-lime-500);
   --color-accent-foreground: var(--color-forest-900);
 
+  --color-soft: var(--color-forest-200);
+  --color-soft-foreground: var(--color-forest-800);
+
   --color-border: var(--color-cream-300);
   --color-input: var(--color-cream-300);
   --color-ring: var(--color-forest-700);
