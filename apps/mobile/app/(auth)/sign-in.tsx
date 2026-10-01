@@ -114,13 +114,6 @@ export default function SignIn() {
       >
         Sign in
       </Button>
-
-      <OrDivider />
-
-      <Button variant="white" size="lg">
-        <GooglePlaceholderIcon />
-        <Text style={styles.googleLabel}>Google</Text>
-      </Button>
     </AuthShell>
   )
 }
@@ -134,24 +127,6 @@ function ErrorBanner({ message }: { message: string }) {
       <Text style={styles.bannerText}>
         {message} Try again, or reset it below.
       </Text>
-    </View>
-  )
-}
-
-function OrDivider() {
-  return (
-    <View style={styles.divider}>
-      <View style={styles.dividerLine} />
-      <Text style={styles.dividerText}>OR</Text>
-      <View style={styles.dividerLine} />
-    </View>
-  )
-}
-
-function GooglePlaceholderIcon() {
-  return (
-    <View style={styles.googleIcon}>
-      <View style={styles.googleIconInner} />
     </View>
   )
 }
@@ -218,37 +193,5 @@ const styles = StyleSheet.create({
     fontFamily: mobileFonts.sansSemibold,
     fontSize: fontSizes.sm,
     lineHeight: 20,
-  },
-  divider: {
-    alignItems: "center",
-    flexDirection: "row",
-    gap: 12,
-  },
-  dividerLine: {
-    backgroundColor: semantics.border,
-    flex: 1,
-    height: 1,
-  },
-  dividerText: {
-    color: semantics.mutedForeground,
-    fontFamily: mobileFonts.sansMedium,
-    fontSize: fontSizes.xs,
-    letterSpacing: 2,
-  },
-  googleIcon: {
-    alignItems: "center",
-    borderColor: semantics.mutedForeground,
-    borderRadius: 999,
-    borderStyle: "dashed",
-    borderWidth: 1.5,
-    height: 20,
-    justifyContent: "center",
-    width: 20,
-  },
-  googleIconInner: { height: 2, width: 2 },
-  googleLabel: {
-    color: semantics.foreground,
-    fontFamily: mobileFonts.sansSemibold,
-    fontSize: fontSizes.base,
   },
 })

@@ -111,13 +111,6 @@ function SignIn() {
         >
           Sign in
         </Button>
-
-        <OrDivider />
-
-        <Button variant="white" type="button" className="w-full">
-          <GooglePlaceholderIcon />
-          Continue with Google
-        </Button>
       </form>
     </AuthShell>
   )
@@ -139,34 +132,3 @@ function ErrorBanner({ message }: { message: string }) {
   )
 }
 
-function OrDivider() {
-  return (
-    <div className="flex items-center gap-4">
-      <div className="h-px flex-1 bg-border" />
-      <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
-        OR
-      </span>
-      <div className="h-px flex-1 bg-border" />
-    </div>
-  )
-}
-
-function GooglePlaceholderIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      className="size-5 text-muted-foreground"
-      aria-hidden="true"
-    >
-      <circle
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeDasharray="3 3"
-      />
-    </svg>
-  )
-}
