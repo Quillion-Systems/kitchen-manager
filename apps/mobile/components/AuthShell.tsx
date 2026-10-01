@@ -30,6 +30,11 @@ export function AuthShell({
   children: ReactNode
 }) {
   const router = useRouter()
+  // Only render the back button if there's actually a screen to pop. On root
+  // screens (opening the app cold on /sign-in) canGoBack() is false and tapping
+  // back raises "GO_BACK was not handled" — the button has to disappear, not
+  // just no-op.
+  const canGoBack = showBack && router.canGoBack()
   return (
     <KeyboardAvoidingView
       style={styles.root}
@@ -40,7 +45,7 @@ export function AuthShell({
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        {showBack ? (
+        {canGoBack ? (
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Go back"
