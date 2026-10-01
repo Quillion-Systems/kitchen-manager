@@ -126,7 +126,7 @@ export function AuthShell({
           to="/"
           className="text-xs uppercase tracking-widest text-neutral-500 hover:text-neutral-300"
         >
-          ← Kitchen Manager
+          ← Just in Thyme
         </Link>
         <h1 className="mt-4 mb-6 text-2xl font-semibold">{title}</h1>
         <div className="rounded-xl border border-neutral-800 bg-neutral-900 p-6">{children}</div>

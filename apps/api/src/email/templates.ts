@@ -5,25 +5,25 @@ import type { EmailMessage } from "./mailer"
 export function verificationEmail(to: string, verifyUrl: string): EmailMessage {
   return {
     to,
-    subject: "Verify your email for Kitchen Manager",
+    subject: "Verify your email for Just in Thyme",
     text: [
-      "Welcome to Kitchen Manager!",
+      "Welcome to Just in Thyme!",
       "",
       "Confirm your email address to finish setting up your account:",
       verifyUrl,
       "",
-      "If you didn't create a Kitchen Manager account, you can ignore this email.",
+      "If you didn't create a Just in Thyme account, you can ignore this email.",
     ].join("\n"),
     html: `
       <div style="font-family: system-ui, sans-serif; max-width: 480px; margin: 0 auto; padding: 24px; color: #1a1a1a;">
-        <h1 style="font-size: 20px; margin: 0 0 16px;">Welcome to Kitchen Manager!</h1>
+        <h1 style="font-size: 20px; margin: 0 0 16px;">Welcome to Just in Thyme!</h1>
         <p style="margin: 0 0 16px; line-height: 1.5;">Confirm your email address to finish setting up your account.</p>
         <p style="margin: 0 0 24px;">
           <a href="${verifyUrl}" style="display: inline-block; background: #1a1a1a; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: 600;">Verify email</a>
         </p>
         <p style="margin: 0 0 8px; font-size: 13px; color: #666;">Or paste this link into your browser:</p>
         <p style="margin: 0 0 24px; font-size: 13px; word-break: break-all;"><a href="${verifyUrl}" style="color: #2563eb;">${verifyUrl}</a></p>
-        <p style="margin: 0; font-size: 13px; color: #666;">If you didn't create a Kitchen Manager account, you can ignore this email.</p>
+        <p style="margin: 0; font-size: 13px; color: #666;">If you didn't create a Just in Thyme account, you can ignore this email.</p>
       </div>
     `.trim(),
   }
@@ -35,9 +35,9 @@ export function verificationEmail(to: string, verifyUrl: string): EmailMessage {
 export function resetPasswordEmail(to: string, resetUrl: string): EmailMessage {
   return {
     to,
-    subject: "Reset your Kitchen Manager password",
+    subject: "Reset your Just in Thyme password",
     text: [
-      "You asked to reset your Kitchen Manager password.",
+      "You asked to reset your Just in Thyme password.",
       "",
       "Set a new one here:",
       resetUrl,
@@ -47,7 +47,7 @@ export function resetPasswordEmail(to: string, resetUrl: string): EmailMessage {
     html: `
       <div style="font-family: system-ui, sans-serif; max-width: 480px; margin: 0 auto; padding: 24px; color: #1a1a1a;">
         <h1 style="font-size: 20px; margin: 0 0 16px;">Reset your password</h1>
-        <p style="margin: 0 0 16px; line-height: 1.5;">You asked to reset your Kitchen Manager password. Set a new one below.</p>
+        <p style="margin: 0 0 16px; line-height: 1.5;">You asked to reset your Just in Thyme password. Set a new one below.</p>
         <p style="margin: 0 0 24px;">
           <a href="${resetUrl}" style="display: inline-block; background: #1a1a1a; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: 600;">Reset password</a>
         </p>

@@ -72,7 +72,7 @@ export default function Products() {
         showsVerticalScrollIndicator={false}
       >
         <Link href="/" style={styles.back}>
-          ← Kitchen Manager
+          ← Just in Thyme
         </Link>
         <Text style={styles.title}>Products</Text>
 

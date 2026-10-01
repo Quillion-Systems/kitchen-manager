@@ -14,7 +14,7 @@ function Products() {
           to="/"
           className="text-xs uppercase tracking-widest text-neutral-500 hover:text-neutral-300"
         >
-          ← Kitchen Manager
+          ← Just in Thyme
         </Link>
         <h1 className="mt-4 mb-6 text-2xl font-semibold">Products</h1>
         <ProductsBody />

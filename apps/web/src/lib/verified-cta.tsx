@@ -12,7 +12,7 @@ import { Link } from "@tanstack/react-router"
 export function VerifiedCta({
   schemeUrl,
   webFallbackHref,
-  mobileLabel = "Open Kitchen Manager",
+  mobileLabel = "Open Just in Thyme",
   webLabel = "Continue to sign in",
 }: {
   schemeUrl: string
