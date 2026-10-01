@@ -1,17 +1,24 @@
+import {
+  fontSizes,
+  mobileFonts,
+  semantics,
+} from "@kitchen-manager/design-tokens"
 import { Link } from "expo-router"
 import { useState } from "react"
 import { StyleSheet, Text } from "react-native"
 import { AuthShell } from "../../components/AuthShell"
+import { Button } from "../../components/Button"
 import { CheckYourEmail } from "../../components/CheckYourEmail"
+import { ErrorBanner } from "../../components/ErrorBanner"
 import { Field } from "../../components/Field"
-import { PasswordField } from "../../components/PasswordField"
-import { SubmitButton } from "../../components/SubmitButton"
+import { PasswordToggle } from "../../components/PasswordToggle"
 import { signUp } from "../../lib/auth-client"
 
 export default function SignUp() {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
   // Set once sign-up succeeds but no session was returned — the account exists
@@ -42,13 +49,23 @@ export default function SignUp() {
 
   return (
     <AuthShell
-      title="Create your account"
+      title={
+        <Text style={styles.title}>
+          Create <Text style={styles.titleItalic}>account</Text>
+        </Text>
+      }
+      subtitle="Save the recipes you love, plan your week, and shop from one simple list."
       footer={
-        <Link href="/sign-in" style={styles.link}>
-          Already have an account? Sign in
-        </Link>
+        <Text style={styles.footerText}>
+          Already have an account?{" "}
+          <Link href="/sign-in" style={styles.footerLink}>
+            Sign in
+          </Link>
+        </Text>
       }
     >
+      {error ? <ErrorBanner testID="auth-error">{error}</ErrorBanner> : null}
+
       <Field
         label="Name"
         testID="name-input"
@@ -69,26 +86,56 @@ export default function SignUp() {
         autoComplete="email"
         textContentType="username"
       />
-      <PasswordField
+      <Field
+        label="Password"
         testID="password-input"
-        toggleTestID="password-toggle"
         value={password}
         onChangeText={setPassword}
+        secureTextEntry={!showPassword}
+        autoComplete="new-password"
         textContentType="newPassword"
+        rightSlot={
+          <PasswordToggle
+            testID="password-toggle"
+            show={showPassword}
+            onToggle={() => setShowPassword((s) => !s)}
+          />
+        }
       />
-      {error ? (
-        <Text testID="auth-error" style={styles.error}>
-          {error}
-        </Text>
-      ) : null}
-      <SubmitButton testID="submit-button" pending={pending} onPress={onSubmit}>
-        Sign up
-      </SubmitButton>
+
+      <Button
+        testID="submit-button"
+        size="lg"
+        loading={pending}
+        disabled={!name || !email || !password}
+        onPress={onSubmit}
+      >
+        Create account
+      </Button>
     </AuthShell>
   )
 }
 
 const styles = StyleSheet.create({
-  link: { color: "#38bdf8" },
-  error: { color: "#f87171", fontSize: 14 },
+  title: {
+    color: semantics.foreground,
+    fontFamily: mobileFonts.sansExtrabold,
+    fontSize: 44,
+    letterSpacing: -1.2,
+    lineHeight: 48,
+  },
+  titleItalic: {
+    fontFamily: mobileFonts.serifRegular,
+    fontStyle: "italic",
+  },
+  footerText: {
+    color: semantics.mutedForeground,
+    fontFamily: mobileFonts.sansRegular,
+    fontSize: fontSizes.sm,
+  },
+  footerLink: {
+    color: semantics.foreground,
+    fontFamily: mobileFonts.sansSemibold,
+    textDecorationLine: "underline",
+  },
 })

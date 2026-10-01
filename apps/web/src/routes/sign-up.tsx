@@ -1,5 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router"
 import { type FormEvent, useId, useState } from "react"
+import { AuthShell as NewAuthShell } from "#/components/auth-shell"
+import { Button } from "#/components/button"
+import { ErrorBanner } from "#/components/error-banner"
+import { Field as NewField } from "#/components/field"
+import { PasswordToggle } from "#/components/password-toggle"
 import { resendVerificationEmail, signUp } from "#/lib/auth-client"
 
 export const Route = createFileRoute("/sign-up")({ component: SignUp })
@@ -9,6 +14,7 @@ function SignUp() {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
   // Set once sign-up succeeds but no session was created — i.e. the account
@@ -40,26 +46,69 @@ function SignUp() {
   }
 
   return (
-    <AuthShell
-      title="Create your account"
-      footer={
-        <Link to="/sign-in" className="text-sky-400 hover:underline">
-          Already have an account? Sign in
-        </Link>
+    <NewAuthShell
+      title={
+        <>
+          Create <em className="font-serif font-normal italic">account</em>
+        </>
+      }
+      subtitle="Save the recipes you love, plan your week, and shop from one simple list."
+      headerRight={
+        <>
+          Already have an account?{" "}
+          <Link
+            to="/sign-in"
+            className="font-semibold text-foreground underline underline-offset-4 hover:text-primary"
+          >
+            Sign in
+          </Link>
+        </>
       }
     >
-      <form onSubmit={onSubmit} className="space-y-4">
-        <Field label="Name" value={name} onChange={setName} type="text" autoComplete="name" />
-        <Field label="Email" value={email} onChange={setEmail} type="email" autoComplete="email" />
-        <PasswordField value={password} onChange={setPassword} autoComplete="new-password" />
-        {error && (
-          <p role="alert" className="text-sm text-red-400">
-            {error}
-          </p>
-        )}
-        <SubmitButton pending={pending}>Sign up</SubmitButton>
+      <form onSubmit={onSubmit} className="flex flex-col gap-5">
+        {error ? <ErrorBanner>{error}</ErrorBanner> : null}
+
+        <NewField
+          label="Name"
+          type="text"
+          autoComplete="name"
+          required
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <NewField
+          label="Email"
+          type="email"
+          autoComplete="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <NewField
+          label="Password"
+          type={showPassword ? "text" : "password"}
+          autoComplete="new-password"
+          required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          rightSlot={
+            <PasswordToggle
+              show={showPassword}
+              onToggle={() => setShowPassword((s) => !s)}
+            />
+          }
+        />
+
+        <Button
+          type="submit"
+          loading={pending}
+          disabled={!name || !email || !password}
+          className="w-full"
+        >
+          Create account
+        </Button>
       </form>
-    </AuthShell>
+    </NewAuthShell>
   )
 }
 

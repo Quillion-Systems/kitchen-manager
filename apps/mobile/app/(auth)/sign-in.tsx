@@ -1,18 +1,18 @@
 import {
   fontSizes,
   mobileFonts,
-  primitives,
   semantics,
 } from "@kitchen-manager/design-tokens"
 import { Link } from "expo-router"
-import { X } from "lucide-react-native"
 import { useState } from "react"
-import { Pressable, StyleSheet, Text, View } from "react-native"
+import { StyleSheet, Text, View } from "react-native"
 import { AuthShell } from "../../components/AuthShell"
 import { Button } from "../../components/Button"
 import { Checkbox } from "../../components/Checkbox"
 import { CheckYourEmail } from "../../components/CheckYourEmail"
+import { ErrorBanner } from "../../components/ErrorBanner"
 import { Field } from "../../components/Field"
+import { PasswordToggle } from "../../components/PasswordToggle"
 import { signIn } from "../../lib/auth-client"
 
 export default function SignIn() {
@@ -61,7 +61,11 @@ export default function SignIn() {
         </Text>
       }
     >
-      {error ? <ErrorBanner message={error} /> : null}
+      {error ? (
+        <ErrorBanner testID="auth-error">
+          {error} Try again, or reset it below.
+        </ErrorBanner>
+      ) : null}
 
       <Field
         label="Email"
@@ -84,15 +88,11 @@ export default function SignIn() {
         textContentType="password"
         error={error ? "Incorrect password. Try again or reset it." : undefined}
         rightSlot={
-          <Pressable
+          <PasswordToggle
             testID="password-toggle"
-            onPress={() => setShowPassword((s) => !s)}
-            hitSlop={8}
-          >
-            <Text style={styles.showToggle}>
-              {showPassword ? "Hide" : "Show"}
-            </Text>
-          </Pressable>
+            show={showPassword}
+            onToggle={() => setShowPassword((s) => !s)}
+          />
         }
       />
 
@@ -118,19 +118,6 @@ export default function SignIn() {
   )
 }
 
-function ErrorBanner({ message }: { message: string }) {
-  return (
-    <View testID="auth-error" style={styles.banner}>
-      <View style={styles.bannerIcon}>
-        <X size={14} color={semantics.destructiveForeground} strokeWidth={3} />
-      </View>
-      <Text style={styles.bannerText}>
-        {message} Try again, or reset it below.
-      </Text>
-    </View>
-  )
-}
-
 const styles = StyleSheet.create({
   title: {
     color: semantics.foreground,
@@ -142,12 +129,6 @@ const styles = StyleSheet.create({
   titleItalic: {
     fontFamily: mobileFonts.serifRegular,
     fontStyle: "italic",
-  },
-  showToggle: {
-    color: semantics.foreground,
-    fontFamily: mobileFonts.sansMedium,
-    fontSize: fontSizes.sm,
-    textDecorationLine: "underline",
   },
   row: {
     alignItems: "center",
@@ -169,29 +150,5 @@ const styles = StyleSheet.create({
     color: semantics.foreground,
     fontFamily: mobileFonts.sansSemibold,
     textDecorationLine: "underline",
-  },
-  banner: {
-    alignItems: "flex-start",
-    backgroundColor: primitives.rust[300],
-    borderRadius: 16,
-    flexDirection: "row",
-    gap: 12,
-    padding: 16,
-  },
-  bannerIcon: {
-    alignItems: "center",
-    backgroundColor: semantics.destructive,
-    borderRadius: 999,
-    height: 24,
-    justifyContent: "center",
-    marginTop: 2,
-    width: 24,
-  },
-  bannerText: {
-    color: primitives.rust[700],
-    flex: 1,
-    fontFamily: mobileFonts.sansSemibold,
-    fontSize: fontSizes.sm,
-    lineHeight: 20,
   },
 })

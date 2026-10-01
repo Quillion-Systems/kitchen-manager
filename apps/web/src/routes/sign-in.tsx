@@ -1,10 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router"
-import { X } from "lucide-react"
 import { type FormEvent, useState } from "react"
 import { AuthShell } from "#/components/auth-shell"
 import { Button } from "#/components/button"
 import { Checkbox } from "#/components/checkbox"
+import { ErrorBanner } from "#/components/error-banner"
 import { Field } from "#/components/field"
+import { PasswordToggle } from "#/components/password-toggle"
 import { signIn } from "#/lib/auth-client"
 import { CheckYourEmail } from "./sign-up"
 
@@ -62,7 +63,9 @@ function SignIn() {
       }
     >
       <form onSubmit={onSubmit} className="flex flex-col gap-5">
-        {error ? <ErrorBanner message={error} /> : null}
+        {error ? (
+          <ErrorBanner>{error} Try again, or reset it below.</ErrorBanner>
+        ) : null}
 
         <Field
           label="Email"
@@ -81,13 +84,10 @@ function SignIn() {
           onChange={(e) => setPassword(e.target.value)}
           error={error ? "Incorrect password. Try again or reset it." : undefined}
           rightSlot={
-            <button
-              type="button"
-              onClick={() => setShowPassword((s) => !s)}
-              className="text-sm font-medium text-foreground underline underline-offset-4 hover:text-primary"
-            >
-              {showPassword ? "Hide" : "Show"}
-            </button>
+            <PasswordToggle
+              show={showPassword}
+              onToggle={() => setShowPassword((s) => !s)}
+            />
           }
         />
 
@@ -115,20 +115,3 @@ function SignIn() {
     </AuthShell>
   )
 }
-
-function ErrorBanner({ message }: { message: string }) {
-  return (
-    <div
-      role="alert"
-      className="flex items-start gap-3 rounded-2xl bg-rust-300 p-4"
-    >
-      <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-destructive">
-        <X className="size-4 text-destructive-foreground" strokeWidth={3} />
-      </span>
-      <p className="text-sm font-semibold text-rust-700">
-        {message} Try again, or reset it below.
-      </p>
-    </div>
-  )
-}
-
