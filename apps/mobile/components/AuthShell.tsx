@@ -4,6 +4,7 @@ import {
   semantics,
 } from "@kitchen-manager/design-tokens"
 import { useRouter } from "expo-router"
+import { StatusBar } from "expo-status-bar"
 import { ChevronLeft } from "lucide-react-native"
 import type { ReactNode } from "react"
 import {
@@ -15,6 +16,7 @@ import {
   Text,
   View,
 } from "react-native"
+import { useSafeAreaInsets } from "react-native-safe-area-context"
 
 export function AuthShell({
   title,
@@ -30,6 +32,7 @@ export function AuthShell({
   children: ReactNode
 }) {
   const router = useRouter()
+  const insets = useSafeAreaInsets()
   // Only render the back button if there's actually a screen to pop. On root
   // screens (opening the app cold on /sign-in) canGoBack() is false and tapping
   // back raises "GO_BACK was not handled" — the button has to disappear, not
@@ -40,8 +43,12 @@ export function AuthShell({
       style={styles.root}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
+      <StatusBar style="dark" />
       <ScrollView
-        contentContainerStyle={styles.scroll}
+        contentContainerStyle={[
+          styles.scroll,
+          { paddingTop: insets.top + 16 },
+        ]}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
@@ -85,7 +92,7 @@ export function AuthShell({
 
 const styles = StyleSheet.create({
   root: { backgroundColor: semantics.background, flex: 1 },
-  scroll: { flexGrow: 1, paddingHorizontal: 24, paddingBottom: 32, paddingTop: 24 },
+  scroll: { flexGrow: 1, paddingBottom: 32, paddingHorizontal: 24 },
   backButton: {
     alignItems: "center",
     backgroundColor: semantics.muted,
