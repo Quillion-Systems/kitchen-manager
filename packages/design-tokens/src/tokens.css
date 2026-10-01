@@ -66,4 +66,63 @@
   --color-warning-foreground: var(--color-cream-50);
   --color-destructive: var(--color-rust-500);
   --color-destructive-foreground: var(--color-cream-50);
+
+  /* ─── Typography — families ────────────────────────── */
+  --font-sans: "Bricolage Grotesque Variable", "Bricolage Grotesque", system-ui,
+    -apple-system, sans-serif;
+  --font-serif: "Instrument Serif", Georgia, serif;
+
+  /* ─── Typography — weights ─────────────────────────── */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  /* ─── Typography — line-heights (unitless) ─────────── */
+  --leading-tight: 1.1;
+  --leading-snug: 1.25;
+  --leading-normal: 1.45;
+  --leading-relaxed: 1.6;
+
+  /* ─── Typography — letter-spacing ──────────────────── */
+  --tracking-tightest: -0.055em;
+  --tracking-tighter: -0.03em;
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0em;
+
+  /* ─── Typography — sizes w/ paired leading + tracking ─ */
+  --text-2xs: 11px;
+  --text-2xs--line-height: 1.4;
+
+  --text-xs: 12px;
+  --text-xs--line-height: 1.4;
+
+  --text-sm: 14px;
+  --text-sm--line-height: 1.45;
+
+  --text-base: 16px;
+  --text-base--line-height: 1.5;
+
+  --text-md: 18px;
+  --text-md--line-height: 1.5;
+
+  --text-lg: 20px;
+  --text-lg--line-height: 1.4;
+
+  --text-xl: 24px;
+  --text-xl--line-height: 1.25;
+  --text-xl--letter-spacing: -0.02em;
+
+  --text-2xl: 28px;
+  --text-2xl--line-height: 1.2;
+  --text-2xl--letter-spacing: -0.03em;
+
+  --text-3xl: 32px;
+  --text-3xl--line-height: 1.15;
+  --text-3xl--letter-spacing: -0.03em;
+
+  --text-4xl: 40px;
+  --text-4xl--line-height: 1.1;
+  --text-4xl--letter-spacing: -0.03em;
 }
