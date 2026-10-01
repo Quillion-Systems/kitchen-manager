@@ -62,7 +62,7 @@ export default function Welcome() {
 }
 
 const styles = StyleSheet.create({
-  root: { backgroundColor: primitives.forest[900], flex: 1 },
+  root: { backgroundColor: primitives.forest[800], flex: 1 },
   safe: { flex: 1, paddingHorizontal: 24 },
   header: { paddingTop: 16 },
   wordmark: {
