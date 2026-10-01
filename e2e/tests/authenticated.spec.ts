@@ -5,7 +5,7 @@ import { expect, test } from "@playwright/test"
 // UI is exercised once (auth-flow.spec.ts) and everything else is fast.
 test.use({ storageState: "playwright/.auth/user.json" })
 
-test.skip("saved session renders the signed-in home", async ({ page }) => {
+test("saved session renders the signed-in home", async ({ page }) => {
   await page.goto("/")
   await expect(page.getByText(/signed in as/i)).toBeVisible()
   await expect(page.getByRole("button", { name: "Sign out" })).toBeVisible()

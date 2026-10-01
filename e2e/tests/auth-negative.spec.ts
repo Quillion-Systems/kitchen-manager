@@ -9,7 +9,7 @@ async function register(request: import("@playwright/test").APIRequestContext, e
   expect(res.ok()).toBeTruthy()
 }
 
-test.skip("wrong password is rejected and leaves you signed out", async ({ page, request }) => {
+test("wrong password is rejected and leaves you signed out", async ({ page, request }) => {
   const email = uniqueEmail("neg-wrong")
   await register(request, email)
 
@@ -22,7 +22,7 @@ test.skip("wrong password is rejected and leaves you signed out", async ({ page,
   await expect(page.getByText(email)).toBeHidden()
 })
 
-test.skip("signing up with an existing email is rejected", async ({ page, request }) => {
+test("signing up with an existing email is rejected", async ({ page, request }) => {
   const email = uniqueEmail("neg-dup")
   await register(request, email)
 
@@ -30,7 +30,7 @@ test.skip("signing up with an existing email is rejected", async ({ page, reques
   await page.getByLabel("Name").fill("Duplicate")
   await page.getByLabel("Email").fill(email)
   await page.getByLabel("Password", { exact: true }).fill(PASSWORD)
-  await page.getByRole("button", { name: "Sign up" }).click()
+  await page.getByRole("button", { name: "Create account" }).click()
 
   await expect(page.getByRole("alert")).toBeVisible()
 })
