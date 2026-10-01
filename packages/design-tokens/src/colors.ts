@@ -60,7 +60,7 @@ export const semantics = {
   surfaceForeground: primitives.forest[900],
 
   muted: primitives.cream[200],
-  mutedForeground: primitives.forest[700],
+  mutedForeground: primitives.forest[600],
 
   primary: primitives.forest[800],
   primaryForeground: primitives.cream[50],

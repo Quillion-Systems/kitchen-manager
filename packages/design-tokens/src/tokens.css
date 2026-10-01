@@ -48,7 +48,7 @@
   --color-surface-foreground: var(--color-forest-900);
 
   --color-muted: var(--color-cream-200);
-  --color-muted-foreground: var(--color-forest-700);
+  --color-muted-foreground: var(--color-forest-600);
 
   --color-primary: var(--color-forest-800);
   --color-primary-foreground: var(--color-cream-50);
