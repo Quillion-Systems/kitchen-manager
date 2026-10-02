@@ -3,9 +3,14 @@
 // shared contract is proven to resolve across the workspace. The tRPC procedures
 // validate their inputs against these.
 export {
+  type Inventory,
+  inventoryIdSchema,
+  inventorySchema,
+  type NewInventory,
   type NewNote,
   type NewProduct,
   type Note,
+  newInventorySchema,
   newNoteSchema,
   newProductSchema,
   noteIdSchema,
@@ -13,8 +18,13 @@ export {
   type Product,
   productIdSchema,
   productSchema,
+  type Unit,
+  type UpdateInventory,
   type UpdateNote,
   type UpdateProduct,
+  unitIdSchema,
+  unitSchema,
+  updateInventorySchema,
   updateNoteSchema,
   updateProductSchema,
 } from "@kitchen-manager/validation"
