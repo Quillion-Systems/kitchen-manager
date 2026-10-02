@@ -20,6 +20,8 @@ export default defineConfig({
     "./src/db/household.ts",
     "./src/db/notes.ts",
     "./src/db/product.ts",
+    "./src/db/unit.ts",
+    "./src/db/inventory.ts",
   ],
   out: "./drizzle",
   dialect: "postgresql",
