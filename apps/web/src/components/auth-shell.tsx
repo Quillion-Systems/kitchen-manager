@@ -1,4 +1,4 @@
-import logoUrl from "@kitchen-manager/brand/logo.svg?url"
+import logoUrl from "@kitchen-manager/brand/logo_light.svg?url"
 import { Link } from "@tanstack/react-router"
 import type { ReactNode } from "react"
 

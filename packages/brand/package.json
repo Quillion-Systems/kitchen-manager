@@ -3,6 +3,8 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./logo.svg": "./src/logo.svg"
+    "./logo_light.svg": "./src/logo_light.svg",
+    "./logo_brand.svg": "./src/logo_brand.svg",
+    "./logo_dark.svg": "./src/logo_dark.svg"
   }
 }

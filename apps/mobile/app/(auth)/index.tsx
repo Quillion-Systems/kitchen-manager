@@ -1,4 +1,4 @@
-import Logo from "@kitchen-manager/brand/logo.svg"
+import Logo from "@kitchen-manager/brand/logo_light.svg"
 import { fontSizes, mobileFonts, primitives } from "@kitchen-manager/design-tokens"
 import { useRouter } from "expo-router"
 import { StatusBar } from "expo-status-bar"
