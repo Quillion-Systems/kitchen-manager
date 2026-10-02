@@ -18,6 +18,7 @@
     "@fontsource-variable/bricolage-grotesque": "^5.3.0",
     "@fontsource/instrument-serif": "^5.3.0",
     "@kitchen-manager/api-client": "workspace:*",
+    "@kitchen-manager/brand": "workspace:*",
     "@kitchen-manager/design-tokens": "workspace:*",
     "@kitchen-manager/powersync": "workspace:*",
     "@powersync/common": "^2.0.0",

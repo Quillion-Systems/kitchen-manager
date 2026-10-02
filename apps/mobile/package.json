@@ -7,6 +7,7 @@
     "@expo-google-fonts/bricolage-grotesque": "^0.4.1",
     "@expo-google-fonts/instrument-serif": "^0.4.1",
     "@kitchen-manager/api-client": "workspace:*",
+    "@kitchen-manager/brand": "workspace:*",
     "@kitchen-manager/design-tokens": "workspace:*",
     "@kitchen-manager/powersync": "workspace:*",
     "@powersync/react": "^2.0.0",
@@ -35,6 +36,7 @@
   },
   "devDependencies": {
     "@types/react": "~19.2.17",
+    "react-native-svg-transformer": "^1.5.3",
     "typescript": "~6.0.3"
   },
   "scripts": {
