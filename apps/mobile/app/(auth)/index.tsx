@@ -1,3 +1,4 @@
+import Logo from "@kitchen-manager/brand/logo.svg"
 import { fontSizes, mobileFonts, primitives } from "@kitchen-manager/design-tokens"
 import { useRouter } from "expo-router"
 import { StatusBar } from "expo-status-bar"
@@ -16,9 +17,7 @@ export default function Welcome() {
       <StatusBar style="light" />
       <SafeAreaView style={styles.safe} edges={["top", "bottom"]}>
         <View style={styles.header}>
-          <Text style={styles.wordmark}>
-            thyme<Text style={styles.wordmarkStar}>✱</Text>
-          </Text>
+          <Logo width={120} height={32} />
         </View>
 
         <View style={styles.content}>
@@ -51,14 +50,6 @@ const styles = StyleSheet.create({
   root: { backgroundColor: primitives.forest[800], flex: 1 },
   safe: { flex: 1, paddingHorizontal: 24 },
   header: { paddingTop: 16 },
-  wordmark: {
-    color: primitives.cream[50],
-    fontFamily: mobileFonts.serifRegular,
-    fontSize: 32,
-    letterSpacing: -1,
-    lineHeight: 32,
-  },
-  wordmarkStar: { color: primitives.lime[500] },
   content: { flex: 1, justifyContent: "center" },
   title: {
     color: primitives.cream[50],

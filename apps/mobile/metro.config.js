@@ -18,4 +18,18 @@ config.resolver.nodeModulesPaths = [
   path.resolve(workspaceRoot, "node_modules"),
 ]
 
+// 3. SVG imports: route .svg through react-native-svg-transformer so files
+//    imported from @kitchen-manager/brand (and anywhere else) become React
+//    components wrapping react-native-svg primitives rather than Expo asset
+//    bitmaps. svg.d.ts in this app mirrors the types on the TS side.
+config.transformer = {
+  ...config.transformer,
+  babelTransformerPath: require.resolve("react-native-svg-transformer/expo"),
+}
+config.resolver = {
+  ...config.resolver,
+  assetExts: config.resolver.assetExts.filter((ext) => ext !== "svg"),
+  sourceExts: [...config.resolver.sourceExts, "svg"],
+}
+
 module.exports = config

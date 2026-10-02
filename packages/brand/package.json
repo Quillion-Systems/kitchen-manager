@@ -1,0 +1,8 @@
+{
+  "name": "@kitchen-manager/brand",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./logo.svg": "./src/logo.svg"
+  }
+}

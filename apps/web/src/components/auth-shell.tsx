@@ -1,3 +1,4 @@
+import logoUrl from "@kitchen-manager/brand/logo.svg?url"
 import { Link } from "@tanstack/react-router"
 import type { ReactNode } from "react"
 
@@ -16,7 +17,7 @@ export function AuthShell({
     <main className="flex min-h-screen flex-col bg-background text-foreground">
       <header className="flex items-center justify-between px-8 py-6">
         <Link to="/" aria-label="Thyme home">
-          <Wordmark />
+          <img src={logoUrl} alt="thyme" className="h-8 w-auto" />
         </Link>
         {headerRight ? <div className="text-sm text-foreground">{headerRight}</div> : null}
       </header>
@@ -48,13 +49,5 @@ export function AuthShell({
         </nav>
       </footer>
     </main>
-  )
-}
-
-function Wordmark() {
-  return (
-    <span className="font-serif text-3xl leading-none text-primary">
-      thyme<span className="ml-0.5 text-success">✱</span>
-    </span>
   )
 }
