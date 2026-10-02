@@ -1,4 +1,13 @@
 export {
+  type Inventory,
+  inventoryIdSchema,
+  inventorySchema,
+  type NewInventory,
+  newInventorySchema,
+  type UpdateInventory,
+  updateInventorySchema,
+} from "./inventory"
+export {
   type NewNote,
   type Note,
   newNoteSchema,
@@ -16,3 +25,4 @@ export {
   type UpdateProduct,
   updateProductSchema,
 } from "./product"
+export { type Unit, unitIdSchema, unitSchema } from "./unit"
