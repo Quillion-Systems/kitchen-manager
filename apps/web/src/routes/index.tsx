@@ -28,6 +28,12 @@ function AuthBar() {
               Products
             </Link>
             <Link
+              to="/inventory"
+              className="rounded-md border border-neutral-700 px-3 py-1 text-neutral-300 transition hover:border-neutral-500 hover:text-neutral-100"
+            >
+              Inventory
+            </Link>
+            <Link
               to="/settings"
               className="rounded-md border border-neutral-700 px-3 py-1 text-neutral-300 transition hover:border-neutral-500 hover:text-neutral-100"
             >
