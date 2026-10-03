@@ -48,7 +48,7 @@ export function CheckYourEmail({
           Didn't get it? Check spam, or resend below.
         </p>
         {status === "error" ? (
-          <ErrorBanner>Couldn't resend right now. Try again in a moment.</ErrorBanner>
+          <ErrorBanner message="Couldn't resend right now. Try again in a moment." />
         ) : null}
         <Button
           variant="secondary"

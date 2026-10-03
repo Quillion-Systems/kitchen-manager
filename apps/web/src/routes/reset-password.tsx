@@ -85,7 +85,7 @@ function ResetPassword() {
       }
     >
       <form onSubmit={onSubmit} className="flex flex-col gap-5">
-        {error ? <ErrorBanner>{error}</ErrorBanner> : null}
+        {error ? <ErrorBanner message={error} /> : null}
         <PasswordField
           label="New password"
           autoComplete="new-password"

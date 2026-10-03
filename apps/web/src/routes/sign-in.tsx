@@ -61,7 +61,7 @@ function SignIn() {
       }
     >
       <form onSubmit={onSubmit} className="flex flex-col gap-5">
-        {error ? <ErrorBanner>{error}. Try again, or reset it below.</ErrorBanner> : null}
+        {error ? <ErrorBanner message={`${error}. Try again, or reset it below.`} /> : null}
 
         <Field
           label="Email"

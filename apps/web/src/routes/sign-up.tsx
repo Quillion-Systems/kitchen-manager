@@ -63,7 +63,7 @@ function SignUp() {
       }
     >
       <form onSubmit={onSubmit} className="flex flex-col gap-5">
-        {error ? <ErrorBanner>{error}</ErrorBanner> : null}
+        {error ? <ErrorBanner message={error} /> : null}
 
         <NewField
           label="Name"
