@@ -102,7 +102,53 @@ export function createConnector(
                 await trpc.products.softDelete.mutate({ id: op.id })
                 break
             }
+            continue
           }
+
+          if (op.table === "inventory") {
+            switch (op.op) {
+              case UpdateType.PUT:
+                // Create or offline-retry upsert. Client minted the id; server
+                // uses onConflictDoUpdate so repeated uploads are idempotent.
+                await trpc.inventory.create.mutate({
+                  id: op.id,
+                  productId: String(data.product_id ?? ""),
+                  qty: Number(data.qty ?? 0),
+                  unitId: String(data.unit_id ?? ""),
+                  expiresAt: data.expires_at ? String(data.expires_at) : null,
+                  purchasedAt: data.purchased_at ? String(data.purchased_at) : null,
+                  notes: data.notes ? String(data.notes) : null,
+                })
+                break
+              case UpdateType.PATCH:
+                // Only send the fields that changed. productId is intentionally
+                // immutable at the API — a PATCH that tries to change it would
+                // be ignored server-side anyway; we drop it here so the API
+                // doesn't see it at all.
+                await trpc.inventory.update.mutate({
+                  id: op.id,
+                  ...(data.qty !== undefined ? { qty: Number(data.qty) } : {}),
+                  ...(data.unit_id !== undefined ? { unitId: String(data.unit_id) } : {}),
+                  ...(data.expires_at !== undefined
+                    ? { expiresAt: data.expires_at ? String(data.expires_at) : null }
+                    : {}),
+                  ...(data.purchased_at !== undefined
+                    ? { purchasedAt: data.purchased_at ? String(data.purchased_at) : null }
+                    : {}),
+                  ...(data.notes !== undefined
+                    ? { notes: data.notes ? String(data.notes) : null }
+                    : {}),
+                })
+                break
+              case UpdateType.DELETE:
+                await trpc.inventory.softDelete.mutate({ id: op.id })
+                break
+            }
+          }
+
+          // `unit` is global reference data, server-managed — no write path.
+          // Any local op on this table (shouldn't happen under normal use) is
+          // silently dropped by falling through here.
         }
         await tx.complete()
       } catch (err) {

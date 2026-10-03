@@ -25,4 +25,34 @@ const product = new Table({
   updated_at: column.text,
 })
 
-export const AppSchema = new Schema({ notes, product })
+// unit is global reference data — the ten seeded units ship to every client
+// via a non-household-scoped sync stream. No `deleted_at` either; units aren't
+// soft-deletable. `to_base_factor` is text here because SQLite has no numeric
+// type and PowerSync preserves Postgres' numeric precision as a string on the
+// wire; client code `Number()`-coerces when it needs to do math.
+const unit = new Table({
+  name: column.text,
+  abbreviation: column.text,
+  category: column.text,
+  to_base_factor: column.text,
+  created_at: column.text,
+  updated_at: column.text,
+})
+
+// Per-batch inventory. `qty` is text for the same precision-preservation
+// reason as `unit.to_base_factor`. `added_by_user_id` is nullable (DB sets
+// it to null on user account deletion so shared-household inventory
+// survives); comes across the wire as text-or-null.
+const inventory = new Table({
+  product_id: column.text,
+  qty: column.text,
+  unit_id: column.text,
+  expires_at: column.text,
+  purchased_at: column.text,
+  notes: column.text,
+  added_by_user_id: column.text,
+  created_at: column.text,
+  updated_at: column.text,
+})
+
+export const AppSchema = new Schema({ notes, product, unit, inventory })
