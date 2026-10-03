@@ -56,7 +56,7 @@ export default function SignIn() {
       }
     >
       {error ? (
-        <ErrorBanner testID="auth-error">{`${error}. Try again, or reset it below.`}</ErrorBanner>
+        <ErrorBanner testID="auth-error" message={`${error}. Try again, or reset it below.`} />
       ) : null}
 
       <Field

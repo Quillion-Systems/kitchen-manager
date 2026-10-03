@@ -56,7 +56,7 @@ export default function SignUp() {
         </Text>
       }
     >
-      {error ? <ErrorBanner testID="auth-error">{error}</ErrorBanner> : null}
+      {error ? <ErrorBanner testID="auth-error" message={error} /> : null}
 
       <Field
         label="Name"

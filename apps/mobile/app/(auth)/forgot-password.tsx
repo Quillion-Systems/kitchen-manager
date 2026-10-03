@@ -75,7 +75,7 @@ export default function ForgotPassword() {
         </Text>
       }
     >
-      {error ? <ErrorBanner testID="forgot-error">{error}</ErrorBanner> : null}
+      {error ? <ErrorBanner testID="forgot-error" message={error} /> : null}
 
       <Field
         label="Email"

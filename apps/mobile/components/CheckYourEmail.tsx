@@ -39,9 +39,10 @@ export function CheckYourEmail({ email, title }: { email: string; title?: ReactN
     >
       <Text style={styles.body}>Didn't get it? Check spam, or resend below.</Text>
       {status === "error" ? (
-        <ErrorBanner testID="resend-error">
-          Couldn't resend right now. Try again in a moment.
-        </ErrorBanner>
+        <ErrorBanner
+          testID="resend-error"
+          message="Couldn't resend right now. Try again in a moment."
+        />
       ) : null}
       <Button
         testID="resend-verification"
