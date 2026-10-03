@@ -12,6 +12,8 @@
     "build:desktop": "APP_DESKTOP=1 vite build && node -e \"require('node:fs').copyFileSync('.output/public/_shell.html', '.output/public/index.html')\"",
     "preview": "vite preview",
     "start": "node .output/server/index.mjs",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -40,6 +42,7 @@
   },
   "devDependencies": {
     "@kitchen-manager/tsconfig": "workspace:*",
+    "@storybook/react-vite": "^10.6.1",
     "@tanstack/devtools-vite": "0.8.3",
     "@tanstack/router-cli": "^1.132.0",
     "@tauri-apps/cli": "^2",
@@ -47,6 +50,7 @@
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^6.0.1",
+    "storybook": "^10.6.1",
     "typescript": "^6.0.2",
     "vite": "^8.0.0",
     "vite-plugin-wasm": "^3.6.0"
