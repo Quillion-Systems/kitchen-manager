@@ -7,7 +7,7 @@ import { CheckYourEmail } from "#/components/check-your-email"
 import { Checkbox } from "#/components/checkbox"
 import { ErrorBanner } from "#/components/error-banner"
 import { Field } from "#/components/field"
-import { PasswordToggle } from "#/components/password-toggle"
+import { PasswordField } from "#/components/password-field"
 import { signIn } from "#/lib/auth-client"
 
 export const Route = createFileRoute("/sign-in")({ component: SignIn })
@@ -16,7 +16,6 @@ function SignIn() {
   const navigate = useNavigate()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
   const [remember, setRemember] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
@@ -72,17 +71,13 @@ function SignIn() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <Field
+        <PasswordField
           label="Password"
-          type={showPassword ? "text" : "password"}
           autoComplete="current-password"
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           invalid={!!error}
-          rightSlot={
-            <PasswordToggle show={showPassword} onToggle={() => setShowPassword((s) => !s)} />
-          }
         />
 
         <div className="flex items-center justify-between">

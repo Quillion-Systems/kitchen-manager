@@ -4,8 +4,7 @@ import { AuthShell } from "#/components/auth-shell"
 import { AuthTitle } from "#/components/auth-title"
 import { Button } from "#/components/button"
 import { ErrorBanner } from "#/components/error-banner"
-import { Field } from "#/components/field"
-import { PasswordToggle } from "#/components/password-toggle"
+import { PasswordField } from "#/components/password-field"
 import { resetPassword } from "#/lib/auth-client"
 import { VerifiedCta } from "#/lib/verified-cta"
 
@@ -23,8 +22,6 @@ function ResetPassword() {
   const { token } = Route.useSearch()
   const [next, setNext] = useState("")
   const [confirm, setConfirm] = useState("")
-  const [showNext, setShowNext] = useState(false)
-  const [showConfirm, setShowConfirm] = useState(false)
   const [pending, setPending] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [done, setDone] = useState(false)
@@ -89,26 +86,20 @@ function ResetPassword() {
     >
       <form onSubmit={onSubmit} className="flex flex-col gap-5">
         {error ? <ErrorBanner>{error}</ErrorBanner> : null}
-        <Field
+        <PasswordField
           label="New password"
-          type={showNext ? "text" : "password"}
           autoComplete="new-password"
           required
           value={next}
           onChange={(e) => setNext(e.target.value)}
-          rightSlot={<PasswordToggle show={showNext} onToggle={() => setShowNext((s) => !s)} />}
         />
-        <Field
+        <PasswordField
           label="Confirm new password"
-          type={showConfirm ? "text" : "password"}
           autoComplete="new-password"
           required
           value={confirm}
           onChange={(e) => setConfirm(e.target.value)}
           error={mismatch ? "Passwords don't match" : undefined}
-          rightSlot={
-            <PasswordToggle show={showConfirm} onToggle={() => setShowConfirm((s) => !s)} />
-          }
         />
         <Button type="submit" loading={pending} disabled={!canSubmit} className="w-full">
           Reset password

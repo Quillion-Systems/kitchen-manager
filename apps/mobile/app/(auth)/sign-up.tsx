@@ -8,14 +8,13 @@ import { Button } from "../../components/Button"
 import { CheckYourEmail } from "../../components/CheckYourEmail"
 import { ErrorBanner } from "../../components/ErrorBanner"
 import { Field } from "../../components/Field"
-import { PasswordToggle } from "../../components/PasswordToggle"
+import { PasswordField } from "../../components/PasswordField"
 import { signUp } from "../../lib/auth-client"
 
 export default function SignUp() {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
   // Set once sign-up succeeds but no session was returned — the account exists
@@ -79,21 +78,14 @@ export default function SignUp() {
         autoComplete="email"
         textContentType="username"
       />
-      <Field
+      <PasswordField
         label="Password"
         testID="password-input"
+        toggleTestID="password-toggle"
         value={password}
         onChangeText={setPassword}
-        secureTextEntry={!showPassword}
         autoComplete="new-password"
         textContentType="newPassword"
-        rightSlot={
-          <PasswordToggle
-            testID="password-toggle"
-            show={showPassword}
-            onToggle={() => setShowPassword((s) => !s)}
-          />
-        }
       />
 
       <Button

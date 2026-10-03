@@ -9,13 +9,12 @@ import { Checkbox } from "../../components/Checkbox"
 import { CheckYourEmail } from "../../components/CheckYourEmail"
 import { ErrorBanner } from "../../components/ErrorBanner"
 import { Field } from "../../components/Field"
-import { PasswordToggle } from "../../components/PasswordToggle"
+import { PasswordField } from "../../components/PasswordField"
 import { signIn } from "../../lib/auth-client"
 
 export default function SignIn() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
   const [remember, setRemember] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
@@ -71,22 +70,15 @@ export default function SignIn() {
         autoComplete="email"
         textContentType="username"
       />
-      <Field
+      <PasswordField
         label="Password"
         testID="password-input"
+        toggleTestID="password-toggle"
         value={password}
         onChangeText={setPassword}
-        secureTextEntry={!showPassword}
         autoComplete="current-password"
         textContentType="password"
         invalid={!!error}
-        rightSlot={
-          <PasswordToggle
-            testID="password-toggle"
-            show={showPassword}
-            onToggle={() => setShowPassword((s) => !s)}
-          />
-        }
       />
 
       <View style={styles.row}>

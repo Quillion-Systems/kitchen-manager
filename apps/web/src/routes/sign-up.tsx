@@ -6,7 +6,7 @@ import { Button } from "#/components/button"
 import { CheckYourEmail } from "#/components/check-your-email"
 import { ErrorBanner } from "#/components/error-banner"
 import { Field as NewField } from "#/components/field"
-import { PasswordToggle } from "#/components/password-toggle"
+import { PasswordField as NewPasswordField } from "#/components/password-field"
 import { signUp } from "#/lib/auth-client"
 
 export const Route = createFileRoute("/sign-up")({ component: SignUp })
@@ -16,7 +16,6 @@ function SignUp() {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
   // Set once sign-up succeeds but no session was created — i.e. the account
@@ -82,16 +81,12 @@ function SignUp() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <NewField
+        <NewPasswordField
           label="Password"
-          type={showPassword ? "text" : "password"}
           autoComplete="new-password"
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          rightSlot={
-            <PasswordToggle show={showPassword} onToggle={() => setShowPassword((s) => !s)} />
-          }
         />
 
         <Button

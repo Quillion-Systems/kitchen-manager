@@ -206,6 +206,7 @@ function DangerZoneSection({ onDeleted }: { onDeleted: () => void | Promise<void
             Enter your password to confirm. This can't be undone.
           </Text>
           <PasswordField
+            label="Password"
             testID="delete-password-input"
             value={password}
             onChangeText={setPassword}
