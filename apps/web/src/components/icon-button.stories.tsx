@@ -28,12 +28,16 @@ type Story = StoryObj<typeof IconButton>
 export const Primary: Story = {
   args: { "aria-label": "Highlight", children: <Sparkles /> },
 }
-export const Accent: Story = { args: { variant: "accent", "aria-label": "Add", children: <Plus /> } }
+export const Accent: Story = {
+  args: { variant: "accent", "aria-label": "Add", children: <Plus /> },
+}
 export const Secondary: Story = {
   args: { variant: "secondary", "aria-label": "Back", children: <ChevronLeft /> },
 }
 export const Soft: Story = { args: { variant: "soft", "aria-label": "Dismiss", children: <X /> } }
-export const Ghost: Story = { args: { variant: "ghost", "aria-label": "Favorite", children: <Heart /> } }
+export const Ghost: Story = {
+  args: { variant: "ghost", "aria-label": "Favorite", children: <Heart /> },
+}
 export const Destructive: Story = {
   args: { variant: "destructive", "aria-label": "Delete", children: <Trash2 /> },
 }
