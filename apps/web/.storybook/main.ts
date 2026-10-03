@@ -6,6 +6,7 @@ import type { StorybookConfig } from "@storybook/react-vite"
 // go together stay together.
 const config: StorybookConfig = {
   stories: ["../src/components/**/*.stories.@(ts|tsx)"],
+  addons: ["storybook-addon-pseudo-states"],
   framework: {
     name: "@storybook/react-vite",
     options: {},
