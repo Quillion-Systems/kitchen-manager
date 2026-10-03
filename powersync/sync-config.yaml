@@ -23,3 +23,14 @@ streams:
   product:
     auto_subscribe: true
     query: SELECT * FROM product WHERE household_id = auth.parameter('household_id') AND deleted_at IS NULL
+  inventory:
+    auto_subscribe: true
+    query: SELECT * FROM inventory WHERE household_id = auth.parameter('household_id') AND deleted_at IS NULL
+
+  # Global reference data — the ten seeded units. No household scoping; every
+  # signed-in client gets the same list. No tombstone handling either (units
+  # aren't soft-deletable). The server never mutates this table at runtime
+  # today, so clients effectively hydrate once per fresh install.
+  unit:
+    auto_subscribe: true
+    query: SELECT * FROM unit
