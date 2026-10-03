@@ -3,12 +3,12 @@ import { Link } from "expo-router"
 import { useState } from "react"
 import { StyleSheet, Text, View } from "react-native"
 import { AuthShell } from "../../components/AuthShell"
-import { AuthTitle } from "../../components/AuthTitle"
 import { Button } from "../../components/Button"
 import { Checkbox } from "../../components/Checkbox"
 import { CheckYourEmail } from "../../components/CheckYourEmail"
 import { ErrorBanner } from "../../components/ErrorBanner"
 import { Field } from "../../components/Field"
+import { PageTitle } from "../../components/PageTitle"
 import { PasswordField } from "../../components/PasswordField"
 import { signIn } from "../../lib/auth-client"
 
@@ -38,13 +38,13 @@ export default function SignIn() {
 
   if (needsVerification) {
     return (
-      <CheckYourEmail email={email} title={<AuthTitle prefix="Verify your" italic="email" />} />
+      <CheckYourEmail email={email} title={<PageTitle prefix="Verify your" italic="email" />} />
     )
   }
 
   return (
     <AuthShell
-      title={<AuthTitle prefix="Welcome" italic="back" />}
+      title={<PageTitle prefix="Welcome" italic="back" />}
       subtitle="Sign in to access your recipes and weekly meal plans."
       footer={
         <Text style={styles.footerText}>

@@ -3,11 +3,11 @@ import { Link } from "expo-router"
 import { useState } from "react"
 import { StyleSheet, Text } from "react-native"
 import { AuthShell } from "../../components/AuthShell"
-import { AuthTitle } from "../../components/AuthTitle"
 import { Button } from "../../components/Button"
 import { CheckYourEmail } from "../../components/CheckYourEmail"
 import { ErrorBanner } from "../../components/ErrorBanner"
 import { Field } from "../../components/Field"
+import { PageTitle } from "../../components/PageTitle"
 import { PasswordField } from "../../components/PasswordField"
 import { signUp } from "../../lib/auth-client"
 
@@ -45,7 +45,7 @@ export default function SignUp() {
 
   return (
     <AuthShell
-      title={<AuthTitle prefix="Create" italic="account" />}
+      title={<PageTitle prefix="Create" italic="account" />}
       subtitle="Save the recipes you love, plan your week, and shop from one simple list."
       footer={
         <Text style={styles.footerText}>

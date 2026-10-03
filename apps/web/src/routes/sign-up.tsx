@@ -1,11 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router"
 import { type FormEvent, useId, useState } from "react"
 import { AuthShell as NewAuthShell } from "#/components/auth-shell"
-import { AuthTitle } from "#/components/auth-title"
 import { Button } from "#/components/button"
 import { CheckYourEmail } from "#/components/check-your-email"
 import { ErrorBanner } from "#/components/error-banner"
 import { Field as NewField } from "#/components/field"
+import { PageTitle } from "#/components/page-title"
 import { PasswordField as NewPasswordField } from "#/components/password-field"
 import { signUp } from "#/lib/auth-client"
 
@@ -48,7 +48,7 @@ function SignUp() {
 
   return (
     <NewAuthShell
-      title={<AuthTitle prefix="Create" italic="account" />}
+      title={<PageTitle prefix="Create" italic="account" />}
       subtitle="Save the recipes you love, plan your week, and shop from one simple list."
       headerRight={
         <>

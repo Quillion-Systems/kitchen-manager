@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { type FormEvent, useState } from "react"
 import { AuthShell } from "#/components/auth-shell"
-import { AuthTitle } from "#/components/auth-title"
 import { Button } from "#/components/button"
 import { ErrorBanner } from "#/components/error-banner"
+import { PageTitle } from "#/components/page-title"
 import { PasswordField } from "#/components/password-field"
 import { resetPassword } from "#/lib/auth-client"
 import { VerifiedCta } from "#/lib/verified-cta"
@@ -29,7 +29,7 @@ function ResetPassword() {
   if (!token) {
     return (
       <AuthShell
-        title={<AuthTitle prefix="Missing" italic="link" />}
+        title={<PageTitle prefix="Missing" italic="link" />}
         subtitle="This page needs a reset token. Start over from the forgot-password screen and click the link we email you."
         headerRight={
           <Link
@@ -63,7 +63,7 @@ function ResetPassword() {
   if (done) {
     return (
       <AuthShell
-        title={<AuthTitle prefix="Password" italic="updated" />}
+        title={<PageTitle prefix="Password" italic="updated" />}
         subtitle="Your password is set. Sign in with your new password."
       >
         <VerifiedCta schemeUrl="kitchenmanager://sign-in" webFallbackHref="/sign-in" />
@@ -73,7 +73,7 @@ function ResetPassword() {
 
   return (
     <AuthShell
-      title={<AuthTitle prefix="Set a new" italic="password" />}
+      title={<PageTitle prefix="Set a new" italic="password" />}
       subtitle="Choose a password you'll remember — it'll replace your current one."
       headerRight={
         <Link
