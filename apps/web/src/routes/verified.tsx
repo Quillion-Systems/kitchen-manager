@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { AuthShell } from "#/components/auth-shell"
-import { AuthTitle } from "#/components/auth-title"
+import { PageTitle } from "#/components/page-title"
 import { VerifiedCta } from "#/lib/verified-cta"
 
 // Where the verification link lands after Better Auth processes the token. On
@@ -19,7 +19,7 @@ function Verified() {
   if (error) {
     return (
       <AuthShell
-        title={<AuthTitle prefix="Verification" italic="failed" />}
+        title={<PageTitle prefix="Verification" italic="failed" />}
         subtitle="That verification link is invalid or has expired. Sign in to have a fresh one sent to you."
         headerRight={
           <Link
@@ -35,7 +35,7 @@ function Verified() {
 
   return (
     <AuthShell
-      title={<AuthTitle prefix="Email" italic="verified" />}
+      title={<PageTitle prefix="Email" italic="verified" />}
       subtitle="Your email is confirmed. You can now sign in to thyme."
     >
       <VerifiedCta schemeUrl="kitchenmanager://sign-in" webFallbackHref="/sign-in" />

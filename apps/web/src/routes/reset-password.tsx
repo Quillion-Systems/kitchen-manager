@@ -1,11 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { type FormEvent, useState } from "react"
+import { Alert } from "#/components/alert"
 import { AuthShell } from "#/components/auth-shell"
-import { AuthTitle } from "#/components/auth-title"
 import { Button } from "#/components/button"
-import { ErrorBanner } from "#/components/error-banner"
-import { Field } from "#/components/field"
-import { PasswordToggle } from "#/components/password-toggle"
+import { PageTitle } from "#/components/page-title"
+import { PasswordField } from "#/components/password-field"
 import { resetPassword } from "#/lib/auth-client"
 import { VerifiedCta } from "#/lib/verified-cta"
 
@@ -23,8 +22,6 @@ function ResetPassword() {
   const { token } = Route.useSearch()
   const [next, setNext] = useState("")
   const [confirm, setConfirm] = useState("")
-  const [showNext, setShowNext] = useState(false)
-  const [showConfirm, setShowConfirm] = useState(false)
   const [pending, setPending] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [done, setDone] = useState(false)
@@ -32,7 +29,7 @@ function ResetPassword() {
   if (!token) {
     return (
       <AuthShell
-        title={<AuthTitle prefix="Missing" italic="link" />}
+        title={<PageTitle prefix="Missing" italic="link" />}
         subtitle="This page needs a reset token. Start over from the forgot-password screen and click the link we email you."
         headerRight={
           <Link
@@ -66,7 +63,7 @@ function ResetPassword() {
   if (done) {
     return (
       <AuthShell
-        title={<AuthTitle prefix="Password" italic="updated" />}
+        title={<PageTitle prefix="Password" italic="updated" />}
         subtitle="Your password is set. Sign in with your new password."
       >
         <VerifiedCta schemeUrl="kitchenmanager://sign-in" webFallbackHref="/sign-in" />
@@ -76,7 +73,7 @@ function ResetPassword() {
 
   return (
     <AuthShell
-      title={<AuthTitle prefix="Set a new" italic="password" />}
+      title={<PageTitle prefix="Set a new" italic="password" />}
       subtitle="Choose a password you'll remember — it'll replace your current one."
       headerRight={
         <Link
@@ -88,27 +85,21 @@ function ResetPassword() {
       }
     >
       <form onSubmit={onSubmit} className="flex flex-col gap-5">
-        {error ? <ErrorBanner>{error}</ErrorBanner> : null}
-        <Field
+        {error ? <Alert message={error} /> : null}
+        <PasswordField
           label="New password"
-          type={showNext ? "text" : "password"}
           autoComplete="new-password"
           required
           value={next}
           onChange={(e) => setNext(e.target.value)}
-          rightSlot={<PasswordToggle show={showNext} onToggle={() => setShowNext((s) => !s)} />}
         />
-        <Field
+        <PasswordField
           label="Confirm new password"
-          type={showConfirm ? "text" : "password"}
           autoComplete="new-password"
           required
           value={confirm}
           onChange={(e) => setConfirm(e.target.value)}
           error={mismatch ? "Passwords don't match" : undefined}
-          rightSlot={
-            <PasswordToggle show={showConfirm} onToggle={() => setShowConfirm((s) => !s)} />
-          }
         />
         <Button type="submit" loading={pending} disabled={!canSubmit} className="w-full">
           Reset password

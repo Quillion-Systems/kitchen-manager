@@ -2,11 +2,11 @@ import { fontSizes, mobileFonts, semantics } from "@kitchen-manager/design-token
 import { Link } from "expo-router"
 import { useState } from "react"
 import { StyleSheet, Text } from "react-native"
+import { Alert } from "../../components/Alert"
 import { AuthShell } from "../../components/AuthShell"
-import { AuthTitle } from "../../components/AuthTitle"
 import { Button } from "../../components/Button"
-import { ErrorBanner } from "../../components/ErrorBanner"
 import { Field } from "../../components/Field"
+import { PageTitle } from "../../components/PageTitle"
 import { requestPasswordReset } from "../../lib/auth-client"
 
 export default function ForgotPassword() {
@@ -41,7 +41,7 @@ export default function ForgotPassword() {
   if (submitted) {
     return (
       <AuthShell
-        title={<AuthTitle prefix="Check your" italic="email" />}
+        title={<PageTitle prefix="Check your" italic="email" />}
         subtitle={
           <Text style={styles.subtitle}>
             If an account exists for <Text style={styles.emailText}>{email}</Text>, we've sent a
@@ -65,7 +65,7 @@ export default function ForgotPassword() {
 
   return (
     <AuthShell
-      title={<AuthTitle prefix="Forgot" italic="password" />}
+      title={<PageTitle prefix="Forgot" italic="password" />}
       subtitle="Enter your account email and we'll send a link to set a new one."
       footer={
         <Text style={styles.footerText}>
@@ -75,7 +75,7 @@ export default function ForgotPassword() {
         </Text>
       }
     >
-      {error ? <ErrorBanner testID="forgot-error">{error}</ErrorBanner> : null}
+      {error ? <Alert testID="forgot-error" message={error} /> : null}
 
       <Field
         label="Email"

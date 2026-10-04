@@ -1,9 +1,9 @@
 import { Link } from "@tanstack/react-router"
 import { type ReactNode, useState } from "react"
+import { Alert } from "#/components/alert"
 import { AuthShell } from "#/components/auth-shell"
-import { AuthTitle } from "#/components/auth-title"
 import { Button } from "#/components/button"
-import { ErrorBanner } from "#/components/error-banner"
+import { PageTitle } from "#/components/page-title"
 import { resendVerificationEmail } from "#/lib/auth-client"
 
 // Shown after sign-up and reused when an unverified user tries to sign in: the
@@ -11,7 +11,7 @@ import { resendVerificationEmail } from "#/lib/auth-client"
 // resend so the user has a path forward if the mail didn't arrive.
 export function CheckYourEmail({
   email,
-  title = <AuthTitle prefix="Check your" italic="email" />,
+  title = <PageTitle prefix="Check your" italic="email" />,
 }: {
   email: string
   title?: ReactNode
@@ -48,7 +48,7 @@ export function CheckYourEmail({
           Didn't get it? Check spam, or resend below.
         </p>
         {status === "error" ? (
-          <ErrorBanner>Couldn't resend right now. Try again in a moment.</ErrorBanner>
+          <Alert message="Couldn't resend right now. Try again in a moment." />
         ) : null}
         <Button
           variant="secondary"

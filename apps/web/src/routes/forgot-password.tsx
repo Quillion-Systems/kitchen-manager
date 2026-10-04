@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { type FormEvent, useState } from "react"
+import { Alert } from "#/components/alert"
 import { AuthShell } from "#/components/auth-shell"
-import { AuthTitle } from "#/components/auth-title"
 import { Button } from "#/components/button"
-import { ErrorBanner } from "#/components/error-banner"
 import { Field } from "#/components/field"
+import { PageTitle } from "#/components/page-title"
 import { requestPasswordReset } from "#/lib/auth-client"
 
 export const Route = createFileRoute("/forgot-password")({
@@ -43,7 +43,7 @@ function ForgotPassword() {
   if (submitted) {
     return (
       <AuthShell
-        title={<AuthTitle prefix="Check your" italic="email" />}
+        title={<PageTitle prefix="Check your" italic="email" />}
         subtitle={
           <>
             If an account exists for <span className="font-semibold text-foreground">{email}</span>,
@@ -68,7 +68,7 @@ function ForgotPassword() {
 
   return (
     <AuthShell
-      title={<AuthTitle prefix="Forgot" italic="password" />}
+      title={<PageTitle prefix="Forgot" italic="password" />}
       subtitle="Enter your account email and we'll send a link to set a new one."
       headerRight={
         <Link
@@ -80,7 +80,7 @@ function ForgotPassword() {
       }
     >
       <form onSubmit={onSubmit} className="flex flex-col gap-5">
-        {error ? <ErrorBanner>{error}</ErrorBanner> : null}
+        {error ? <Alert message={error} /> : null}
         <Field
           label="Email"
           type="email"

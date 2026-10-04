@@ -3,10 +3,10 @@ import { Link } from "expo-router"
 import { type ReactNode, useState } from "react"
 import { StyleSheet, Text } from "react-native"
 import { resendVerificationEmail } from "../lib/auth-client"
+import { Alert } from "./Alert"
 import { AuthShell } from "./AuthShell"
-import { AuthTitle } from "./AuthTitle"
 import { Button } from "./Button"
-import { ErrorBanner } from "./ErrorBanner"
+import { PageTitle } from "./PageTitle"
 
 // Shown after sign-up and reused when an unverified user tries to sign in: the
 // account exists but is gated until the emailed link is clicked. Offers a
@@ -22,7 +22,7 @@ export function CheckYourEmail({ email, title }: { email: string; title?: ReactN
 
   return (
     <AuthShell
-      title={title ?? <AuthTitle prefix="Check your" italic="email" />}
+      title={title ?? <PageTitle prefix="Check your" italic="email" />}
       subtitle={
         <Text style={styles.subtitle}>
           We sent a verification link to <Text style={styles.emailText}>{email}</Text>. Open it to
@@ -39,9 +39,7 @@ export function CheckYourEmail({ email, title }: { email: string; title?: ReactN
     >
       <Text style={styles.body}>Didn't get it? Check spam, or resend below.</Text>
       {status === "error" ? (
-        <ErrorBanner testID="resend-error">
-          Couldn't resend right now. Try again in a moment.
-        </ErrorBanner>
+        <Alert testID="resend-error" message="Couldn't resend right now. Try again in a moment." />
       ) : null}
       <Button
         testID="resend-verification"

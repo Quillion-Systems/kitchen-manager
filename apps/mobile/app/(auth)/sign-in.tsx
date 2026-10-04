@@ -2,20 +2,19 @@ import { fontSizes, mobileFonts, semantics } from "@kitchen-manager/design-token
 import { Link } from "expo-router"
 import { useState } from "react"
 import { StyleSheet, Text, View } from "react-native"
+import { Alert } from "../../components/Alert"
 import { AuthShell } from "../../components/AuthShell"
-import { AuthTitle } from "../../components/AuthTitle"
 import { Button } from "../../components/Button"
 import { Checkbox } from "../../components/Checkbox"
 import { CheckYourEmail } from "../../components/CheckYourEmail"
-import { ErrorBanner } from "../../components/ErrorBanner"
 import { Field } from "../../components/Field"
-import { PasswordToggle } from "../../components/PasswordToggle"
+import { PageTitle } from "../../components/PageTitle"
+import { PasswordField } from "../../components/PasswordField"
 import { signIn } from "../../lib/auth-client"
 
 export default function SignIn() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
   const [remember, setRemember] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
@@ -39,13 +38,13 @@ export default function SignIn() {
 
   if (needsVerification) {
     return (
-      <CheckYourEmail email={email} title={<AuthTitle prefix="Verify your" italic="email" />} />
+      <CheckYourEmail email={email} title={<PageTitle prefix="Verify your" italic="email" />} />
     )
   }
 
   return (
     <AuthShell
-      title={<AuthTitle prefix="Welcome" italic="back" />}
+      title={<PageTitle prefix="Welcome" italic="back" />}
       subtitle="Sign in to access your recipes and weekly meal plans."
       footer={
         <Text style={styles.footerText}>
@@ -57,7 +56,7 @@ export default function SignIn() {
       }
     >
       {error ? (
-        <ErrorBanner testID="auth-error">{`${error}. Try again, or reset it below.`}</ErrorBanner>
+        <Alert testID="auth-error" message={`${error}. Try again, or reset it below.`} />
       ) : null}
 
       <Field
@@ -71,22 +70,15 @@ export default function SignIn() {
         autoComplete="email"
         textContentType="username"
       />
-      <Field
+      <PasswordField
         label="Password"
         testID="password-input"
+        toggleTestID="password-toggle"
         value={password}
         onChangeText={setPassword}
-        secureTextEntry={!showPassword}
         autoComplete="current-password"
         textContentType="password"
         invalid={!!error}
-        rightSlot={
-          <PasswordToggle
-            testID="password-toggle"
-            show={showPassword}
-            onToggle={() => setShowPassword((s) => !s)}
-          />
-        }
       />
 
       <View style={styles.row}>

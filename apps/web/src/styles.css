@@ -17,3 +17,14 @@ body,
 body {
   margin: 0;
 }
+
+/* Native <button> defaults to cursor: default per modern spec (Chrome 2016+).
+   For a design system of interactive buttons, that's the wrong UX cue — restore
+   the pre-spec pointer and signal disabled state explicitly. Does not affect
+   touch/mobile. */
+button:not(:disabled) {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+}
