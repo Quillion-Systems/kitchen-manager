@@ -1,8 +1,8 @@
 import { Link } from "@tanstack/react-router"
 import { type ReactNode, useState } from "react"
+import { Alert } from "#/components/alert"
 import { AuthShell } from "#/components/auth-shell"
 import { Button } from "#/components/button"
-import { ErrorBanner } from "#/components/error-banner"
 import { PageTitle } from "#/components/page-title"
 import { resendVerificationEmail } from "#/lib/auth-client"
 
@@ -48,7 +48,7 @@ export function CheckYourEmail({
           Didn't get it? Check spam, or resend below.
         </p>
         {status === "error" ? (
-          <ErrorBanner message="Couldn't resend right now. Try again in a moment." />
+          <Alert message="Couldn't resend right now. Try again in a moment." />
         ) : null}
         <Button
           variant="secondary"

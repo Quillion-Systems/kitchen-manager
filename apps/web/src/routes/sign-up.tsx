@@ -1,9 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router"
 import { type FormEvent, useId, useState } from "react"
+import { Alert } from "#/components/alert"
 import { AuthShell as NewAuthShell } from "#/components/auth-shell"
 import { Button } from "#/components/button"
 import { CheckYourEmail } from "#/components/check-your-email"
-import { ErrorBanner } from "#/components/error-banner"
 import { Field as NewField } from "#/components/field"
 import { PageTitle } from "#/components/page-title"
 import { PasswordField as NewPasswordField } from "#/components/password-field"
@@ -63,7 +63,7 @@ function SignUp() {
       }
     >
       <form onSubmit={onSubmit} className="flex flex-col gap-5">
-        {error ? <ErrorBanner message={error} /> : null}
+        {error ? <Alert message={error} /> : null}
 
         <NewField
           label="Name"

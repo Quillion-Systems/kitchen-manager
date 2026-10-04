@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { type FormEvent, useState } from "react"
+import { Alert } from "#/components/alert"
 import { AuthShell } from "#/components/auth-shell"
 import { Button } from "#/components/button"
-import { ErrorBanner } from "#/components/error-banner"
 import { PageTitle } from "#/components/page-title"
 import { PasswordField } from "#/components/password-field"
 import { resetPassword } from "#/lib/auth-client"
@@ -85,7 +85,7 @@ function ResetPassword() {
       }
     >
       <form onSubmit={onSubmit} className="flex flex-col gap-5">
-        {error ? <ErrorBanner message={error} /> : null}
+        {error ? <Alert message={error} /> : null}
         <PasswordField
           label="New password"
           autoComplete="new-password"

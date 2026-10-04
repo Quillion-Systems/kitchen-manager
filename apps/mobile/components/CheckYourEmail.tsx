@@ -3,9 +3,9 @@ import { Link } from "expo-router"
 import { type ReactNode, useState } from "react"
 import { StyleSheet, Text } from "react-native"
 import { resendVerificationEmail } from "../lib/auth-client"
+import { Alert } from "./Alert"
 import { AuthShell } from "./AuthShell"
 import { Button } from "./Button"
-import { ErrorBanner } from "./ErrorBanner"
 import { PageTitle } from "./PageTitle"
 
 // Shown after sign-up and reused when an unverified user tries to sign in: the
@@ -39,10 +39,7 @@ export function CheckYourEmail({ email, title }: { email: string; title?: ReactN
     >
       <Text style={styles.body}>Didn't get it? Check spam, or resend below.</Text>
       {status === "error" ? (
-        <ErrorBanner
-          testID="resend-error"
-          message="Couldn't resend right now. Try again in a moment."
-        />
+        <Alert testID="resend-error" message="Couldn't resend right now. Try again in a moment." />
       ) : null}
       <Button
         testID="resend-verification"

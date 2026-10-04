@@ -2,9 +2,9 @@ import { fontSizes, mobileFonts, semantics } from "@kitchen-manager/design-token
 import { Link } from "expo-router"
 import { useState } from "react"
 import { StyleSheet, Text } from "react-native"
+import { Alert } from "../../components/Alert"
 import { AuthShell } from "../../components/AuthShell"
 import { Button } from "../../components/Button"
-import { ErrorBanner } from "../../components/ErrorBanner"
 import { Field } from "../../components/Field"
 import { PageTitle } from "../../components/PageTitle"
 import { requestPasswordReset } from "../../lib/auth-client"
@@ -75,7 +75,7 @@ export default function ForgotPassword() {
         </Text>
       }
     >
-      {error ? <ErrorBanner testID="forgot-error" message={error} /> : null}
+      {error ? <Alert testID="forgot-error" message={error} /> : null}
 
       <Field
         label="Email"

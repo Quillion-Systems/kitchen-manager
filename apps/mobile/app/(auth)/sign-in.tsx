@@ -2,11 +2,11 @@ import { fontSizes, mobileFonts, semantics } from "@kitchen-manager/design-token
 import { Link } from "expo-router"
 import { useState } from "react"
 import { StyleSheet, Text, View } from "react-native"
+import { Alert } from "../../components/Alert"
 import { AuthShell } from "../../components/AuthShell"
 import { Button } from "../../components/Button"
 import { Checkbox } from "../../components/Checkbox"
 import { CheckYourEmail } from "../../components/CheckYourEmail"
-import { ErrorBanner } from "../../components/ErrorBanner"
 import { Field } from "../../components/Field"
 import { PageTitle } from "../../components/PageTitle"
 import { PasswordField } from "../../components/PasswordField"
@@ -56,7 +56,7 @@ export default function SignIn() {
       }
     >
       {error ? (
-        <ErrorBanner testID="auth-error" message={`${error}. Try again, or reset it below.`} />
+        <Alert testID="auth-error" message={`${error}. Try again, or reset it below.`} />
       ) : null}
 
       <Field

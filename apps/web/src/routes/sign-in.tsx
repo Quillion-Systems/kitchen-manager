@@ -1,10 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router"
 import { type FormEvent, useState } from "react"
+import { Alert } from "#/components/alert"
 import { AuthShell } from "#/components/auth-shell"
 import { Button } from "#/components/button"
 import { CheckYourEmail } from "#/components/check-your-email"
 import { Checkbox } from "#/components/checkbox"
-import { ErrorBanner } from "#/components/error-banner"
 import { Field } from "#/components/field"
 import { PageTitle } from "#/components/page-title"
 import { PasswordField } from "#/components/password-field"
@@ -61,7 +61,7 @@ function SignIn() {
       }
     >
       <form onSubmit={onSubmit} className="flex flex-col gap-5">
-        {error ? <ErrorBanner message={`${error}. Try again, or reset it below.`} /> : null}
+        {error ? <Alert message={`${error}. Try again, or reset it below.`} /> : null}
 
         <Field
           label="Email"

@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { type FormEvent, useState } from "react"
+import { Alert } from "#/components/alert"
 import { AuthShell } from "#/components/auth-shell"
 import { Button } from "#/components/button"
-import { ErrorBanner } from "#/components/error-banner"
 import { Field } from "#/components/field"
 import { PageTitle } from "#/components/page-title"
 import { requestPasswordReset } from "#/lib/auth-client"
@@ -80,7 +80,7 @@ function ForgotPassword() {
       }
     >
       <form onSubmit={onSubmit} className="flex flex-col gap-5">
-        {error ? <ErrorBanner message={error} /> : null}
+        {error ? <Alert message={error} /> : null}
         <Field
           label="Email"
           type="email"
