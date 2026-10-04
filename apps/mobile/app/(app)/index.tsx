@@ -28,6 +28,9 @@ export default function Home() {
           <Link href="/products" testID="products-link" style={styles.authBarLink}>
             Products
           </Link>
+          <Link href="/inventory" testID="inventory-link" style={styles.authBarLink}>
+            Inventory
+          </Link>
           <Link href="/settings" testID="settings-link" style={styles.authBarLink}>
             Settings
           </Link>
