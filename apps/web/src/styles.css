@@ -28,3 +28,20 @@ button:not(:disabled) {
 button:disabled {
   cursor: not-allowed;
 }
+
+/* BarcodeScanner reticle: glowing scan line sweeps top↔bottom inside the aim
+   box. Tailwind 4's @theme keyframes land on utility classes automatically,
+   but defining this once in CSS keeps the arbitrary-value churn out of the
+   component. */
+@keyframes barcode-scanline {
+  0%,
+  100% {
+    top: 0%;
+  }
+  50% {
+    top: calc(100% - 2px);
+  }
+}
+.animate-barcode-scanline {
+  animation: barcode-scanline 2.2s ease-in-out infinite;
+}
