@@ -13,6 +13,7 @@ import {
   TextInput,
   View,
 } from "react-native"
+import { BarcodeScanDialog } from "../../components/BarcodeScanDialog"
 
 // Local-first: reads and writes go straight to the on-device SQLite mirror.
 // usePowerSyncQuery is live — it re-runs whenever the product table changes,
@@ -26,6 +27,7 @@ export default function Products() {
   const [name, setName] = useState("")
   const [addError, setAddError] = useState<string | null>(null)
   const [editing, setEditing] = useState<ProductRow | null>(null)
+  const [scannerOpen, setScannerOpen] = useState(false)
   const { data: products, isLoading } = usePowerSyncQuery<ProductRow>(
     "SELECT id, name FROM product ORDER BY lower(name)",
   )
@@ -92,6 +94,14 @@ export default function Products() {
             onSubmitEditing={add}
           />
           <Pressable
+            testID="product-scan-button"
+            onPress={() => setScannerOpen(true)}
+            accessibilityLabel="Scan a barcode"
+            style={({ pressed }) => [styles.scanButton, pressed && styles.buttonDim]}
+          >
+            <Text style={styles.scanButtonText}>Scan</Text>
+          </Pressable>
+          <Pressable
             testID="product-add-button"
             style={({ pressed }) => [
               styles.addButton,
@@ -143,6 +153,12 @@ export default function Products() {
       </ScrollView>
 
       {editing ? <RenameModal row={editing} onClose={() => setEditing(null)} db={db} /> : null}
+
+      <BarcodeScanDialog
+        visible={scannerOpen}
+        onResolve={() => setScannerOpen(false)}
+        onClose={() => setScannerOpen(false)}
+      />
     </KeyboardAvoidingView>
   )
 }
@@ -258,6 +274,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   addButtonText: { color: "#0a0a0a", fontSize: 15, fontWeight: "600" },
+  scanButton: {
+    alignItems: "center",
+    backgroundColor: "transparent",
+    borderColor: "#404040",
+    borderRadius: 8,
+    borderWidth: 1,
+    justifyContent: "center",
+    paddingHorizontal: 12,
+  },
+  scanButtonText: { color: "#a3a3a3", fontSize: 14, fontWeight: "500" },
   buttonDim: { opacity: 0.6 },
   error: { color: "#f87171", fontSize: 14 },
   hint: { color: "#737373", fontSize: 14, marginTop: 8 },
