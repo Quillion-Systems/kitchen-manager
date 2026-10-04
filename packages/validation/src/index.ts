@@ -17,11 +17,16 @@ export {
   updateNoteSchema,
 } from "./note"
 export {
+  type BarcodeLookupResult,
+  barcodeLookupInputSchema,
+  barcodeLookupResultSchema,
   type NewProduct,
   newProductSchema,
   type Product,
+  type ProductSource,
   productIdSchema,
   productSchema,
+  productSourceSchema,
   type UpdateProduct,
   updateProductSchema,
 } from "./product"

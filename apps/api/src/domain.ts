@@ -3,6 +3,9 @@
 // shared contract is proven to resolve across the workspace. The tRPC procedures
 // validate their inputs against these.
 export {
+  type BarcodeLookupResult,
+  barcodeLookupInputSchema,
+  barcodeLookupResultSchema,
   type Inventory,
   inventoryIdSchema,
   inventorySchema,
@@ -16,8 +19,10 @@ export {
   noteIdSchema,
   noteSchema,
   type Product,
+  type ProductSource,
   productIdSchema,
   productSchema,
+  productSourceSchema,
   type Unit,
   type UpdateInventory,
   type UpdateNote,

@@ -115,12 +115,28 @@ export function BarcodeScanner({
         autoPlay
         className={`absolute inset-0 h-full w-full object-cover ${status === "running" ? "opacity-100" : "opacity-0"}`}
       />
-      {/* Reticle so users know where to aim. */}
+      {/* Reticle: four L-brackets at the corners of the aim area, with a
+          glowing scan line sweeping top↔bottom inside. Matches the design
+          file's BARCODE SCANNER mock. */}
       {status === "running" ? (
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-[20%] rounded-2xl border-2 border-accent"
-        />
+        <>
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-[12%] inset-y-[20%] overflow-hidden rounded-[14px]"
+          >
+            <span className="absolute left-0 top-0 size-8 rounded-tl-[14px] border-l-4 border-t-4 border-accent" />
+            <span className="absolute right-0 top-0 size-8 rounded-tr-[14px] border-r-4 border-t-4 border-accent" />
+            <span className="absolute bottom-0 left-0 size-8 rounded-bl-[14px] border-b-4 border-l-4 border-accent" />
+            <span className="absolute bottom-0 right-0 size-8 rounded-br-[14px] border-b-4 border-r-4 border-accent" />
+            <span className="animate-barcode-scanline absolute inset-x-0 h-0.5 bg-accent shadow-[0_0_8px_var(--color-accent)]" />
+          </div>
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute bottom-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-foreground px-3.5 py-2 text-[13px] text-background"
+          >
+            Line up the barcode in the frame
+          </span>
+        </>
       ) : null}
 
       {status === "starting" ? <StatusCard>Starting camera…</StatusCard> : null}

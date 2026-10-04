@@ -21,6 +21,10 @@ const notes = new Table({
 
 const product = new Table({
   name: column.text,
+  // Nullable in Postgres; PowerSync treats missing values as null, so no
+  // explicit nullability declaration is needed here.
+  barcode: column.text,
+  source: column.text,
   created_at: column.text,
   updated_at: column.text,
 })

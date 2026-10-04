@@ -23,6 +23,11 @@ allowBuilds:
   # PowerSync's local SQLite. wa-sqlite ships prebuilt WASM; its own native build
   # isn't needed — skip it.
   "@journeyapps/wa-sqlite": false
+  # eas-cli transitives. dtrace-provider is a macOS/Solaris dtrace instrumentation
+  # hook EAS CLI doesn't actually need; protobufjs' postinstall is codegen the
+  # JS path doesn't rely on. Skip both.
+  dtrace-provider: false
+  protobufjs: false
 
 minimumReleaseAgeExclude:
   - expo-constants@57.0.9

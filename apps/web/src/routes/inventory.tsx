@@ -1,6 +1,7 @@
 import { usePowerSync, useQuery as usePowerSyncQuery } from "@powersync/react"
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { type FormEvent, useEffect, useState } from "react"
+import { BarcodeScanDialog } from "#/components/barcode-scan-dialog"
 import { useSession } from "#/lib/auth-client"
 import { PowerSyncProvider } from "#/lib/powersync/provider"
 
@@ -193,6 +194,7 @@ function AddForm({
   const [expiresAt, setExpiresAt] = useState("")
   const [purchasedAt, setPurchasedAt] = useState("")
   const [notes, setNotes] = useState("")
+  const [scannerOpen, setScannerOpen] = useState(false)
 
   // Default to the first available product + unit the first time the picker
   // has data, so a fresh user doesn't see an empty select.
@@ -235,93 +237,117 @@ function AddForm({
   }
 
   return (
-    <form
-      onSubmit={submit}
-      className="space-y-3 rounded-lg border border-neutral-800 bg-neutral-900 p-4"
-    >
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_auto_1fr]">
-        <Labeled label="Product" htmlFor="add-product">
-          <select
-            id="add-product"
-            value={productId}
-            onChange={(e) => setProductId(e.target.value)}
-            className="w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-neutral-100 outline-none focus:border-sky-500"
-          >
-            {products.length === 0 ? <option value="">—</option> : null}
-            {products.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
-        </Labeled>
-        <Labeled label="Quantity" htmlFor="add-qty">
-          <input
-            id="add-qty"
-            type="number"
-            inputMode="decimal"
-            min="0"
-            step="any"
-            value={qty}
-            onChange={(e) => setQty(e.target.value)}
-            placeholder="0"
-            className="w-24 rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-neutral-100 outline-none focus:border-sky-500"
-          />
-        </Labeled>
-        <Labeled label="Unit" htmlFor="add-unit">
-          <select
-            id="add-unit"
-            value={unitId}
-            onChange={(e) => setUnitId(e.target.value)}
-            className="w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-neutral-100 outline-none focus:border-sky-500"
-          >
-            {units.length === 0 ? <option value="">—</option> : null}
-            {units.map((u) => (
-              <option key={u.id} value={u.id}>
-                {u.abbreviation} · {u.category}
-              </option>
-            ))}
-          </select>
-        </Labeled>
-      </div>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <Labeled label="Expires" htmlFor="add-expires">
-          <input
-            id="add-expires"
-            type="date"
-            value={expiresAt}
-            onChange={(e) => setExpiresAt(e.target.value)}
-            className="w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-neutral-100 outline-none focus:border-sky-500"
-          />
-        </Labeled>
-        <Labeled label="Purchased" htmlFor="add-purchased">
-          <input
-            id="add-purchased"
-            type="date"
-            value={purchasedAt}
-            onChange={(e) => setPurchasedAt(e.target.value)}
-            className="w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-neutral-100 outline-none focus:border-sky-500"
-          />
-        </Labeled>
-      </div>
-      <Labeled label="Notes" htmlFor="add-notes">
-        <textarea
-          id="add-notes"
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          rows={2}
-          placeholder="(optional)"
-          className="w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-neutral-100 outline-none focus:border-sky-500"
-        />
-      </Labeled>
-      <button
-        type="submit"
-        disabled={disabled}
-        className="rounded-lg bg-sky-500 px-4 py-2 font-medium text-neutral-950 transition hover:bg-sky-400 disabled:opacity-50"
+    <>
+      <form
+        onSubmit={submit}
+        className="space-y-3 rounded-lg border border-neutral-800 bg-neutral-900 p-4"
       >
-        Add inventory
-      </button>
-    </form>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_auto_1fr]">
+          <Labeled label="Product" htmlFor="add-product">
+            <div className="flex gap-2">
+              <select
+                id="add-product"
+                value={productId}
+                onChange={(e) => setProductId(e.target.value)}
+                className="flex-1 rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-neutral-100 outline-none focus:border-sky-500"
+              >
+                {products.length === 0 ? <option value="">—</option> : null}
+                {products.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name}
+                  </option>
+                ))}
+              </select>
+              <button
+                type="button"
+                onClick={() => setScannerOpen(true)}
+                aria-label="Scan a barcode"
+                title="Scan a barcode"
+                className="shrink-0 rounded-lg border border-neutral-700 px-3 text-neutral-300 transition hover:border-sky-500 hover:text-sky-400"
+              >
+                Scan
+              </button>
+            </div>
+          </Labeled>
+          <Labeled label="Quantity" htmlFor="add-qty">
+            <input
+              id="add-qty"
+              type="number"
+              inputMode="decimal"
+              min="0"
+              step="any"
+              value={qty}
+              onChange={(e) => setQty(e.target.value)}
+              placeholder="0"
+              className="w-24 rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-neutral-100 outline-none focus:border-sky-500"
+            />
+          </Labeled>
+          <Labeled label="Unit" htmlFor="add-unit">
+            <select
+              id="add-unit"
+              value={unitId}
+              onChange={(e) => setUnitId(e.target.value)}
+              className="w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-neutral-100 outline-none focus:border-sky-500"
+            >
+              {units.length === 0 ? <option value="">—</option> : null}
+              {units.map((u) => (
+                <option key={u.id} value={u.id}>
+                  {u.abbreviation} · {u.category}
+                </option>
+              ))}
+            </select>
+          </Labeled>
+        </div>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <Labeled label="Expires" htmlFor="add-expires">
+            <input
+              id="add-expires"
+              type="date"
+              value={expiresAt}
+              onChange={(e) => setExpiresAt(e.target.value)}
+              className="w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-neutral-100 outline-none focus:border-sky-500"
+            />
+          </Labeled>
+          <Labeled label="Purchased" htmlFor="add-purchased">
+            <input
+              id="add-purchased"
+              type="date"
+              value={purchasedAt}
+              onChange={(e) => setPurchasedAt(e.target.value)}
+              className="w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-neutral-100 outline-none focus:border-sky-500"
+            />
+          </Labeled>
+        </div>
+        <Labeled label="Notes" htmlFor="add-notes">
+          <textarea
+            id="add-notes"
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            rows={2}
+            placeholder="(optional)"
+            className="w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-neutral-100 outline-none focus:border-sky-500"
+          />
+        </Labeled>
+        <button
+          type="submit"
+          disabled={disabled}
+          className="rounded-lg bg-sky-500 px-4 py-2 font-medium text-neutral-950 transition hover:bg-sky-400 disabled:opacity-50"
+        >
+          Add inventory
+        </button>
+      </form>
+      {/* Scanner dialog renders as a sibling of the form — nesting <form>s
+          (ManualPanel has its own) is invalid HTML and would bubble submits. */}
+      {scannerOpen ? (
+        <BarcodeScanDialog
+          onResolve={(product) => {
+            setProductId(product.id)
+            setScannerOpen(false)
+          }}
+          onClose={() => setScannerOpen(false)}
+        />
+      ) : null}
+    </>
   )
 }
 
